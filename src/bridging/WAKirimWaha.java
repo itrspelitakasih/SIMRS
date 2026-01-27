@@ -20,7 +20,7 @@ import java.nio.file.Files;
 public class WAKirimWaha {
 
     // ====== KONFIGURASI ======
-    private static final String WAHA_BASE_URL   = "https://apps.rspelitakasih.id";
+    private static final String WAHA_BASE_URL   = "https://waha.rspelitakasih.id";
     private static final String UPLOAD_URL      = WAHA_BASE_URL + "/HasilLab/upload_lab.php";
     private static final String AUTH_TOKEN      = "AmpunBangJago"; // samakan dengan upload_lab.php
 

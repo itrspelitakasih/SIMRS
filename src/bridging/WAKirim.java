@@ -55,7 +55,7 @@ public class WAKirim {
         public int httpCode;
         public String error;
         public String responseBody;
-        private static final String WAHA_BASE_URL   = "https://apps.rspelitakasih.id";
+        private static final String WAHA_BASE_URL   = "https://waha.rspelitakasih.id";
         private static final String AUTH_TOKEN      = "AmpunBangJago"; // samakan dengan upload_lab.php
         private static final String UPLOAD_URL      = WAHA_BASE_URL + "/HasilLab/upload_lab.php";
         
@@ -162,7 +162,7 @@ public class WAKirim {
     String uploadedUrl = null;
     HttpURLConnection conn = null;
 
-    final String WAHA_BASE_URL   = "https://apps.rspelitakasih.id";
+    final String WAHA_BASE_URL   = "https://waha.rspelitakasih.id";
     final String AUTH_TOKEN      = "AmpunBangJago";
     final String UPLOAD_URL      = WAHA_BASE_URL + "/HasilLab/upload_lab.php";
     final int CONNECT_TIMEOUT    = 7000;   // ms
