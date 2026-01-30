@@ -35,6 +35,7 @@ import org.springframework.http.MediaType;
 
 public class DlgCariKfa extends javax.swing.JDialog {
 
+    private boolean isTransferringKFA = false; // Tambah di class level
     private DefaultTableModel tabMode;
     private sekuel Sequel = new sekuel();
     private validasi Valid = new validasi();
@@ -42,15 +43,14 @@ public class DlgCariKfa extends javax.swing.JDialog {
     private PreparedStatement ps;
     private int i = 0;
     private ResultSet rs;
-    private String link = "", json = "";
+    private String link="",json="";
     private HttpHeaders headers;
     private HttpEntity requestEntity;
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode nameNode;
     private JsonNode response;
-    private ApiSatuSehat api = new ApiSatuSehat();
-
+    private ApiSatuSehat api=new ApiSatuSehat();
     public DlgCariKfa(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -137,6 +137,8 @@ public class DlgCariKfa extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        PanelInput = new javax.swing.JPanel();
+        ChkInput = new widget.CekBox();
         internalFrame1 = new widget.InternalFrame();
         jPanel2 = new javax.swing.JPanel();
         panelisi2 = new widget.panelisi();
@@ -154,8 +156,32 @@ public class DlgCariKfa extends javax.swing.JDialog {
         BtnCariOnline = new widget.Button();
         scrollPane1 = new widget.ScrollPane();
         tbObat = new widget.Table();
-        PanelInput = new javax.swing.JPanel();
-        ChkInput = new widget.CekBox();
+
+        PanelInput.setName("PanelInput"); // NOI18N
+        PanelInput.setOpaque(false);
+        PanelInput.setPreferredSize(new java.awt.Dimension(660, 338));
+        PanelInput.setLayout(new java.awt.BorderLayout(1, 1));
+
+        ChkInput.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkInput.setMnemonic('I');
+        ChkInput.setText(".: Input Data");
+        ChkInput.setToolTipText("Alt+I");
+        ChkInput.setBorderPainted(true);
+        ChkInput.setBorderPaintedFlat(true);
+        ChkInput.setFocusable(false);
+        ChkInput.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ChkInput.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ChkInput.setName("ChkInput"); // NOI18N
+        ChkInput.setPreferredSize(new java.awt.Dimension(192, 20));
+        ChkInput.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkInput.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
+        ChkInput.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
+        ChkInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChkInputActionPerformed(evt);
+            }
+        });
+        PanelInput.add(ChkInput, java.awt.BorderLayout.PAGE_END);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -167,9 +193,7 @@ public class DlgCariKfa extends javax.swing.JDialog {
         });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Cari KFA ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setMinimumSize(new java.awt.Dimension(552, 149));
         internalFrame1.setName("internalFrame1"); // NOI18N
-        internalFrame1.setPreferredSize(new java.awt.Dimension(670, 770));
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
         jPanel2.setName("jPanel2"); // NOI18N
@@ -266,12 +290,12 @@ public class DlgCariKfa extends javax.swing.JDialog {
         });
         panelisi2.add(BtnKeluar);
 
-        BtnUpdateKFA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/search_page.png"))); // NOI18N
+        BtnUpdateKFA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/swap.png"))); // NOI18N
         BtnUpdateKFA.setMnemonic('K');
         BtnUpdateKFA.setText("Update KFA");
         BtnUpdateKFA.setToolTipText("Alt+K");
         BtnUpdateKFA.setName("BtnUpdateKFA"); // NOI18N
-        BtnUpdateKFA.setPreferredSize(new java.awt.Dimension(120, 30));
+        BtnUpdateKFA.setPreferredSize(new java.awt.Dimension(150, 30));
         BtnUpdateKFA.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnUpdateKFAActionPerformed(evt);
@@ -289,7 +313,7 @@ public class DlgCariKfa extends javax.swing.JDialog {
         BtnCariOnline.setText("Cari Online");
         BtnCariOnline.setToolTipText("Alt+3");
         BtnCariOnline.setName("BtnCariOnline"); // NOI18N
-        BtnCariOnline.setPreferredSize(new java.awt.Dimension(120, 30));
+        BtnCariOnline.setPreferredSize(new java.awt.Dimension(110, 23));
         BtnCariOnline.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnCariOnlineActionPerformed(evt);
@@ -323,11 +347,6 @@ public class DlgCariKfa extends javax.swing.JDialog {
         ));
         tbObat.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
         tbObat.setName("tbObat"); // NOI18N
-        tbObat.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tbObatMouseClicked(evt);
-            }
-        });
         tbObat.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 tbObatKeyPressed(evt);
@@ -339,34 +358,6 @@ public class DlgCariKfa extends javax.swing.JDialog {
         scrollPane1.setViewportView(tbObat);
 
         internalFrame1.add(scrollPane1, java.awt.BorderLayout.CENTER);
-
-        PanelInput.setName("PanelInput"); // NOI18N
-        PanelInput.setOpaque(false);
-        PanelInput.setPreferredSize(new java.awt.Dimension(660, 245));
-        PanelInput.setLayout(new java.awt.BorderLayout(1, 1));
-
-        ChkInput.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
-        ChkInput.setMnemonic('I');
-        ChkInput.setText(".: Input Data");
-        ChkInput.setToolTipText("Alt+I");
-        ChkInput.setBorderPainted(true);
-        ChkInput.setBorderPaintedFlat(true);
-        ChkInput.setFocusable(false);
-        ChkInput.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        ChkInput.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        ChkInput.setName("ChkInput"); // NOI18N
-        ChkInput.setPreferredSize(new java.awt.Dimension(192, 20));
-        ChkInput.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
-        ChkInput.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
-        ChkInput.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
-        ChkInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ChkInputActionPerformed(evt);
-            }
-        });
-        PanelInput.add(ChkInput, java.awt.BorderLayout.PAGE_END);
-
-        internalFrame1.add(PanelInput, java.awt.BorderLayout.PAGE_START);
 
         getContentPane().add(internalFrame1, java.awt.BorderLayout.CENTER);
 
@@ -386,42 +377,9 @@ public class DlgCariKfa extends javax.swing.JDialog {
         tampil();
 }//GEN-LAST:event_BtnCariKeyPressed
 
-    private void tbObatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbObatMouseClicked
-
-}//GEN-LAST:event_tbObatMouseClicked
-
-    private void tbObatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbObatKeyPressed
-        if (tabMode.getRowCount() != 0) {
-            if (evt.getKeyCode() == KeyEvent.VK_SHIFT) {
-                TCari.setText("");
-                TCari.requestFocus();
-            }
-            if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
-                java.awt.Window[] windows = java.awt.Window.getWindows();
-                for (java.awt.Window window : windows) {
-                    if (window instanceof SatuSehatMapingObatAlkes) {
-                        SatuSehatMapingObatAlkes parentForm = (SatuSehatMapingObatAlkes) window;
-                        parentForm.KFASystem.setText("http://sys-ids.kemkes.go.id/kfa");
-                        parentForm.FormSystem.setText("http://terminology.kemkes.go.id/CodeSystem/medication-form");
-                        parentForm.NemeratorSystem.setText("http://unitsofmeasure.org");
-                        parentForm.DenominatorSystem.setText("http://terminology.hl7.org/CodeSystem/v3-orderableDrugForm");
-                        parentForm.RouteSystem.setText("http://www.whocc.no/atc");
-                        //parentForm.KFADisplay.getText("name");
-
-                        break;
-                    }
-                }
-            }
-        }
-}//GEN-LAST:event_tbObatKeyPressed
-
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         tampil();
     }//GEN-LAST:event_formWindowOpened
-
-    private void tbObatKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbObatKeyReleased
-
-    }//GEN-LAST:event_tbObatKeyReleased
 
     private void TCari2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TCari2KeyPressed
         tampil();
@@ -503,7 +461,7 @@ public class DlgCariKfa extends javax.swing.JDialog {
             }
         } catch (Exception ea) {
             System.out.println("Notifikasi Bridging : " + ea);
-            // miningKFA();
+           // miningKFA();
         }
     }//GEN-LAST:event_BtnUpdateKFAActionPerformed
 
@@ -588,17 +546,17 @@ public class DlgCariKfa extends javax.swing.JDialog {
 
                 LCount.setText("" + tabMode.getRowCount());
                 javax.swing.JOptionPane.showMessageDialog(null,
-                        "Berhasil mengambil " + tabMode.getRowCount() + " data dari API KFA");
+                    "Berhasil mengambil " + tabMode.getRowCount() + " data dari API KFA");
             } else {
                 LCount.setText("0");
                 javax.swing.JOptionPane.showMessageDialog(null,
-                        "Data tidak ditemukan untuk keyword: " + TCari.getText().trim());
+                    "Data tidak ditemukan untuk keyword: " + TCari.getText().trim());
             }
 
         } catch (Exception ex) {
             System.out.println("Notifikasi Error Pencarian KFA Online: " + ex);
             javax.swing.JOptionPane.showMessageDialog(null,
-                    "Gagal melakukan pencarian online: " + ex.getMessage());
+                "Gagal melakukan pencarian online: " + ex.getMessage());
         }
     }//GEN-LAST:event_BtnCariOnlineActionPerformed
 
@@ -607,6 +565,68 @@ public class DlgCariKfa extends javax.swing.JDialog {
             BtnCariOnlineActionPerformed(null);
         }
     }//GEN-LAST:event_BtnCariOnlineKeyPressed
+
+    private void tbObatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbObatKeyPressed
+        if (tabMode.getRowCount() != 0) {
+            if (evt.getKeyCode() == KeyEvent.VK_SHIFT) {
+                TCari.setText("");
+                TCari.requestFocus();
+            }
+            if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
+                if (tbObat.getSelectedRow() != -1) {
+                    // 🚫 BLOCK isiOtomatisKFA
+                    isTransferringKFA = true;
+
+                    java.awt.Window[] windows = java.awt.Window.getWindows();
+                    for (java.awt.Window window : windows) {
+                        if (window instanceof SatuSehatMapingObatAlkes) {
+                            SatuSehatMapingObatAlkes parentForm = (SatuSehatMapingObatAlkes) window;
+                            int row = tbObat.getSelectedRow();
+
+                            // ✅ SAFE DATA EXTRACTION
+                            String kfaCode = safeGet(row, 0);
+                            String kfaDisplay = safeGet(row, 1);
+                            String formCode = safeGet(row, 2);
+                            String formDisplay = safeGet(row, 3);
+                            String numCode = safeGet(row, 4);
+                            String denomCode = "";
+                            String routeCode = safeGet(row, 6);
+                            String routeDisplay = safeGet(row, 7);
+
+                            System.out.println("🔍 TRANSFER: KFA=" + kfaCode + " | Form=" + formCode);
+
+                            // TRANSFER TO PARENT FORM
+                            parentForm.KFACode.setText(kfaCode);
+                            parentForm.KFADisplay.setText(kfaDisplay);
+                            parentForm.FormCode.setText(formCode);
+                            parentForm.FormDisplay.setText(formDisplay);
+
+                            if (!numCode.isEmpty()) {
+                                parentForm.NumoratorCode.setText(numCode);
+                            }
+                            if (!denomCode.isEmpty()) {
+                                parentForm.DenominatorCode.setText(denomCode);
+                            }
+                            parentForm.RouteCode.setText(routeCode);
+                            parentForm.RouteDisplay.setText(routeDisplay);
+
+                            // SET SYSTEM URLs
+                            setKfaSystems(parentForm);
+
+                            // UNBLOCK & CLOSE
+                            isTransferringKFA = false;
+                            dispose();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_tbObatKeyPressed
+
+    private void tbObatKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbObatKeyReleased
+
+    }//GEN-LAST:event_tbObatKeyReleased
 
     /**
      * @param args the command line arguments
@@ -623,7 +643,6 @@ public class DlgCariKfa extends javax.swing.JDialog {
             dialog.setVisible(true);
         });
     }
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private widget.Button BtnCari;
@@ -703,8 +722,7 @@ public class DlgCariKfa extends javax.swing.JDialog {
     private void isForm() {
         if (ChkInput.isSelected() == true) {
             ChkInput.setVisible(false);
-            PanelInput.setPreferredSize(new Dimension(WIDTH, 245));
-            //FormInput.setVisible(true);
+            PanelInput.setPreferredSize(new Dimension(WIDTH, 338));
             ChkInput.setVisible(true);
         } else if (ChkInput.isSelected() == false) {
             ChkInput.setVisible(false);
@@ -718,5 +736,31 @@ public class DlgCariKfa extends javax.swing.JDialog {
         TCari.requestFocus();
 
     }
+    // ✅ SAFE HELPER
+    private String safeGet(int row, int col) {
+        try {
+            Object val = tbObat.getValueAt(row, col);
+            return val != null ? val.toString().trim() : "";
+        } catch (Exception e) {
+            return "";
+        }
+    }
 
+    private void setKfaSystems(SatuSehatMapingObatAlkes form) {
+        if (form.KFASystem.getText().trim().isEmpty()) {
+            form.KFASystem.setText("http://sys-ids.kemkes.go.id/kfa");
+        }
+        if (form.FormSystem.getText().trim().isEmpty()) {
+            form.FormSystem.setText("http://terminology.kemkes.go.id/CodeSystem/medication-form");
+        }
+        if (form.NemeratorSystem.getText().trim().isEmpty()) {
+            form.NemeratorSystem.setText("http://unitsofmeasure.org");
+        }
+        if (form.DenominatorSystem.getText().trim().isEmpty()) {
+            form.DenominatorSystem.setText("http://terminology.hl7.org/CodeSystem/v3-orderableDrugForm");
+        }
+        if (form.RouteSystem.getText().trim().isEmpty()) {
+            form.RouteSystem.setText("http://www.whocc.no/atc");
+        }
+    }
 }
