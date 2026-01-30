@@ -20,9 +20,9 @@ import java.nio.file.Files;
 public class WAKirimWaha {
 
     // ====== KONFIGURASI ======
-    private static final String WAHA_BASE_URL   = "https://waha.rspelitakasih.id";
+    private static final String WAHA_BASE_URL   = "http://172.22.10.134:3000";
     private static final String UPLOAD_URL      = WAHA_BASE_URL + "/HasilLab/upload_lab.php";
-    private static final String AUTH_TOKEN      = "AmpunBangJago"; // samakan dengan upload_lab.php
+    private static final String AUTH_TOKEN      = "SayangAnisaNairaNafasya"; // samakan dengan upload_lab.php
 
     private static final String API_SEND_PATH   = "/api/sendText"; // relative path
     private static final int    CONNECT_TIMEOUT = 7000;   // ms

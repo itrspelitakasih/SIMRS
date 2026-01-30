@@ -261,6 +261,7 @@ public class DlgBarang extends javax.swing.JDialog {
         BtnPrint = new widget.Button();
         BtnAll = new widget.Button();
         BtnKeluar = new widget.Button();
+        cmbSudah = new widget.ComboBox();
         scrollPane1 = new widget.ScrollPane();
         tbObat = new widget.Table();
         PanelInput = new javax.swing.JPanel();
@@ -607,6 +608,11 @@ public class DlgBarang extends javax.swing.JDialog {
             }
         });
         panelisi1.add(BtnKeluar);
+
+        cmbSudah.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Semua", "Belum", "Sudah" }));
+        cmbSudah.setName("cmbSudah"); // NOI18N
+        cmbSudah.setPreferredSize(new java.awt.Dimension(100, 28));
+        panelisi1.add(cmbSudah);
 
         jPanel2.add(panelisi1, java.awt.BorderLayout.CENTER);
 
@@ -1106,7 +1112,7 @@ public class DlgBarang extends javax.swing.JDialog {
         karyawan.setBounds(630, 222, 110, 23);
 
         DTPExpired.setForeground(new java.awt.Color(50, 70, 50));
-        DTPExpired.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-05-2023" }));
+        DTPExpired.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-01-2026" }));
         DTPExpired.setDisplayFormat("dd-MM-yyyy");
         DTPExpired.setName("DTPExpired"); // NOI18N
         DTPExpired.setOpaque(false);
@@ -2382,6 +2388,7 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     private widget.TextBox TCari;
     private widget.TextBox beli;
     private widget.TextBox beliluar;
+    private widget.ComboBox cmbSudah;
     private widget.TextBox dasar;
     private widget.InternalFrame internalFrame1;
     private javax.swing.JPanel jPanel2;

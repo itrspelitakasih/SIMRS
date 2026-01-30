@@ -2,7 +2,7 @@
 // === Konfigurasi dasar ===
 // Jika script ini berada di webroot (mis: /var/www/html), file akan disimpan di /HasilLab
 // Jika script ini berada di dalam /HasilLab, file akan disimpan di folder itu (tanpa dobel)
-$auth_token     = "AmpunOmJago"; // samakan dengan di Java
+$auth_token     = "SayangAnisaNairaNafasya"; // samakan dengan di Java
 $max_file_count = 10;
 
 // --- Helper: ambil header Authorization (case-insensitive) ---

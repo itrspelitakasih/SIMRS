@@ -218,7 +218,7 @@
     <!--SETTING WAHA-->
     <entry key="UPLOADLABURL">https://waha.rspelitakasih.id/upload_lab.php</entry>
     <entry key="LABFILEURL">https://waha.rspelitakasih.id/HasilLab/</entry>
-    <entry key="WAHA_URL">http://172.22.10.165:3000</entry>
+    <entry key="WAHA_BASE_URL">https://wa.rspelitakasih.id</entry>
     <entry key="WAHA_API_KEY">a5cad191f07d4e16834eb9a686207416</entry>
     <entry key="WAHA_SESSION">default</entry>
 </properties>
