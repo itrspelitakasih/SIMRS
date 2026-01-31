@@ -6320,7 +6320,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
 
                     // upload versi terenkripsi
                     WAKirim.uploadPDFToServer(enc);
-                    String fileUrl = "https://waha.rspelitakasih.id/HasilLab/" + enc.getName();
+                    String fileUrl = "https://apps.rspelitakasih.id/HasilLab/" + enc.getName();
 
                     String noHP = Sequel.cariIsi("select no_tlp from pasien where no_rkm_medis=?", rs.getString("no_rkm_medis")).replaceAll("[^0-9]", "");
                     if (noHP.equals("")) {
@@ -6364,7 +6364,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                     encEx.printStackTrace();
                     // fallback: kirim apa adanya
                     WAKirim.uploadPDFToServer(out);
-                    String fileUrl = "https://waha.rspelitakasih.id/HasilLab/" + out.getName();
+                    String fileUrl = "https://apps.rspelitakasih.id/HasilLab/" + out.getName();
                     String noHP = Sequel.cariIsi("select no_tlp from pasien where no_rkm_medis=?", rs.getString("no_rkm_medis")).replaceAll("[^0-9]", "");
                     if (!noHP.equals("")) {
                         String chatId = (noHP.startsWith("62") ? noHP : "62" + noHP.replaceFirst("^0", "")) + "@c.us";

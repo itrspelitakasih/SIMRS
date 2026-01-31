@@ -2,7 +2,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <comment>KhanzaHMS</comment> 
-    <entry key="HOST">5k7+C7EnUw9nUv2Nix+DBA==</entry>
+    <entry key="HOST">QMZFHsu9i5rhhRksJHMGBg==</entry>
     <entry key="DATABASE">II7kWWVCcygbZSbR0kyAiA==</entry>
     <entry key="PORT">E0ORmBXhoVXo8Hx2rC3QBQ==</entry>
     <entry key="USER">3fsjwvKJn8IpzysMeNu3bA==</entry>
@@ -129,18 +129,18 @@
     <entry key="AKTIFKANTRACKSQL">88tE0ZUstuza/UrtfBYkFA==</entry>
     <entry key="HOSTWSLICA">http://localhost/bridging-lica/public</entry>
     <entry key="KEYWSLICA">yLT3/8b0KAb5QK1ueFkW7g==</entry>
-    <entry key="HOSTFUJI">5k7+C7EnUw9nUv2Nix+DBA==</entry>
+    <entry key="HOSTFUJI">QMZFHsu9i5rhhRksJHMGBg==</entry>
     <entry key="DATABASEFUJI">278SCM7uDvhfdwppyMpg5OAy0jN9F3pCdgukirLsgKA=</entry>
     <entry key="PORTFUJI">E0ORmBXhoVXo8Hx2rC3QBQ==</entry>
     <entry key="USERFUJI">3fsjwvKJn8IpzysMeNu3bA==</entry>
     <entry key="PASFUJI">YJclwRpDyd6OLNGeJZrJew==</entry>
     <entry key="URLCARESTREAM">http://192.168.55.187:10110/pacs</entry>
-    <entry key="HOSTSYSMEX">5k7+C7EnUw9nUv2Nix+DBA==</entry>
+    <entry key="HOSTSYSMEX">QMZFHsu9i5rhhRksJHMGBg==</entry>
     <entry key="DATABASESYSMEX">o4cUZDSdQxLPdcZer/pr1PnCrQNrd08+Hrx8Y/fi7Os=</entry>
     <entry key="PORTSYSMEX">E0ORmBXhoVXo8Hx2rC3QBQ==</entry>
     <entry key="USERSYSMEX">3fsjwvKJn8IpzysMeNu3bA==</entry>
     <entry key="PASSYSMEX">YJclwRpDyd6OLNGeJZrJew==</entry>
-    <entry key="HOSTELIMS">5k7+C7EnUw9nUv2Nix+DBA==</entry>
+    <entry key="HOSTELIMS">QMZFHsu9i5rhhRksJHMGBg==</entry>
     <entry key="DATABASEELIMS">o4cUZDSdQxLPdcZer/pr1PnCrQNrd08+Hrx8Y/fi7Os=</entry>
     <entry key="PORTELIMS">E0ORmBXhoVXo8Hx2rC3QBQ==</entry>
     <entry key="USERELIMS">3fsjwvKJn8IpzysMeNu3bA==</entry>
@@ -148,7 +148,7 @@
     <entry key="URLAPIMEDQLAB">https://dev-prembun.applimetis.id</entry>
     <entry key="SECRETKEYAPIMEDQLAB">8ZipZmIxePiEF1zVagxxcQ==</entry>
     <entry key="CONSIDAPIMEDQLAB">6IhC1JqxJ8ffoUfJz36IiA==</entry>
-    <entry key="HOSTSMARTLAB">5k7+C7EnUw9nUv2Nix+DBA==</entry>
+    <entry key="HOSTSMARTLAB">QMZFHsu9i5rhhRksJHMGBg==</entry>
     <entry key="DATABASESMARTLAB">o4cUZDSdQxLPdcZer/pr1PnCrQNrd08+Hrx8Y/fi7Os=</entry>
     <entry key="PORTSMARTLAB">E0ORmBXhoVXo8Hx2rC3QBQ==</entry>
     <entry key="USERSMARTLAB">3fsjwvKJn8IpzysMeNu3bA==</entry>
@@ -158,17 +158,17 @@
     <entry key="VERSIONSOFTMEDIX">NtswCF8BeY91Qs+C0p9G4g==</entry>
     <entry key="USERIDSOFTMEDIX">ZrktPIaFtldPd5VRZVti1g==</entry>
     <entry key="KEYSOFTMEDIX">KAkCm0yrGiE2y7VnPrI2RcLCEN+iP1sFTpvFpySD1f8=</entry>
-    <entry key="HOSTVANSLAB">5k7+C7EnUw9nUv2Nix+DBA==</entry>
+    <entry key="HOSTVANSLAB">QMZFHsu9i5rhhRksJHMGBg==</entry>
     <entry key="DATABASEVANSLAB">o4cUZDSdQxLPdcZer/pr1PnCrQNrd08+Hrx8Y/fi7Os=</entry>
     <entry key="PORTVANSLAB">E0ORmBXhoVXo8Hx2rC3QBQ==</entry>
     <entry key="USERVANSLAB">3fsjwvKJn8IpzysMeNu3bA==</entry>
     <entry key="PASVANSLAB">YJclwRpDyd6OLNGeJZrJew==</entry>
-    <entry key="HOSTSLIMS">5k7+C7EnUw9nUv2Nix+DBA==</entry>
+    <entry key="HOSTSLIMS">QMZFHsu9i5rhhRksJHMGBg==</entry>
     <entry key="DATABASESLIMS">o4cUZDSdQxLPdcZer/pr1PnCrQNrd08+Hrx8Y/fi7Os=</entry>
     <entry key="PORTSLIMS">E0ORmBXhoVXo8Hx2rC3QBQ==</entry>
     <entry key="USERSLIMS">3fsjwvKJn8IpzysMeNu3bA==</entry>
     <entry key="PASSLIMS">YJclwRpDyd6OLNGeJZrJew==</entry>
-    <entry key="HOSTLISYPM">5k7+C7EnUw9nUv2Nix+DBA==</entry>
+    <entry key="HOSTLISYPM">QMZFHsu9i5rhhRksJHMGBg==</entry>
     <entry key="DATABASELISYPM">o4cUZDSdQxLPdcZer/pr1PnCrQNrd08+Hrx8Y/fi7Os=</entry>
     <entry key="PORTLISYPM">E0ORmBXhoVXo8Hx2rC3QBQ==</entry>
     <entry key="USERLISYPM">3fsjwvKJn8IpzysMeNu3bA==</entry>
@@ -198,7 +198,7 @@
     <entry key="URLAPISERTISIGN">https://api-stag.sertisign.id/v2/poa/signing-qr</entry>
     <entry key="APIKEYSERTISIGN">Qvbk11KTaeMu98WE5RITeYdqppEJrrfzN7HisMpfOheYGYPFOLs1CW4idp8VpXV1</entry>
     <entry key="URLDOKUMENSERTISIGN">https://sertisign.com/webhook</entry>
-    <entry key="HOSTDUTAPARKING">5k7+C7EnUw9nUv2Nix+DBA==</entry>
+    <entry key="HOSTDUTAPARKING">QMZFHsu9i5rhhRksJHMGBg==</entry>
     <entry key="DATABASEDUTAPARKING">PvMIHTTN+Nnyzfbt2jiUvg==</entry>
     <entry key="PORTDUTAPARKING">E0ORmBXhoVXo8Hx2rC3QBQ==</entry>
     <entry key="USERDUTAPARKING">3fsjwvKJn8IpzysMeNu3bA==</entry>
@@ -209,16 +209,16 @@
     <entry key="PORTWEBWA">gq12A7IIaBgZ3Jh33icGRQ==</entry>
     <entry key="FOLDERFILEWA">WAGW</entry>
     <!--SETTING DATABASEWA-->
-    <entry key="HOSTWA">5k7+C7EnUw9nUv2Nix+DBA==</entry> 
+    <entry key="HOSTWA">QMZFHsu9i5rhhRksJHMGBg==</entry> 
     <entry key="PORTWA">E0ORmBXhoVXo8Hx2rC3QBQ==</entry>
     <entry key="DATABASEWA">0UrT1WN+rQHnqufxxCo7Jg==</entry>
     <entry key="USERWA">3fsjwvKJn8IpzysMeNu3bA==</entry>
     <entry key="PASSWA">YJclwRpDyd6OLNGeJZrJew==</entry>
     <entry key="NOTIFWA">yes</entry>
     <!--SETTING WAHA-->
-    <entry key="UPLOADLABURL">https://waha.rspelitakasih.id/upload_lab.php</entry>
-    <entry key="LABFILEURL">https://waha.rspelitakasih.id/HasilLab/</entry>
-    <entry key="WAHA_BASE_URL">https://wa.rspelitakasih.id</entry>
-    <entry key="WAHA_API_KEY">a5cad191f07d4e16834eb9a686207416</entry>
+    <entry key="UPLOADLABURL">https://apps.rspelitakasih.id/upload_lab.php</entry>
+    <entry key="LABFILEURL">https://apps.rspelitakasih.id/HasilLab/</entry>
+    <entry key="WAHA_BASE_URL">http://172.22.10.134:3031</entry>
+    <entry key="WAHA_API_KEY">616e62d798524494b9a6a7655cc0d0ac</entry>
     <entry key="WAHA_SESSION">default</entry>
 </properties>
