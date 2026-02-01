@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import javax.net.ssl.HttpsURLConnection;
 
 public class WAKirim {
 
@@ -22,6 +23,7 @@ public class WAKirim {
     // RESULT CLASS
     // =========================
     public static class SendResult {
+
         public boolean ok;
         public int httpCode;
         public String error;
@@ -32,11 +34,15 @@ public class WAKirim {
     // UTIL: BACA STREAM
     // =========================
     private static String readBody(InputStream is) throws IOException {
-        if (is == null) return "";
+        if (is == null) {
+            return "";
+        }
         BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
         StringBuilder sb = new StringBuilder();
         String line;
-        while ((line = br.readLine()) != null) sb.append(line);
+        while ((line = br.readLine()) != null) {
+            sb.append(line);
+        }
         br.close();
         return sb.toString();
     }
@@ -45,7 +51,9 @@ public class WAKirim {
     // UTIL: NORMALISASI NOMOR
     // =========================
     public static String toPhoneOnly(String noHP) {
-        if (noHP == null) return "";
+        if (noHP == null) {
+            return "";
+        }
 
         String cleaned = noHP.replaceAll("[^0-9]", "");
         if (cleaned.startsWith("0")) {
@@ -54,7 +62,9 @@ public class WAKirim {
             cleaned = "62" + cleaned;
         }
 
-        if (!cleaned.matches("^62[0-9]{8,}$")) return "";
+        if (!cleaned.matches("^62[0-9]{8,}$")) {
+            return "";
+        }
         return cleaned;
     }
 
@@ -100,13 +110,17 @@ public class WAKirim {
             result.responseBody = readBody(is);
             result.ok = result.httpCode >= 200 && result.httpCode < 300;
 
-            if (!result.ok) result.error = "HTTP " + result.httpCode;
+            if (!result.ok) {
+                result.error = "HTTP " + result.httpCode;
+            }
 
         } catch (Exception e) {
             result.ok = false;
             result.error = e.getMessage();
         } finally {
-            if (conn != null) conn.disconnect();
+            if (conn != null) {
+                conn.disconnect();
+            }
         }
 
         return result;
@@ -116,24 +130,27 @@ public class WAKirim {
     // UPLOAD PDF KE SERVER
     // =========================
     public static String uploadPDFToServer(File file) {
-        HttpURLConnection conn = null;
+        HttpsURLConnection conn = null;
         String boundary = "----Boundary" + System.currentTimeMillis();
         String CRLF = "\r\n";
 
         try {
-            if (file == null || !file.exists()) return null;
-
-            URL url = new URL(UPLOAD_BASE_URL + "upload_lab.php");
-            conn = (HttpURLConnection) url.openConnection();
+            URL url = new URL("https://apps.rspelitakasih.id/HasilLab/upload_lab.php");
+            conn = (HttpsURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-            conn.setRequestProperty("X-API-Key", AUTH_TOKEN);
+            conn.setRequestProperty(
+                    "Content-Type", "multipart/form-data; boundary=" + boundary
+            );
+            conn.setRequestProperty(
+                    "Authorization", "Bearer " + AUTH_TOKEN
+            );
+            conn.setConnectTimeout(15000);
+            conn.setReadTimeout(30000);
 
-            try (
-                    OutputStream output = conn.getOutputStream();
-                    PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8), true)
-            ) {
+            try (OutputStream output = conn.getOutputStream(); PrintWriter writer = new PrintWriter(
+                    new OutputStreamWriter(output, StandardCharsets.UTF_8), true)) {
+
                 writer.append("--").append(boundary).append(CRLF);
                 writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"")
                         .append(file.getName()).append("\"").append(CRLF);
@@ -143,19 +160,31 @@ public class WAKirim {
                 Files.copy(file.toPath(), output);
                 output.flush();
 
-                writer.append(CRLF).flush();
+                writer.append(CRLF);
                 writer.append("--").append(boundary).append("--").append(CRLF).flush();
             }
 
             int code = conn.getResponseCode();
+            InputStream is = (code < 400)
+                    ? conn.getInputStream()
+                    : conn.getErrorStream();
+
+            String response = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            System.out.println("HTTP " + code + " → " + response);
+
             if (code == 200) {
-                return UPLOAD_BASE_URL + file.getName();
+                JSONObject json = new JSONObject(response);
+                if (json.optBoolean("ok")) {
+                    return json.optString("url");
+                }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (conn != null) conn.disconnect();
+            if (conn != null) {
+                conn.disconnect();
+            }
         }
         return null;
     }
