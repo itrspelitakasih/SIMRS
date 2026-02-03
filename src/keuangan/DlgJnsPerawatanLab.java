@@ -45,6 +45,7 @@ public final class DlgJnsPerawatanLab extends javax.swing.JDialog {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
     private DlgCariCaraBayar penjab;
+    private String kodeTindakanDicopy = "";
     
     /** Creates new form DlgJnsPerawatanRalan
      * @param parent
@@ -157,6 +158,7 @@ public final class DlgJnsPerawatanLab extends javax.swing.JDialog {
         Popup = new javax.swing.JPopupMenu();
         ppTemplate = new javax.swing.JMenuItem();
         MnRestore = new javax.swing.JMenuItem();
+        ppCopyTemplate = new javax.swing.JMenuItem();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbJnsPerawatan = new widget.Table();
@@ -240,6 +242,22 @@ public final class DlgJnsPerawatanLab extends javax.swing.JDialog {
             }
         });
         Popup.add(MnRestore);
+
+        ppCopyTemplate.setBackground(new java.awt.Color(255, 255, 254));
+        ppCopyTemplate.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppCopyTemplate.setForeground(new java.awt.Color(50, 50, 50));
+        ppCopyTemplate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppCopyTemplate.setText("Copy Template");
+        ppCopyTemplate.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppCopyTemplate.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppCopyTemplate.setName("ppCopyTemplate"); // NOI18N
+        ppCopyTemplate.setPreferredSize(new java.awt.Dimension(200, 28));
+        ppCopyTemplate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppCopyTemplateActionPerformed(evt);
+            }
+        });
+        Popup.add(ppCopyTemplate);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -940,10 +958,31 @@ public final class DlgJnsPerawatanLab extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnAllKeyPressed
 
     private void tbJnsPerawatanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbJnsPerawatanMouseClicked
-        if(tabMode.getRowCount()!=0){
-            try {
-                getData();
-            } catch (java.lang.NullPointerException e) {
+        if (tabMode.getRowCount() != 0) {
+            if (evt.getClickCount() == 1) {
+                if (!kodeTindakanDicopy.isBlank()) {
+                    String sql = "insert into template_laboratorium (kd_jenis_prw, Pemeriksaan, satuan, nilai_rujukan_ld, nilai_rujukan_la, nilai_rujukan_pd, "
+                            + "nilai_rujukan_pa, bagian_rs, bhp, bagian_perujuk, bagian_dokter, bagian_laborat, kso, menejemen, biaya_item, urut) "
+                            + "select ? as kd_jenis_prw, Pemeriksaan, satuan, nilai_rujukan_ld, nilai_rujukan_la, nilai_rujukan_pd, nilai_rujukan_pa, "
+                            + "bagian_rs, bhp, bagian_perujuk, bagian_dokter, bagian_laborat, kso, menejemen, biaya_item, urut "
+                            + "from template_laboratorium where kd_jenis_prw = ?";
+                    try (PreparedStatement ps = koneksi.prepareStatement(sql)) {
+                        ps.setString(1, tbJnsPerawatan.getValueAt(tbJnsPerawatan.getSelectedRow(), 1).toString());
+                        ps.setString(2, kodeTindakanDicopy);
+                        ps.executeUpdate();
+                        JOptionPane.showMessageDialog(rootPane, "Copy Template lab berhasil...!!!");
+                        kodeTindakanDicopy = "";
+                        tbJnsPerawatan.clearSelection();
+                    } catch (Exception e) {
+                        System.out.println("Notif : " + e);
+                        JOptionPane.showMessageDialog(rootPane, "Terjadi kesalahan pada saat mengcopy template lab...!!!\nPastikan data yang dicopy sudah benar.");
+                    }
+                } else {
+                    try {
+                        getData();
+                    } catch (java.lang.NullPointerException e) {
+                    }
+                }
             }
         }
 }//GEN-LAST:event_tbJnsPerawatanMouseClicked
@@ -1148,6 +1187,13 @@ private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
         Valid.pindah(evt,Kelas,BtnSimpan);
     }//GEN-LAST:event_KategoriKeyPressed
 
+    private void ppCopyTemplateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppCopyTemplateActionPerformed
+       if (tbJnsPerawatan.getSelectedRow() != -1) {
+            JOptionPane.showMessageDialog(rootPane, "Silahkan pilih pemeriksaan lab yang mau di paste...!!!");
+            kodeTindakanDicopy = tbJnsPerawatan.getValueAt(tbJnsPerawatan.getSelectedRow(), 1).toString();
+        }
+    }//GEN-LAST:event_ppCopyTemplateActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1215,6 +1261,7 @@ private void btnPjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:e
     private widget.TextBox nmpnj;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
+    private javax.swing.JMenuItem ppCopyTemplate;
     private javax.swing.JMenuItem ppTemplate;
     private widget.Table tbJnsPerawatan;
     // End of variables declaration//GEN-END:variables

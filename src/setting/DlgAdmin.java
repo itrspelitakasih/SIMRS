@@ -18,7 +18,9 @@ import fungsi.batasInput;
 import fungsi.koneksiDB;
 import fungsi.sekuel;
 import fungsi.validasi;
+import informasi.FormPengumumanLogin;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -47,7 +49,7 @@ public class DlgAdmin extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.setLocation(10,10);
-        setSize(457,249);
+        setSize(694, 437);
 
         Object[] row={"ID Admin",
                       "Password"};
@@ -99,6 +101,7 @@ public class DlgAdmin extends javax.swing.JDialog {
         BtnHapus = new widget.Button();
         BtnEdit = new widget.Button();
         BtnKeluar = new widget.Button();
+        BtnPengumuman = new widget.Button();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -112,7 +115,7 @@ public class DlgAdmin extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Setup Admin ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Setup Admin ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
@@ -173,15 +176,14 @@ public class DlgAdmin extends javax.swing.JDialog {
         internalFrame1.add(panelGlass7, java.awt.BorderLayout.PAGE_START);
 
         panelGlass5.setName("panelGlass5"); // NOI18N
-        panelGlass5.setPreferredSize(new java.awt.Dimension(55, 55));
+        panelGlass5.setPreferredSize(new java.awt.Dimension(675, 55));
         panelGlass5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 9));
 
         BtnSimpan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/save-16x16.png"))); // NOI18N
         BtnSimpan.setMnemonic('S');
-        BtnSimpan.setText("Simpan");
         BtnSimpan.setToolTipText("Alt+S");
         BtnSimpan.setName("BtnSimpan"); // NOI18N
-        BtnSimpan.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnSimpan.setPreferredSize(new java.awt.Dimension(50, 30));
         BtnSimpan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnSimpanActionPerformed(evt);
@@ -196,11 +198,10 @@ public class DlgAdmin extends javax.swing.JDialog {
 
         BtnBatal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Cancel-2-16x16.png"))); // NOI18N
         BtnBatal.setMnemonic('B');
-        BtnBatal.setText("Baru");
         BtnBatal.setToolTipText("Alt+B");
         BtnBatal.setIconTextGap(3);
         BtnBatal.setName("BtnBatal"); // NOI18N
-        BtnBatal.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnBatal.setPreferredSize(new java.awt.Dimension(50, 30));
         BtnBatal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnBatalActionPerformed(evt);
@@ -215,11 +216,10 @@ public class DlgAdmin extends javax.swing.JDialog {
 
         BtnHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/stop_f2.png"))); // NOI18N
         BtnHapus.setMnemonic('H');
-        BtnHapus.setText("Hapus");
         BtnHapus.setToolTipText("Alt+H");
         BtnHapus.setIconTextGap(3);
         BtnHapus.setName("BtnHapus"); // NOI18N
-        BtnHapus.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnHapus.setPreferredSize(new java.awt.Dimension(50, 30));
         BtnHapus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnHapusActionPerformed(evt);
@@ -234,11 +234,10 @@ public class DlgAdmin extends javax.swing.JDialog {
 
         BtnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inventaris.png"))); // NOI18N
         BtnEdit.setMnemonic('G');
-        BtnEdit.setText("Ganti");
         BtnEdit.setToolTipText("Alt+G");
         BtnEdit.setIconTextGap(3);
         BtnEdit.setName("BtnEdit"); // NOI18N
-        BtnEdit.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnEdit.setPreferredSize(new java.awt.Dimension(50, 30));
         BtnEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnEditActionPerformed(evt);
@@ -253,11 +252,10 @@ public class DlgAdmin extends javax.swing.JDialog {
 
         BtnKeluar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/exit.png"))); // NOI18N
         BtnKeluar.setMnemonic('K');
-        BtnKeluar.setText("Keluar");
         BtnKeluar.setToolTipText("Alt+K");
         BtnKeluar.setIconTextGap(3);
         BtnKeluar.setName("BtnKeluar"); // NOI18N
-        BtnKeluar.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnKeluar.setPreferredSize(new java.awt.Dimension(50, 30));
         BtnKeluar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnKeluarActionPerformed(evt);
@@ -269,6 +267,25 @@ public class DlgAdmin extends javax.swing.JDialog {
             }
         });
         panelGlass5.add(BtnKeluar);
+
+        BtnPengumuman.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/google-voice.png"))); // NOI18N
+        BtnPengumuman.setMnemonic('K');
+        BtnPengumuman.setText("Pengumuman");
+        BtnPengumuman.setToolTipText("Alt+K");
+        BtnPengumuman.setIconTextGap(3);
+        BtnPengumuman.setName("BtnPengumuman"); // NOI18N
+        BtnPengumuman.setPreferredSize(new java.awt.Dimension(130, 30));
+        BtnPengumuman.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnPengumumanActionPerformed(evt);
+            }
+        });
+        BtnPengumuman.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnPengumumanKeyPressed(evt);
+            }
+        });
+        panelGlass5.add(BtnPengumuman);
 
         internalFrame1.add(panelGlass5, java.awt.BorderLayout.PAGE_END);
 
@@ -403,6 +420,21 @@ public class DlgAdmin extends javax.swing.JDialog {
         tampil();
     }//GEN-LAST:event_formWindowOpened
 
+    private void BtnPengumumanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPengumumanActionPerformed
+        try {
+            FormPengumumanLogin form = new FormPengumumanLogin((Frame) null, false);
+            form.setVisible(true);
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+            JOptionPane.showMessageDialog(null, "Gagal membuka Form Pengumuman Login!");
+        }
+    }//GEN-LAST:event_BtnPengumumanActionPerformed
+
+    private void BtnPengumumanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnPengumumanKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnPengumumanKeyPressed
+
     /**
     * @param args the command line arguments
     */
@@ -424,6 +456,7 @@ public class DlgAdmin extends javax.swing.JDialog {
     private widget.Button BtnEdit;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
+    private widget.Button BtnPengumuman;
     private widget.Button BtnSimpan;
     private widget.ScrollPane Scroll;
     private widget.TextBox TKd;

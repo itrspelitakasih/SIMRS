@@ -677,6 +677,23 @@ import ipsrs.IPSRSRingkasanPengeluaranBarangNonMedis;
 import ipsrs.IPSRSRingkasanReturBeliBarangNonMedis;
 import ipsrs.IPSRSRiwayatBarang;
 import ipsrs.IPSRSVerifikasiPenerimaan;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.net.InetAddress;
+import java.sql.Statement;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -685,6 +702,10 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import kepegawaian.DlgAuditBundleIADP;
 import kepegawaian.DlgAuditBundleIDO;
 import kepegawaian.DlgAuditBundleISK;
@@ -1830,6 +1851,7 @@ public class frmUtama extends javax.swing.JFrame {
         LblIP = new javax.swing.JLabel();
         jSeparator6 = new javax.swing.JSeparator();
         jLabel7 = new javax.swing.JLabel();
+        btnAktifitas = new widget.Button();
         PanelUtama = new javax.swing.JPanel();
         scrollPane1 = new widget.ScrollPane();
         PanelWall = new usu.widget.glass.PanelGlass();
@@ -7495,6 +7517,16 @@ public class frmUtama extends javax.swing.JFrame {
         jLabel7.setPreferredSize(new java.awt.Dimension(287, 23));
         internalFrame4.add(jLabel7);
 
+        btnAktifitas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/2315911_bmp_documents_file_format_paper_icon.png"))); // NOI18N
+        btnAktifitas.setText("Aktifitas");
+        btnAktifitas.setName("btnAktifitas"); // NOI18N
+        btnAktifitas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAktifitasActionPerformed(evt);
+            }
+        });
+        internalFrame4.add(btnAktifitas);
+
         getContentPane().add(internalFrame4, java.awt.BorderLayout.PAGE_END);
 
         PanelUtama.setName("PanelUtama"); // NOI18N
@@ -8491,6 +8523,8 @@ public class frmUtama extends javax.swing.JFrame {
                     MnLogin.setText("Log Out");
                     lblStts.setText("Admin : ");
                     lblUser.setText("Admin Utama");
+                    // Tampilkan notifikasi dengan pengumuman (Admin Utama)
+                    tampilkanNotifikasiLogin("Admin Utama", "admin");
                     if(AKTIFKANTRACKSQL.equals("yes")){
                         Sequel.menyimpan("tracker","'Admin Utama',current_date(),current_time()","Login");
                     }
@@ -8542,6 +8576,14 @@ public class frmUtama extends javax.swing.JFrame {
                     btnDataPenyerahanDarah.setEnabled(akses.getutd_penyerahan_darah());
                     btnDaftarPermintaanResep.setEnabled(akses.getresep_dokter());
                     btnResepObatDepan.setEnabled(akses.getresep_obat());
+                    
+                    // Notifikasi popup login berhasil dengan NIK user
+                    String namaPengguna = Sequel.cariIsi("select nama from pegawai where nik=?", akses.getkode());
+                    String nikUser = akses.getkode();
+
+                    // Tampilkan notifikasi dengan pengumuman
+                    tampilkanNotifikasiLogin(namaPengguna, nikUser);
+                    
                     if(AKTIFKANTRACKSQL.equals("yes")){
                         Sequel.menyimpan("tracker","'"+edAdmin.getText()+"',current_date(),current_time()","Login");
                     }
@@ -14762,6 +14804,24 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         Valid.panggilUrl("antrian/poli");
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_MnAntrianPoliActionPerformed
+
+    private void btnAktifitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAktifitasActionPerformed
+        DlgAltTab instance = DlgAltTab.getInstance();
+
+        instance.forceScanAndRegister();
+
+        int count = instance.getWindowCount();
+
+        if (count == 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Tidak ada window yang sedang terbuka.\n\n"
+                    + "Pastikan form/dialog sudah dibuka dan terlihat di layar.",
+                    "Info",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            instance.showWindowListManual();
+        }
+    }//GEN-LAST:event_btnAktifitasActionPerformed
 
     private void btnKategoriPerpustakaanActionPerformed(java.awt.event.ActionEvent evt) {
         isTutup();
@@ -23417,6 +23477,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     private widget.panelGlass Panelmenu;
     private widget.TextBox TCari;
     private widget.ButtonBig btnAdmin;
+    private widget.Button btnAktifitas;
     private widget.ButtonBig btnAkunPiutang;
     private widget.ButtonBig btnAnalisaKamar;
     private widget.ButtonBig btnAnggotaMiliterDirawat;
@@ -49666,5 +49727,183 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         btnSkriningGiziKehamilan.setName("btnSkriningGiziKehamilan");
         btnSkriningGiziKehamilan.setPreferredSize(new java.awt.Dimension(200, 90));
         btnSkriningGiziKehamilan.addActionListener(this::btnSkriningGiziKehamilanActionPerformed);
+    }
+    // Fungsi untuk menampilkan notifikasi login dengan pengumuman
+    private void tampilkanNotifikasiLogin(String namaPengguna, String nikUser) {
+        String pengumuman = getPengumumanAktif(nikUser);
+
+        // Buat custom panel dengan design modern
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout(0, 0));
+        mainPanel.setBackground(Color.WHITE);
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+
+        // Header Panel (Pink tipis)
+        JPanel headerPanel = new JPanel();
+        headerPanel.setLayout(new BorderLayout());
+        headerPanel.setBackground(new Color(252, 228, 236)); // Pink tipis #FCE4EC
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(20, 25, 20, 25));
+
+        // Icon dan greeting (ganti emoji dengan simbol Unicode yang kompatibel)
+        JLabel lblGreeting = new JLabel("<html><div>"
+                + "<div style='font-size: 18px; font-weight: bold; margin-bottom: 8px; color: #880E4F;'>Login Berhasil! ✓</div>"
+                + "<div style='font-size: 14px; color: #666666;'>Selamat datang, "
+                + "<span style='font-weight: bold; color: #E91E63;'>" + namaPengguna + "</span>"
+                + "</div>"
+                + "</div></html>");
+        headerPanel.add(lblGreeting, BorderLayout.CENTER);
+
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
+
+        // Content Panel (untuk pengumuman)
+        if (!pengumuman.isEmpty()) {
+            JPanel contentPanel = new JPanel();
+            contentPanel.setLayout(new BorderLayout());
+            contentPanel.setBackground(Color.WHITE);
+            contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 25, 20, 25));
+
+            // Judul Pengumuman (ganti emoji dengan simbol Unicode)
+            JLabel lblPengumumanTitle = new JLabel("INFORMASI");
+            lblPengumumanTitle.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            lblPengumumanTitle.setForeground(new Color(136, 14, 79)); // Dark pink
+            lblPengumumanTitle.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+            contentPanel.add(lblPengumumanTitle, BorderLayout.NORTH);
+
+            // Text Area untuk isi pengumuman
+            JTextArea textArea = new JTextArea(pengumuman);
+            textArea.setEditable(false);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            textArea.setBackground(new Color(252, 228, 236)); // Pink tipis sama dengan header
+            textArea.setForeground(new Color(66, 66, 66));
+            textArea.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+            textArea.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(248, 187, 208), 1), // Border pink soft
+                    BorderFactory.createEmptyBorder(12, 12, 12, 12)
+            ));
+
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setBorder(null);
+            scrollPane.setPreferredSize(new Dimension(450, 120));
+            scrollPane.getViewport().setBackground(new Color(252, 228, 236));
+
+            contentPanel.add(scrollPane, BorderLayout.CENTER);
+            mainPanel.add(contentPanel, BorderLayout.CENTER);
+        }
+
+        // Button Panel
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 15));
+        buttonPanel.setBackground(Color.WHITE);
+
+        JButton btnOK = new JButton("OK");
+        btnOK.setPreferredSize(new Dimension(100, 35));
+        btnOK.setBackground(new Color(76, 175, 80)); // Hijau
+        btnOK.setForeground(Color.WHITE);
+        btnOK.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btnOK.setFocusPainted(false);
+        btnOK.setBorderPainted(false);
+        btnOK.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Hover effect untuk button
+        btnOK.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                btnOK.setBackground(new Color(56, 142, 60)); // Hijau gelap saat hover
+            }
+
+            public void mouseExited(MouseEvent e) {
+                btnOK.setBackground(new Color(76, 175, 80)); // Hijau normal
+            }
+        });
+
+        buttonPanel.add(btnOK);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Tampilkan dialog
+        final JDialog dialog = new JDialog((Frame) null, "Informasi", true);
+        dialog.setContentPane(mainPanel);
+        dialog.setSize(500, pengumuman.isEmpty() ? 200 : 380);
+        dialog.setLocationRelativeTo(null);
+        dialog.setUndecorated(true); // Hilangkan title bar default
+        dialog.getRootPane().setBorder(BorderFactory.createLineBorder(new Color(248, 187, 208), 2)); // Border pink soft
+
+        // Action untuk button OK
+        btnOK.addActionListener(e -> dialog.dispose());
+
+        // Close button (X) di kanan atas
+        JButton btnClose = new JButton("×");
+        btnClose.setFont(new Font("Arial", Font.PLAIN, 20));
+        btnClose.setForeground(new Color(136, 14, 79)); // Dark pink
+        btnClose.setBackground(new Color(252, 228, 236));
+        btnClose.setBorderPainted(false);
+        btnClose.setFocusPainted(false);
+        btnClose.setContentAreaFilled(false);
+        btnClose.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnClose.setPreferredSize(new Dimension(40, 40));
+        btnClose.addActionListener(e -> dialog.dispose());
+
+        // Hover effect untuk close button
+        btnClose.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                btnClose.setForeground(new Color(233, 30, 99)); // Pink terang saat hover
+            }
+
+            public void mouseExited(MouseEvent e) {
+                btnClose.setForeground(new Color(136, 14, 79)); // Dark pink
+            }
+        });
+
+        // Tambahkan close button ke header
+        JPanel closePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        closePanel.setBackground(new Color(252, 228, 236));
+        closePanel.add(btnClose);
+        headerPanel.add(closePanel, BorderLayout.EAST);
+
+        dialog.setVisible(true);
+    }
+// Fungsi untuk mengambil pengumuman yang aktif
+
+    private String getPengumumanAktif(String nikUser) {
+        StringBuilder pengumuman = new StringBuilder();
+        try {
+            Connection conn = koneksiDB.condb();
+
+            // Query untuk mengambil pengumuman:
+            // 1. Public: untuk semua user
+            // 2. Private: hanya jika NIK user ada di target_users
+            String sql = "SELECT judul, isi_pengumuman, tipe_pengumuman, target_users "
+                    + "FROM pengumuman_login "
+                    + "WHERE aktif = 'Ya' "
+                    + "AND CURDATE() BETWEEN tanggal_mulai AND tanggal_selesai "
+                    + "AND ("
+                    + "    tipe_pengumuman = 'Public' "
+                    + "    OR (tipe_pengumuman = 'Private' AND FIND_IN_SET(?, target_users) > 0)"
+                    + ") "
+                    + "ORDER BY created_date DESC LIMIT 3";
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, nikUser);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                if (pengumuman.length() > 0) {
+                    pengumuman.append("\n\n");
+                }
+
+                String tipePengumuman = rs.getString("tipe_pengumuman");
+                String icon = tipePengumuman.equals("Public") ? "●" : "■"; // Ganti emoji dengan simbol kompatibel
+
+                pengumuman.append(icon).append(" ").append(rs.getString("judul")).append("\n");
+                pengumuman.append(rs.getString("isi_pengumuman"));
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            System.out.println("Error mengambil pengumuman: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return pengumuman.toString();
     }
 }
