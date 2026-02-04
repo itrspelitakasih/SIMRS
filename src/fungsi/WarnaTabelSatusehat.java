@@ -36,11 +36,11 @@ public class WarnaTabelSatusehat extends DefaultTableCellRenderer {
             loadMappingCache();
         }
         
-        if (row % 2 == 1) {
-            component.setBackground(new Color(255, 255, 255));
-        } else {
-            component.setBackground(new Color(240, 240, 240));
-        }
+        if (row % 2 == 1){
+            component.setBackground(new Color(229,248,255));
+        }else{
+            component.setBackground(new Color(255,255,255));
+        } 
         
         if (isSelected) {
             component.setForeground(WARNA_BIRU_WINDOWS);
