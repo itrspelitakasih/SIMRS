@@ -1,5 +1,8 @@
 package simrskhanza;
 
+import bridging.WAKirim;
+import bridging.WahaSafeFormatter;
+import fungsi.PdfProtectorBox;
 import kepegawaian.DlgCariPetugas;
 import keuangan.Jurnal;
 import fungsi.WarnaTable;
@@ -17,7 +20,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,12 +47,6 @@ import javax.swing.text.html.StyleSheet;
 import laporan.DlgBerkasRawat;
 import rekammedis.RMRiwayatPerawatan;
 import surat.SuratKeteranganCovid;
-import bridging.WAKirim;
-import fungsi.PdfProtectorBox;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public class DlgCariPeriksaLab extends javax.swing.JDialog {
 
@@ -6126,10 +6127,9 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
 
     private void ppKirimPasienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppKirimPasienActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        System.out.println("[WAHA] Kirim Hasil Lab dimulai...");
 
-        if (tabMode.getRowCount() == 0 || Kd2.getText().trim().equals("")) {
-            JOptionPane.showMessageDialog(null, "Pilih data pasien terlebih dahulu.");
+        if (tbDokter.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(null, "Pilih data terlebih dahulu");
             this.setCursor(Cursor.getDefaultCursor());
             return;
         }
@@ -6138,171 +6138,175 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
         ResultSet rs = null;
 
         try {
+            /* ===============================
+           1. DATA PASIEN & LAB
+        =============================== */
             ps = koneksi.prepareStatement(
-                    "select pl.no_rawat, rp.no_rkm_medis, p.nm_pasien, p.jk, p.umur, "
-                    + "DATE_FORMAT(pl.tgl_periksa,'%d-%m-%Y') as tgl_periksa, pl.jam, "
-                    + "DATE_FORMAT(p.tgl_lahir,'%d-%m-%Y') as lahir, d.nm_dokter "
+                    "select pl.no_rawat, rp.no_rkm_medis, p.nm_pasien, "
+                    + "DATE_FORMAT(p.tgl_lahir,'%d%m%Y') as pwd_pdf, "
+                    + "DATE_FORMAT(pl.tgl_periksa,'%Y%m%d') as tgl_file, "
+                    + "DATE_FORMAT(pl.tgl_periksa,'%d-%m-%Y') as tgl_tampil "
                     + "from periksa_lab pl "
                     + "inner join reg_periksa rp on pl.no_rawat=rp.no_rawat "
                     + "inner join pasien p on rp.no_rkm_medis=p.no_rkm_medis "
-                    + "inner join dokter d on pl.kd_dokter=d.kd_dokter "
                     + "where pl.no_rawat=?"
             );
-            ps.setString(1, tbDokter.getValueAt(tbDokter.getSelectedRow(), 0).toString());
+            ps.setString(1,
+                    tbDokter.getValueAt(tbDokter.getSelectedRow(), 0).toString()
+            );
+
             rs = ps.executeQuery();
 
-            while (rs.next()) {
+            if (!rs.next()) {
+                JOptionPane.showMessageDialog(null, "Data tidak ditemukan");
+                return;
+            }
 
-                /* =====================================================
-               1. BASE DIRECTORY (DINAMIS, AMAN RENAME FOLDER)
-            ===================================================== */
-                String baseDir = System.getProperty("user.dir");
-                File reportDir = new File(baseDir, "report");
-                File hasilLabDir = new File(baseDir, "HasilLab");
+            String noRawat = rs.getString("no_rawat").replaceAll("[^A-Za-z0-9]", "_");
+            String noRM = rs.getString("no_rkm_medis");
+            String nama = rs.getString("nm_pasien").replaceAll("[^A-Za-z0-9]", "_");
+            //String tglFile = rs.getString("tgl_file");
+            String pwdPdf = rs.getString("pwd_pdf");
 
-                if (!hasilLabDir.exists()) {
-                    hasilLabDir.mkdirs();
-                }
+            if (pwdPdf == null || pwdPdf.length() != 8) {
+                pwdPdf = "01011990"; // fallback AMAN
+            }
 
-                /* =====================================================
-               2. PARAMETER JASPER (TERMASUK KOP RS)
-            ===================================================== */
-                Map<String, Object> param = new HashMap<>();
-                param.put("noperiksa", rs.getString("no_rawat"));
-                param.put("norm", rs.getString("no_rkm_medis"));
-                param.put("namapasien", rs.getString("nm_pasien"));
-                param.put("jkel", rs.getString("jk"));
-                param.put("umur", rs.getString("umur"));
-                param.put("tanggal", rs.getString("tgl_periksa"));
-                param.put("jam", rs.getString("jam"));
-                param.put("penjab", rs.getString("nm_dokter"));
+            /* ===============================
+           2. PARAMETER JASPER
+        =============================== */
+            Map<String, Object> param = new HashMap<>();
+            param.put("noperiksa", rs.getString("no_rawat"));
+            param.put("norm", noRM);
+            param.put("namapasien", rs.getString("nm_pasien"));
+            param.put("tanggal", rs.getString("tgl_tampil"));
 
-                // === KOP & IDENTITAS RS (WAJIB) ===
-                param.put("namars", akses.getnamars());
-                param.put("alamatrs", akses.getalamatrs());
-                param.put("kotars", akses.getkabupatenrs());
-                param.put("propinsirs", akses.getpropinsirs());
-                param.put("kontakrs", akses.getkontakrs());
-                param.put("emailrs", akses.getemailrs());
-                param.put("logo", Sequel.cariGambar(
-                        "select setting.logo from setting"
-                ));
+            param.put("namars", akses.getnamars());
+            param.put("alamatrs", akses.getalamatrs());
+            param.put("kotars", akses.getkabupatenrs());
+            param.put("propinsirs", akses.getpropinsirs());
+            param.put("kontakrs", akses.getkontakrs());
+            param.put("emailrs", akses.getemailrs());
+            param.put("logo", Sequel.cariGambar(
+                    "select setting.logo from setting"
+            ));
 
-                // Debug kop
-                System.out.println("[DEBUG] Nama RS: " + akses.getnamars());
-                System.out.println("[DEBUG] Logo RS ada: " + (param.get("logo") != null));
+            /* ===============================
+           3. GENERATE PDF (report/)
+        =============================== */
+            Valid.MyReportPDF(
+                    "rptPeriksaLab.jasper",
+                    "report",
+                    "::[ Hasil Pemeriksaan Laboratorium ]::",
+                    param
+            );
 
-                /* =====================================================
-               3. GENERATE PDF JASPER
-            ===================================================== */
-                Valid.MyReportPDF(
-                        "rptPeriksaLab.jasper",
-                        "report",
-                        "::[ Pemeriksaan Laboratorium ]::",
-                        param
-                );
+            File srcPdf = new File("report", "rptPeriksaLab.pdf");
+            if (!srcPdf.exists() || srcPdf.length() == 0) {
+                JOptionPane.showMessageDialog(null,
+                        "PDF gagal dibuat:\n" + srcPdf.getAbsolutePath());
+                return;
+            }
 
-                File srcPdf = new File(reportDir, "rptPeriksaLab.pdf");
-                if (!srcPdf.exists() || srcPdf.length() == 0) {
-                    JOptionPane.showMessageDialog(null,
-                            "PDF gagal dibuat:\n" + srcPdf.getAbsolutePath());
-                    continue;
-                }
+            /* ===============================
+           4. SIMPAN KE HasilLab
+        =============================== */
+            File hasilLabDir = new File("HasilLab");
+            if (!hasilLabDir.exists()) {
+                hasilLabDir.mkdirs();
+            }
 
-                /* =====================================================
-               4. NAMA FILE OUTPUT AMAN & UNIK
-            ===================================================== */
-                String noRawat = rs.getString("no_rawat").replaceAll("\\D", "");
-                String tgl = rs.getString("tgl_periksa").replaceAll("\\D", "");
-                String jam = rs.getString("jam").replaceAll("\\D", "");
-                String norm = rs.getString("no_rkm_medis").replaceAll("\\D", "");
+            String baseName
+                    = "Lab_" + noRawat + "_" + nama;
 
-                String fileName = noRawat + "_" + tgl + "_" + jam + "_" + norm + ".pdf";
-                File outPdf = new File(hasilLabDir, fileName);
+            File plainPdf = new File(hasilLabDir, baseName + ".pdf");
+            File securePdf = new File(hasilLabDir, baseName + "_secure.pdf");
 
-                try (InputStream in = new FileInputStream(srcPdf); OutputStream os = new FileOutputStream(outPdf)) {
-                    in.transferTo(os);
-                }
+            try (InputStream in = new FileInputStream(srcPdf); OutputStream out = new FileOutputStream(plainPdf)) {
+                in.transferTo(out);
+            }
 
-                System.out.println("[OK] PDF dibuat: " + outPdf.getAbsolutePath());
+            /* ===============================
+           5. ENKRIPSI PDF
+        =============================== */
+            PdfProtectorBox.encrypt(
+                    plainPdf,
+                    securePdf,
+                    pwdPdf,
+                    "SIMRS_KHANZA_INTERNAL",
+                    128
+            );
 
-                /* =====================================================
-               5. ENKRIPSI PDF
-            ===================================================== */
-                String tglLahir = rs.getString("lahir").replaceAll("\\D", "");
-                if (tglLahir.length() != 8) {
-                    tglLahir = "12345678";
-                }
+            if (!securePdf.exists()) {
+                JOptionPane.showMessageDialog(null,
+                        "PDF terenkripsi gagal dibuat");
+                return;
+            }
 
-                File encPdf = new File(
-                        hasilLabDir,
-                        fileName.replace(".pdf", "_secure.pdf")
-                );
+            /* ===============================
+           6. URL FILE (PDF AMAN)
+        =============================== */
+            String fileUrl = WAKirim.uploadPDFToServer(securePdf);
 
-                PdfProtectorBox.encrypt(
-                        outPdf,
-                        encPdf,
-                        tglLahir,
-                        "SayangAnisaAlnairaNafasya!",
-                        128
-                );
+            if (fileUrl == null) {
+                JOptionPane.showMessageDialog(null,
+                        "❌ Upload PDF ke server gagal");
+                return;
+            }
 
-                /* =====================================================
-               6. UPLOAD KE WEBSERVER
-            ===================================================== */
-                String fileUrl = WAKirim.uploadPDFToServer(encPdf);
-                if (fileUrl == null) {
-                    JOptionPane.showMessageDialog(null, "Upload PDF gagal.");
-                    continue;
-                }
+            /* ===============================
+           7. NOMOR WA PASIEN
+        =============================== */
+            String noHP = Sequel.cariIsi(
+                    "select no_tlp from pasien where no_rkm_medis=?",
+                    noRM
+            ).replaceAll("\\D", "");
 
-                /* =====================================================
-               7. KIRIM WHATSAPP
-            ===================================================== */
-                String noHP = Sequel.cariIsi(
-                        "select no_tlp from pasien where no_rkm_medis=?",
-                        rs.getString("no_rkm_medis")
-                ).replaceAll("\\D", "");
+            if (noHP.isEmpty()) {
+                JOptionPane.showMessageDialog(null,
+                        "Nomor WhatsApp pasien kosong");
+                return;
+            }
 
-                if (noHP.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Nomor HP pasien kosong.");
-                    continue;
-                }
+            String nomorWA = WAKirim.toPhoneOnly(noHP);
 
-                String nomorWA = WAKirim.toPhoneOnly(noHP);
+            /* ===============================
+           8. PESAN (TIDAK DIUBAH)
+        =============================== */
+            String pesan
+                    = "*Yth. Bapak/Ibu " + rs.getString("nm_pasien") + "*\n\n"
+                    + "Salam sejahtera 🙏\n\n"
+                    + "Kami informasikan bahwa *hasil pemeriksaan laboratorium* Anda di *"
+                    + akses.getnamars() + "* telah tersedia.\n\n"
+                    + "Silakan mengunduh hasil pemeriksaan melalui tautan berikut:\n"
+                    + fileUrl + "\n\n"
+                    + "_🔐 Password dokumen PDF menggunakan tanggal lahir_\n"
+                    + "_(format: DDMMYYYY)_\n\n"
+                    + "*Layanan & Informasi Rumah Sakit:*\n"
+                    + "🌐 Pendaftaran Online:\n"
+                    + "_https://rspelitakasih.id/epasien_\n\n"
+                    + "💬 Konfirmasi Pendaftaran:\n"
+                    + "_0813-4641-6008_\n\n"
+                    + "🚑 *Unit Gawat Darurat (UGD):*\n"
+                    + "_0823-5490-2767(24 Jam)_\n\n"
+                    + "_Pesan ini dikirim secara otomatis oleh sistem._\n"
+                    + "_Mohon tidak membalas pesan ini dan dapat diabaikan._\n\n"
+                    + "Atas perhatian dan kepercayaan Anda, kami ucapkan *terima kasih*.\n\n"
+                    + "*Hormat kami,*\n"
+                    + "*" + akses.getnamars() + "*";
+            //String pesanAman = WahaSafeFormatter.safeForWaha(pesan);
 
-                String pesan
-                        = "*Yth. Bapak/Ibu " + rs.getString("nm_pasien") + "*\n\n"
-                        + "Salam sejahtera 🙏\n\n"
-                        + "Kami informasikan bahwa *hasil pemeriksaan laboratorium* Anda di *"
-                        + akses.getnamars() + "* telah tersedia.\n\n"
-                        + "Silakan mengunduh hasil pemeriksaan melalui tautan berikut:\n"
-                        + fileUrl + "\n\n"
-                        + "_🔐 Password dokumen PDF menggunakan tanggal lahir_\n"
-                        + "_(format: DDMMYYYY)_\n\n"
-                        + "*Layanan & Informasi Rumah Sakit:*\n"
-                        + "🌐 Pendaftaran Online:\n"
-                        + "_https://rspelitakasih.id/epasien_\n\n"
-                        + "💬 Konfirmasi Pendaftaran:\n"
-                        + "_0813-4641-6008_\n\n"
-                        + "🚑 *Unit Gawat Darurat (UGD):*\n"
-                        + "_0823-5490-2767(24 Jam)_\n\n"
-                        + "_Pesan ini dikirim secara otomatis oleh sistem._\n"
-                        + "_Mohon tidak membalas pesan ini dan dapat diabaikan._\n\n"
-                        + "Atas perhatian dan kepercayaan Anda, kami ucapkan *terima kasih*.\n\n"
-                        + "*Hormat kami,*\n"
-                        + "*" + akses.getnamars() + "*";
+            /* ===============================
+           9. KIRIM WA
+        =============================== */
+            boolean sukses = WAKirim.kirimText(nomorWA, pesan);
 
-                WAKirim.SendResult res
-                        = WAKirim.kirimTeksWithStatus(nomorWA, pesan);
-
-                if (!res.ok) {
-                    JOptionPane.showMessageDialog(null,
-                            "Gagal kirim WA:\n" + res.responseBody);
-                } else {
-                    JOptionPane.showMessageDialog(null,
-                            "✅ Hasil lab berhasil dikirim ke WhatsApp pasien");
-                }
+            if (sukses) {
+                JOptionPane.showMessageDialog(null,
+                        "✅ PDF terenkripsi & WhatsApp berhasil dikirim");
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "❌ PDF terenkripsi berhasil, WA gagal dikirim");
             }
 
         } catch (Exception e) {
@@ -6323,7 +6327,6 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
             } catch (Exception e) {
             }
             this.setCursor(Cursor.getDefaultCursor());
-            System.out.println("[WAHA] Selesai.");
         }
     }//GEN-LAST:event_ppKirimPasienActionPerformed
 

@@ -1,152 +1,214 @@
 package bridging;
 
-import org.json.JSONObject;
-
+import fungsi.koneksiDBWa;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import javax.net.ssl.HttpsURLConnection;
 
+/**
+ * WAKirim - WAHA SAFE SENDER - Config diambil dari database.xml via koneksiDBWa
+ * - Anti JSON bug - Aman untuk WAHA WEBJS
+ */
 public class WAKirim {
 
-    // =========================
-    // KONFIGURASI
-    // =========================
-    private static final String WAHA_BASE_URL = "http://172.22.10.134:3031";
-    private static final String SESSION_NAME = "default";
-    private static final String AUTH_TOKEN = "616e62d798524494b9a6a7655cc0d0ac";
-    private static final String UPLOAD_BASE_URL = "https://apps.rspelitakasih.id/HasilLab/";
+    // ===== TIMEOUT =====
+    private static final int CONNECT_TIMEOUT = 7000;
+    private static final int READ_TIMEOUT = 15000;
 
-    // =========================
-    // RESULT CLASS
-    // =========================
-    public static class SendResult {
-
-        public boolean ok;
-        public int httpCode;
-        public String error;
-        public String responseBody;
-    }
-
-    // =========================
-    // UTIL: BACA STREAM
-    // =========================
-    private static String readBody(InputStream is) throws IOException {
-        if (is == null) {
-            return "";
-        }
-        BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = br.readLine()) != null) {
-            sb.append(line);
-        }
-        br.close();
-        return sb.toString();
-    }
-
-    // =========================
-    // UTIL: NORMALISASI NOMOR
-    // =========================
-    public static String toPhoneOnly(String noHP) {
-        if (noHP == null) {
-            return "";
-        }
-
-        String cleaned = noHP.replaceAll("[^0-9]", "");
-        if (cleaned.startsWith("0")) {
-            cleaned = "62" + cleaned.substring(1);
-        } else if (cleaned.startsWith("8")) {
-            cleaned = "62" + cleaned;
-        }
-
-        if (!cleaned.matches("^62[0-9]{8,}$")) {
-            return "";
-        }
-        return cleaned;
-    }
-
-    // =========================
-    // KIRIM TEKS WA
-    // =========================
-    public static SendResult kirimTeksWithStatus(String nomorWA, String pesan) {
-        SendResult result = new SendResult();
-        HttpURLConnection conn = null;
-
-        try {
-            String phone = toPhoneOnly(nomorWA);
-            if (phone.isEmpty()) {
-                result.ok = false;
-                result.error = "Nomor WA tidak valid";
-                return result;
+    // ===== PUBLIC API =====
+    public static boolean kirimText(String nomorWa, String pesan) {
+        SendResult r = kirimTextWithStatus(nomorWa, pesan);
+        if (r.ok) {
+            System.out.println("[WAHA] HTTP Response : " + r.httpCode);
+            return true;
+        } else {
+            System.err.println("[WAHA] Gagal kirim pesan");
+            if (r.error != null) {
+                System.err.println("[WAHA] " + r.error);
             }
+            if (r.responseBody != null && !r.responseBody.isEmpty()) {
+                System.err.println("[WAHA] " + r.responseBody);
+            }
+            return false;
+        }
+    }
 
-            URL url = new URL(WAHA_BASE_URL + "/api/sendText");
+    // ===== CORE LOGIC =====
+    private static SendResult kirimTextWithStatus(String nomorWa, String pesan) {
+
+        String baseUrl = koneksiDBWa.WAHA_BASE_URL();
+        String apiKey = koneksiDBWa.WAHA_API_KEY();
+        String session = koneksiDBWa.SESSION();
+
+        if (baseUrl.isEmpty() || apiKey.isEmpty()) {
+            return new SendResult(false, 0, null, "Config WAHA belum lengkap");
+        }
+
+        String phone = normalizePhone(nomorWa);
+        String pesanAman = escapeJson(pesan);
+
+        // === Payload A (PALING STABIL) ===
+        String payloadA
+                = "{\"receiver\":\"" + phone + "\","
+                + "\"message\":\"" + pesanAman + "\"}";
+
+        SendResult r1 = postJson(baseUrl + "/api/sendText", payloadA, apiKey);
+        if (r1.ok) {
+            return r1;
+        }
+
+        // === Payload B (Fallback) ===
+        String payloadB
+                = "{\"chatId\":\"" + phone + "@c.us\","
+                + "\"text\":\"" + pesanAman + "\","
+                + "\"session\":\"" + session + "\"}";
+
+        SendResult r2 = postJson(baseUrl + "/api/sendText", payloadB, apiKey);
+
+        if (!r2.ok) {
+            String joinErr = "[A:" + r1.error + "] [B:" + r2.error + "]";
+            return new SendResult(false, r2.httpCode, r2.responseBody, joinErr);
+        }
+
+        return r2;
+    }
+
+    // ===== HTTP =====
+    private static SendResult postJson(String urlStr, String payload, String apiKey) {
+        HttpURLConnection conn = null;
+        try {
+            URL url = new URL(urlStr);
             conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(CONNECT_TIMEOUT);
+            conn.setReadTimeout(READ_TIMEOUT);
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
-            conn.setConnectTimeout(10000);
-            conn.setReadTimeout(15000);
 
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("X-API-Key", AUTH_TOKEN);
-
-            JSONObject json = new JSONObject();
-            json.put("session", SESSION_NAME);
-            json.put("chatId", phone + "@c.us");
-            json.put("text", pesan);
+            conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setRequestProperty("X-API-Key", apiKey);
 
             try (OutputStream os = conn.getOutputStream()) {
-                os.write(json.toString().getBytes(StandardCharsets.UTF_8));
+                os.write(payload.getBytes(StandardCharsets.UTF_8));
             }
 
-            result.httpCode = conn.getResponseCode();
-            InputStream is = (result.httpCode >= 200 && result.httpCode < 300)
-                    ? conn.getInputStream()
-                    : conn.getErrorStream();
+            int code = conn.getResponseCode();
+            String body = readBody(conn);
 
-            result.responseBody = readBody(is);
-            result.ok = result.httpCode >= 200 && result.httpCode < 300;
+            boolean ok = (code >= 200 && code < 300);
+            String err = ok ? null : ("HTTP " + code + (body != null ? " | " + body : ""));
+            return new SendResult(ok, code, body, err);
 
-            if (!result.ok) {
-                result.error = "HTTP " + result.httpCode;
-            }
-
+        } catch (SocketTimeoutException e) {
+            return new SendResult(false, 0, null, "Timeout: " + e.getMessage());
         } catch (Exception e) {
-            result.ok = false;
-            result.error = e.getMessage();
+            return new SendResult(false, 0, null, e.getMessage());
         } finally {
             if (conn != null) {
                 conn.disconnect();
             }
         }
-
-        return result;
     }
 
-    // =========================
-    // UPLOAD PDF KE SERVER
-    // =========================
-    public static String uploadPDFToServer(File file) {
-        HttpsURLConnection conn = null;
-        String boundary = "----Boundary" + System.currentTimeMillis();
-        String CRLF = "\r\n";
+    private static String readBody(HttpURLConnection conn) {
+        try (InputStream is
+                = (conn.getResponseCode() >= 200 && conn.getResponseCode() < 300)
+                ? conn.getInputStream()
+                : conn.getErrorStream()) {
 
+            if (is == null) {
+                return "";
+            }
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    // ===== UTIL =====
+    private static String normalizePhone(String raw) {
+        String d = raw.replaceAll("[^0-9]", "");
+        if (d.startsWith("0")) {
+            d = "62" + d.substring(1);
+        }
+        if (!d.startsWith("62")) {
+            d = "62" + d;
+        }
+        return d;
+
+    }
+
+    public static String toPhoneOnly(String raw) {
+        if (raw == null) {
+            return "";
+        }
+        String d = raw.replaceAll("[^0-9]", "");
+        if (d.startsWith("0")) {
+            d = "62" + d.substring(1);
+        } else if (!d.startsWith("62")) {
+            d = "62" + d;
+        }
+        return d;
+    }
+
+    public static String getBaseFileUrl() {
+        return koneksiDBWa.FILE_BASE_URL();
+    }
+
+    private static String escapeJson(String text) {
+        if (text == null) {
+            return "";
+        }
+        return text.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\r", "")
+                .replace("\n", "\\n");
+    }
+
+    // ===== RESULT =====
+    private static class SendResult {
+
+        boolean ok;
+        int httpCode;
+        String responseBody;
+        String error;
+
+        SendResult(boolean ok, int httpCode, String responseBody, String error) {
+            this.ok = ok;
+            this.httpCode = httpCode;
+            this.responseBody = responseBody;
+            this.error = error;
+        }
+    }
+
+    public static String uploadPDFToServer(File file) {
+        HttpURLConnection conn = null;
         try {
-            URL url = new URL("https://apps.rspelitakasih.id/HasilLab/upload_lab.php");
-            conn = (HttpsURLConnection) url.openConnection();
+            String baseUrl = koneksiDBWa.FILE_BASE_URL();
+            String uploadUrl = baseUrl + "/HasilLab/upload_lab.php";
+            String token = koneksiDBWa.TOKEN();
+
+            String boundary = "----SIMRS-" + System.currentTimeMillis();
+            String CRLF = "\r\n";
+
+            URL url = new URL(uploadUrl);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(10000);
+            conn.setReadTimeout(20000);
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
-            conn.setRequestProperty(
-                    "Content-Type", "multipart/form-data; boundary=" + boundary
-            );
-            conn.setRequestProperty(
-                    "Authorization", "Bearer " + AUTH_TOKEN
-            );
-            conn.setConnectTimeout(15000);
-            conn.setReadTimeout(30000);
+
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+            conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
 
             try (OutputStream output = conn.getOutputStream(); PrintWriter writer = new PrintWriter(
                     new OutputStreamWriter(output, StandardCharsets.UTF_8), true)) {
@@ -159,33 +221,43 @@ public class WAKirim {
 
                 Files.copy(file.toPath(), output);
                 output.flush();
+                writer.append(CRLF).flush();
 
-                writer.append(CRLF);
                 writer.append("--").append(boundary).append("--").append(CRLF).flush();
             }
 
-            int code = conn.getResponseCode();
-            InputStream is = (code < 400)
+            int responseCode = conn.getResponseCode();
+
+            InputStream is = (responseCode >= 200 && responseCode < 300)
                     ? conn.getInputStream()
                     : conn.getErrorStream();
 
-            String response = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-            System.out.println("HTTP " + code + " → " + response);
+            if (is == null) {
+                return null;
+            }
 
-            if (code == 200) {
-                JSONObject json = new JSONObject(response);
-                if (json.optBoolean("ok")) {
-                    return json.optString("url");
+            String response = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+
+            if (responseCode == 200) {
+                int idx = response.indexOf("\"url\"");
+                if (idx > -1) {
+                    int start = response.indexOf("\"", idx + 6) + 1;
+                    int end = response.indexOf("\"", start);
+                    return response.substring(start, end);
                 }
             }
 
+            System.err.println("[UPLOAD] HTTP " + responseCode + " | " + response);
+            return null;
+
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         } finally {
             if (conn != null) {
                 conn.disconnect();
             }
         }
-        return null;
     }
+
 }

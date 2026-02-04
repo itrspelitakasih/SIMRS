@@ -629,7 +629,7 @@ public final class DlgPermintaanLaboratorium extends javax.swing.JDialog {
         jLabel9.setBounds(0, 40, 92, 23);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-12-2025" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-02-2026" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -978,7 +978,7 @@ public final class DlgPermintaanLaboratorium extends javax.swing.JDialog {
         jLabel17.setBounds(235, 10, 120, 23);
 
         TanggalPA.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalPA.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-12-2025" }));
+        TanggalPA.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-02-2026" }));
         TanggalPA.setDisplayFormat("dd-MM-yyyy");
         TanggalPA.setName("TanggalPA"); // NOI18N
         TanggalPA.setOpaque(false);
@@ -1021,7 +1021,7 @@ public final class DlgPermintaanLaboratorium extends javax.swing.JDialog {
         DiagnosaPA.setBounds(432, 100, 340, 23);
 
         TanggalBahan.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalBahan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-12-2025" }));
+        TanggalBahan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-02-2026" }));
         TanggalBahan.setDisplayFormat("dd-MM-yyyy");
         TanggalBahan.setName("TanggalBahan"); // NOI18N
         TanggalBahan.setOpaque(false);
@@ -1629,12 +1629,25 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }//GEN-LAST:event_PenjabKeyPressed
 
     private void tbTarifPKMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbTarifPKMouseClicked
-        if(tabMode2.getRowCount()!=0){
-            try {
-                Valid.tabelKosong(tabMode);
-                runBackground(() -> tampil());
-            } catch (java.lang.NullPointerException e) {
-            }
+        if (tabMode2.getRowCount() == 0) {
+            return;
+        }
+
+        try {
+            Valid.tabelKosong(tabMode);
+
+            runBackground(() -> {
+                tampil();
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    ppSemuaActionPerformed(
+                            new java.awt.event.ActionEvent(this, 0, "AUTO")
+                    );
+                });
+            });
+
+        } catch (Exception e) {
+            System.err.println("Error tbTarifPKMouseClicked:");
+            e.printStackTrace();
         }
     }//GEN-LAST:event_tbTarifPKMouseClicked
 
