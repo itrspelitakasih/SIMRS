@@ -1831,6 +1831,7 @@ public class frmUtama extends javax.swing.JFrame {
         btnGrafikLimbahDomestikPerTanggal = new widget.ButtonBig();
         btnLaboratoriumPA = new widget.ButtonBig();
         btnLaboratoriumMB = new widget.ButtonBig();
+        btnMCU = new widget.ButtonBig();
         internalFrame1 = new widget.InternalFrame();
         BtnMenu = new widget.ButtonBig();
         jSeparator4 = new javax.swing.JSeparator();
@@ -1840,10 +1841,10 @@ public class frmUtama extends javax.swing.JFrame {
         btnToolLab = new widget.ButtonBig();
         btnToolRad = new widget.ButtonBig();
         BtnToolJualObat = new widget.ButtonBig();
+        btnToolMCU = new widget.ButtonBig();
         jSeparator9 = new javax.swing.JSeparator();
         BtnToolKamnap = new widget.ButtonBig();
         BtnToolKasir = new widget.ButtonBig();
-        btnToolMCU = new widget.ButtonBig();
         jSeparator7 = new javax.swing.JSeparator();
         BtnLog = new widget.ButtonBig();
         BtnClose = new widget.ButtonBig();
@@ -2134,7 +2135,7 @@ public class frmUtama extends javax.swing.JFrame {
 
         tanggal.setEditable(false);
         tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05/02/2026" }));
+        tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06/02/2026" }));
         tanggal.setDisplayFormat("dd/MM/yyyy");
         tanggal.setName("tanggal"); // NOI18N
         tanggal.setOpaque(false);
@@ -7188,6 +7189,17 @@ public class frmUtama extends javax.swing.JFrame {
             }
         });
 
+        btnMCU.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/MCU48.png"))); // NOI18N
+        btnMCU.setText("MCU/Follow Up");
+        btnMCU.setIconTextGap(0);
+        btnMCU.setName("btnMCU"); // NOI18N
+        btnMCU.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnMCU.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMCUActionPerformed(evt);
+            }
+        });
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("::[ Khanza SIMKES 2022 ]::");
         setBackground(new java.awt.Color(255, 254, 254));
@@ -7342,6 +7354,23 @@ public class frmUtama extends javax.swing.JFrame {
         });
         internalFrame1.add(BtnToolJualObat);
 
+        btnToolMCU.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/MCU24.png"))); // NOI18N
+        btnToolMCU.setMnemonic('A');
+        btnToolMCU.setText("Periksa MCU");
+        btnToolMCU.setToolTipText("Alt+A");
+        btnToolMCU.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnToolMCU.setIconTextGap(2);
+        btnToolMCU.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnToolMCU.setName("btnToolMCU"); // NOI18N
+        btnToolMCU.setPreferredSize(new java.awt.Dimension(97, 38));
+        btnToolMCU.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnToolMCU.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnToolMCUActionPerformed(evt);
+            }
+        });
+        internalFrame1.add(btnToolMCU);
+
         jSeparator9.setBackground(new java.awt.Color(0, 158, 96));
         jSeparator9.setForeground(new java.awt.Color(0, 158, 96));
         jSeparator9.setOrientation(javax.swing.SwingConstants.VERTICAL);
@@ -7386,23 +7415,6 @@ public class frmUtama extends javax.swing.JFrame {
             }
         });
         internalFrame1.add(BtnToolKasir);
-
-        btnToolMCU.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/63.png"))); // NOI18N
-        btnToolMCU.setText("Periksa MCU");
-        btnToolMCU.setToolTipText("Alt+D");
-        btnToolMCU.setEnabled(false);
-        btnToolMCU.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnToolMCU.setIconTextGap(2);
-        btnToolMCU.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        btnToolMCU.setName("btnToolMCU"); // NOI18N
-        btnToolMCU.setPreferredSize(new java.awt.Dimension(94, 38));
-        btnToolMCU.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnToolMCU.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnToolMCUActionPerformed(evt);
-            }
-        });
-        internalFrame1.add(btnToolMCU);
 
         jSeparator7.setBackground(new java.awt.Color(0, 158, 96));
         jSeparator7.setForeground(new java.awt.Color(0, 158, 96));
@@ -10370,20 +10382,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         DlgHome.dispose();
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_btnIGDActionPerformed
-//    TAMBAHMCU
 
-    private void btnMCUActionPerformed(java.awt.event.ActionEvent evt) {
-        isTutup();
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        DlgMCU mcu = new DlgMCU(this, false);
-        mcu.emptTeks();
-        mcu.isCek();
-        mcu.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
-        mcu.setLocationRelativeTo(PanelUtama);
-        mcu.setVisible(true);
-        DlgHome.dispose();
-        this.setCursor(Cursor.getDefaultCursor());
-    }
 
     private void MnBelumDatang1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnBelumDatang1ActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -14864,8 +14863,31 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     }//GEN-LAST:event_btnAktifitasActionPerformed
 
     private void btnToolMCUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnToolMCUActionPerformed
-        btnMCUActionPerformed(evt);
+        isTutup();
+        FlayMenu.removeAll();
+        FlayMenu.add(btnMCU);
+        FlayMenu.add(btnBookingMCUPerusahaan);
+        if ((akses.getpenilaian_mcu() == true) || (akses.getbooking_mcu_perusahaan() == true)) {
+            btnMCU.setEnabled(true);
+        } else {
+            btnMCU.setEnabled(akses.getpenilaian_mcu());
+        }
+        btnBookingMCUPerusahaan.setEnabled(akses.getbooking_mcu_perusahaan());
+        FlayMenu.setVisible(true);
     }//GEN-LAST:event_btnToolMCUActionPerformed
+
+    private void btnMCUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMCUActionPerformed
+        isTutup();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        DlgMCU mcu = new DlgMCU(this, false);
+        mcu.emptTeks();
+        mcu.isCek();
+        mcu.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        mcu.setLocationRelativeTo(PanelUtama);
+        mcu.setVisible(true);
+        DlgHome.dispose();
+        this.setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_btnMCUActionPerformed
 
     private void btnKategoriPerpustakaanActionPerformed(java.awt.event.ActionEvent evt) {
         isTutup();
@@ -23720,6 +23742,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     private widget.ButtonBig btnLihatPiutang;
     private widget.ButtonBig btnLimbahB3Medis;
     private widget.ButtonBig btnLimbahDomestik;
+    private widget.ButtonBig btnMCU;
     private widget.ButtonBig btnMapingPoliBPJS;
     private widget.ButtonBig btnMasterBerkasPegawai;
     private widget.ButtonBig btnMerkInventaris;
@@ -24303,6 +24326,11 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
 
             if (akses.getigd() == true) {
                 Panelmenu.add(btnIGD);
+                jmlmenu++;
+            }
+            //TAMBAH MCU
+            if (akses.getpenilaian_mcu() == true) {
+                Panelmenu.add(btnMCU);
                 jmlmenu++;
             }
 
@@ -30163,6 +30191,11 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             Panelmenu.add(btnIGD);
             jmlmenu++;
         }
+        //TAMBAH MCU
+        if (akses.getpenilaian_mcu() == true) {
+            Panelmenu.add(btnMCU);
+            jmlmenu++;
+        }
 
         if (akses.gettindakan_ralan() == true) {
             Panelmenu.add(btnRalan);
@@ -35986,6 +36019,13 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         if (akses.getigd() == true) {
             if (btnIGD.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())) {
                 Panelmenu.add(btnIGD);
+                jmlmenu++;
+            }
+        }
+        //TAMBAH MCU
+        if (akses.getpenilaian_mcu() == true) {
+            if (btnMCU.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())) {
+                Panelmenu.add(btnMCU);
                 jmlmenu++;
             }
         }
@@ -44089,6 +44129,13 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
                 jmlmenu++;
             }
         }
+        if (akses.getruang_ok() == true) {
+            if (btnRuangOperasi.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())) {
+                Panelmenu.add(btnRuangOperasi);
+                jmlmenu++;
+            }
+        }
+        
     }
 
     private void initKhanza() {
