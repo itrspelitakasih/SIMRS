@@ -92,7 +92,7 @@
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="1">
-                    <StringItem index="0" value="27-01-2026 05:28:25"/>
+                    <StringItem index="0" value="06-02-2026 09:28:07"/>
                   </StringArray>
                 </Property>
                 <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy HH:mm:ss"/>
@@ -481,7 +481,7 @@
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/picture/36.png"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Ambil Data LIS"/>
+                    <Property name="text" type="java.lang.String" value="Ambil LIS"/>
                     <Property name="name" type="java.lang.String" value="BtnAmbilLIS" noResource="true"/>
                   </Properties>
                   <Events>

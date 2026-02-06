@@ -218,7 +218,7 @@
     <!-- ================= WAHA CONFIG ================= -->
     <entry key="WAHA_BASE_URL">http://10.66.66.6:3031</entry>
     <entry key="WAHA_SESSION">default</entry>
-    <entry key="WAHA_API_KEY">5cc70a324eca4f50803f368edefa11d8</entry>
+    <entry key="WAHA_API_KEY">dc14b5e569684e6f919e35d3b75dd651</entry>
     <entry key="TOKEN">5cc70a324eca4f50803f368edefa11d8</entry>
     <entry key="WAHA_FILE_BASE_URL">https://apps.rspelitakasih.id</entry>
     

@@ -2098,6 +2098,11 @@ public final class RMDataResumePasien extends javax.swing.JDialog {
             PemeriksaanPenunjang.setText(Sequel.cariIsi("select penunjang from penilaian_medis_ralan_psikiatrik where no_rawat=?",TNoRw.getText())); 
             HasilLaborat.setText(Sequel.cariIsi("select penunjang from penilaian_medis_ralan_psikiatrik where no_rawat=?",TNoRw.getText())); 
             Obat2an.setText(Sequel.cariIsi("select tata from penilaian_medis_ralan_psikiatrik where no_rawat=?",TNoRw.getText()));       
+        }else if(Sequel.cariInteger("select count(no_rawat) from penilaian_awal_keperawatan_ralan where no_rawat='"+TNoRw.getText()+"' ")>0){
+            Keluhan.setText(Sequel.cariIsi("select concat(keluhan_utama,'\n',ketfisik)as keluhan from penilaian_awal_keperawatan_ralan where no_rawat=?",TNoRw.getText())); 
+            PemeriksaanPenunjang.setText(Sequel.cariIsi("select penunjang from penilaian_awal_keperawatan_ralan where no_rawat=?",TNoRw.getText())); 
+            HasilLaborat.setText(Sequel.cariIsi("select penunjang from penilaian_awal_keperawatan_ralan where no_rawat=?",TNoRw.getText())); 
+            Obat2an.setText(Sequel.cariIsi("select tata from penilaian_awal_keperawatan_ralan where no_rawat=?",TNoRw.getText()));       
         }else if(Sequel.cariInteger("select count(no_rawat) from penilaian_medis_ralan_tht where no_rawat='"+TNoRw.getText()+"' ")>0){
             Keluhan.setText(Sequel.cariIsi("select concat(keluhan_utama,'\n',lainnya)as keluhan from penilaian_medis_ralan_tht where no_rawat=?",TNoRw.getText())); 
             PemeriksaanPenunjang.setText(Sequel.cariIsi("select rad from penilaian_medis_ralan_tht where no_rawat=?",TNoRw.getText())); 

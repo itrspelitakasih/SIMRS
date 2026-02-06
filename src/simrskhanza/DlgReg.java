@@ -6313,8 +6313,6 @@ public final class DlgReg extends javax.swing.JDialog {
         CekBookingOnline.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/web-link.png"))); // NOI18N
         CekBookingOnline.setText("");
         CekBookingOnline.setToolTipText("Cek Booking Online");
-        //CekBookingOnline.setMaximumSize(new java.awt.Dimension(22, 22));
-        //CekBookingOnline.setMinimumSize(new java.awt.Dimension(22, 22));
         CekBookingOnline.setName("CekBookingOnline"); // NOI18N
         CekBookingOnline.setPreferredSize(new java.awt.Dimension(28, 23));
         CekBookingOnline.addActionListener(new java.awt.event.ActionListener() {
@@ -6323,7 +6321,7 @@ public final class DlgReg extends javax.swing.JDialog {
             }
         });
         panelGlass8.add(CekBookingOnline);
-        //CekBookingOnline.setBounds(60, 170, 22, 22);
+        
         //TAMBAH TOMBOL
 
         jPanel2.add(panelGlass8, java.awt.BorderLayout.PAGE_START);
