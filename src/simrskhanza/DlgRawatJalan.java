@@ -214,6 +214,7 @@ import rekammedis.RMTimeOutSebelumInsisi;
 import rekammedis.RMTransferPasienAntarRuang;
 import rekammedis.RMTriaseIGD;
 import rekammedis.RMUjiFungsiKFR;
+import surat.SuratBebasNarkoba;
 import surat.SuratSakit;
 import surat.SuratButaWarna;
 import surat.SuratKeteranganSehat;
@@ -1612,7 +1613,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         FormInput.add(btnSurat);
         btnSurat.setBounds(1140, 10, 23, 23);
 
-        cmbJnsSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SKS", "SKK", "Buta Warna" }));
+        cmbJnsSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SKS", "SKK", "Buta Warna","Bebas Narkoba" }));
         cmbJnsSurat.setName("cmbJnsSurat"); // NOI18N
         cmbJnsSurat.setPreferredSize(new java.awt.Dimension(150, 23));
         cmbJnsSurat.addActionListener(new java.awt.event.ActionListener() {
@@ -5397,6 +5398,18 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
                     resume.setVisible(true);
                     break;
                 }
+                case "Bebas Narkoba": {
+                    SuratBebasNarkoba dlg = new SuratBebasNarkoba(null, false);
+                    dlg.isCek();
+                    dlg.emptTeks();
+                    dlg.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+                    dlg.setLocationRelativeTo(internalFrame1);
+                    dlg.setNoRm(TNoRw.getText(),TNoRM.getText(),TPasien.getText(), KdDok.getText(),TDokter.getText(),DTPCari1.getDate(),DTPCari2.getDate());
+                    dlg.tampil();
+                    dlg.setVisible(true);
+                    break;
+                }
+
                 default: {
                     JOptionPane.showMessageDialog(null,
                             "Jenis Dokumen tidak ditemukan: " + jenisSurat);

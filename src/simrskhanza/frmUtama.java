@@ -12540,9 +12540,9 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     private void btnPermintaanMedisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPermintaanMedisActionPerformed
         isTutup();
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        DlgPermintaan form = new DlgPermintaan(this, false);
+        DlgPermintaan form=new DlgPermintaan(this,false);
         form.isCek();
-        form.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        form.setSize(PanelUtama.getWidth(),PanelUtama.getHeight());
         form.setLocationRelativeTo(PanelUtama);
         form.setVisible(true);
         DlgHome.dispose();
