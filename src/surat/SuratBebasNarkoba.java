@@ -239,7 +239,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         MnCetakSuratSKBN.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         MnCetakSuratSKBN.setForeground(new java.awt.Color(50, 50, 50));
         MnCetakSuratSKBN.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
-        MnCetakSuratSKBN.setText("Cetak SKBN 1");
+        MnCetakSuratSKBN.setText("Cetak 6p");
         MnCetakSuratSKBN.setName("MnCetakSuratSKBN"); // NOI18N
         MnCetakSuratSKBN.setPreferredSize(new java.awt.Dimension(140, 26));
         MnCetakSuratSKBN.addActionListener(new java.awt.event.ActionListener() {
@@ -253,7 +253,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         MnCetakSuratSKBN1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         MnCetakSuratSKBN1.setForeground(new java.awt.Color(50, 50, 50));
         MnCetakSuratSKBN1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
-        MnCetakSuratSKBN1.setText("Cetak SKBN 2");
+        MnCetakSuratSKBN1.setText("Cetak 5p");
         MnCetakSuratSKBN1.setName("MnCetakSuratSKBN1"); // NOI18N
         MnCetakSuratSKBN1.setPreferredSize(new java.awt.Dimension(140, 26));
         MnCetakSuratSKBN1.addActionListener(new java.awt.event.ActionListener() {
@@ -469,7 +469,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-07-2020" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-12-2022" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -483,7 +483,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-07-2020" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-12-2022" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -603,7 +603,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         jLabel18.setBounds(511, 40, 100, 23);
 
         TanggalSurat.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-07-2020" }));
+        TanggalSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-12-2022" }));
         TanggalSurat.setDisplayFormat("dd-MM-yyyy");
         TanggalSurat.setName("TanggalSurat"); // NOI18N
         TanggalSurat.setOpaque(false);
@@ -1083,7 +1083,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
                 finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",KdDok.getText());
                 param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+TDokter.getText()+"\nID "+(finger.equals("")?KdDok.getText():finger)+"\n"+TanggalSurat.getSelectedItem());  
                 param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
-                Valid.MyReportqry("rptBebasNarkobaRSPK.jasper","report","::[ Surat SKBN 1 ]::",
+                Valid.MyReportqry("rptBebasNarkoba6p.jasper","report","::[ Surat SKBN 1 ]::",
                               " select reg_periksa.tgl_registrasi,reg_periksa.jam_reg,reg_periksa.no_rawat,perusahaan_pasien.nama_perusahaan,pasien.keluarga,pasien.namakeluarga,pasien.tgl_lahir,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur," +
                               " pasien.tmp_lahir,pasien.agama,pasien.nm_pasien,pasien.jk,pasien.pekerjaan,concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat,suku_bangsa.nama_suku_bangsa,reg_periksa.kd_dokter " +
                               " from reg_periksa inner join pasien inner join kelurahan inner join perusahaan_pasien inner join kecamatan inner join kabupaten inner join suku_bangsa " +
