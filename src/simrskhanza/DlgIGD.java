@@ -12595,7 +12595,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                                "from reg_periksa inner join dokter inner join pasien inner join poliklinik inner join penjab "+
                                "on reg_periksa.kd_dokter=dokter.kd_dokter and reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                                "and reg_periksa.kd_pj=penjab.kd_pj and reg_periksa.kd_poli=poliklinik.kd_poli  where  "+
-                               "poliklinik.kd_poli='UGD' and reg_periksa.tgl_registrasi between ? and ? "+
+                               "(poliklinik.kd_poli='UGD' or poliklinik.kd_poli='UGD-K') and reg_periksa.tgl_registrasi between ? and ? "+
                                (TCari.getText().trim().equals("")?"":"and (reg_periksa.no_reg like ? or reg_periksa.no_rawat like ? or reg_periksa.tgl_registrasi like ? or "+
                                "reg_periksa.kd_dokter like ? or dokter.nm_dokter like ? or reg_periksa.no_rkm_medis like ? or "+
                                "reg_periksa.stts_daftar like ? or pasien.nm_pasien like ? or poliklinik.nm_poli like ? or "+
