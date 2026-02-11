@@ -1929,6 +1929,7 @@ public class frmUtama extends javax.swing.JFrame {
         MnUpdate = new javax.swing.JMenuItem();
         jSeparator16 = new javax.swing.JPopupMenu.Separator();
         MnAntrianPoli = new javax.swing.JMenuItem();
+        MnLaporanRL = new javax.swing.JMenuItem();
 
         DlgLogin.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         DlgLogin.setName("DlgLogin"); // NOI18N
@@ -8456,6 +8457,20 @@ public class frmUtama extends javax.swing.JFrame {
         });
         jMenuUpdate.add(MnAntrianPoli);
 
+        MnLaporanRL.setBackground(new java.awt.Color(255, 255, 254));
+        MnLaporanRL.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnLaporanRL.setForeground(new java.awt.Color(50, 90, 40));
+        MnLaporanRL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/tasksgroup.png"))); // NOI18N
+        MnLaporanRL.setText("Laporan RL");
+        MnLaporanRL.setName("MnLaporanRL"); // NOI18N
+        MnLaporanRL.setPreferredSize(new java.awt.Dimension(205, 30));
+        MnLaporanRL.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnLaporanRLActionPerformed(evt);
+            }
+        });
+        jMenuUpdate.add(MnLaporanRL);
+
         MenuBar.add(jMenuUpdate);
 
         setJMenuBar(MenuBar);
@@ -14888,6 +14903,12 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         DlgHome.dispose();
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_btnMCUActionPerformed
+
+    private void MnLaporanRLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnLaporanRLActionPerformed
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        Valid.panggilUrl("laporan");
+        this.setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_MnLaporanRLActionPerformed
 
     private void btnKategoriPerpustakaanActionPerformed(java.awt.event.ActionEvent evt) {
         isTutup();
@@ -23509,6 +23530,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     private javax.swing.JMenuItem MnInfoLaborat3;
     private javax.swing.JMenuItem MnInfoMobileJKN;
     private javax.swing.JMenuItem MnKoleksiPenelitian;
+    private javax.swing.JMenuItem MnLaporanRL;
     private javax.swing.JMenuItem MnLogin;
     private javax.swing.JMenuItem MnPengajuanCutiPegawai;
     private javax.swing.JMenuItem MnRekapBulanan;

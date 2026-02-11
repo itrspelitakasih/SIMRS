@@ -5,8 +5,6 @@
 
 package fungsi;
 
-
-import static com.sun.org.glassfish.external.amx.AMXUtil.prop;
 import java.awt.Desktop;
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.Dimension;
@@ -60,7 +58,7 @@ import widget.TextBox;
  */
 public final class validasi {
     private int a,j,i,result=0;
-    private String s,s1,auto,PEMBULATANHARGAOBAT=koneksiDB.PEMBULATANHARGAOBAT(),filewa, FOLDERFILEWA;
+    private String s,s1,auto,PEMBULATANHARGAOBAT=koneksiDB.PEMBULATANHARGAOBAT(),filewa, FOLDERFILEWA,FOLDERWA;
     private final Connection connect=koneksiDB.condb();
     private final sekuel sek=new sekuel();
     private final java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
@@ -84,7 +82,82 @@ public final class validasi {
         super();
     };
 
-        
+    public void MyReportPDFKirimWA(String reportName, String reportDirName, String judul, Map parameters, String norwt, String nama, String nohape, String filewa, String pesan, String tanggaljamkirim) {
+        Properties systemProp = System.getProperties();
+
+        // Ambil current dir
+        String currentDir = systemProp.getProperty("user.dir");
+
+        File dir = new File(currentDir);
+
+        File fileRpt;
+        String fullPath = "";
+        if (dir.isDirectory()) {
+            String[] isiDir = dir.list();
+            for (String iDir : isiDir) {
+                fileRpt = new File(currentDir + File.separatorChar + iDir + File.separatorChar + reportDirName + File.separatorChar + reportName);
+                if (fileRpt.isFile()) { // Cek apakah file RptMaster.jasper ada
+                    fullPath = fileRpt.toString();
+                    System.out.println("Found Report File at : " + fullPath);
+                } // end if
+            } // end for i
+        } // end if
+
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            FOLDERWA = prop.getProperty("FOLDERWA");
+        } catch (Exception ex) {
+            FOLDERWA = "";
+
+        }
+
+        try {
+            try (Statement stm = connect.createStatement()) {
+                try {
+                    File f = new File("./" + reportDirName + "/" + reportName.replaceAll("jasper", "pdf"));
+                    String namafile = "./" + reportDirName + "/" + reportName;
+                    JasperPrint jasperPrint = JasperFillManager.fillReport(namafile, parameters, connect);
+                    try {
+                        prop.loadFromXML(new FileInputStream("setting/database.xml"));
+                        FOLDERWA = prop.getProperty("FOLDERWA");
+                    } catch (Exception ex) {
+                        FOLDERWA = "";
+
+                    }
+                    JasperExportManager.exportReportToPdfFile(jasperPrint, "./" + prop.getProperty("FOLDERFILEWA") + "/Hasil_Periksa_Lab_PK" + norwt + "_an_" + nama + ".pdf");
+                    Desktop.getDesktop().open(f);
+                    filewa = "Hasil_Periksa_Lab_PK" + norwt + "_an_" + nama + ".pdf";
+                    Connection koneksiwa = koneksiDBWa.condb();
+                    String sql = "INSERT INTO wa_outbox (NOMOR, NOWA, PESAN, TANGGAL_JAM, STATUS, SOURCE, SENDER, SUCCESS, RESPONSE, REQUEST, TYPE, FILE) "
+                            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    ps = koneksiwa.prepareStatement(sql);
+                    ps.setLong(1, 0);  // NOMOR, jika AUTO_INCREMENT, bisa diubah atau dihilangkan sesuai kebutuhan
+                    ps.setString(2, nohape + "@c.us");  // NOWA
+                    ps.setString(3, pesan);          // PESAN
+                    ps.setString(4, tanggaljamkirim);
+                    /*    ps.setTimestamp(4, java.sql.Timestamp.valueOf(
+                            Valid.SetTgl(TglAsuhan.getSelectedItem().toString()) + " "
+                            + TglAsuhan.getSelectedItem().toString().substring(11, 19)));  // TANGGAL_JAM */
+                    ps.setString(5, "ANTRIAN");                 // STATUS
+                    ps.setString(6, "KHANZA");                  // SOURCE
+                    ps.setString(7, "NODEJS");                  // SENDER
+                    ps.setString(8, "");                        // SUCCESS
+                    ps.setString(9, "");                        // RESPONSE
+                    ps.setString(10, "");                       // REQUEST
+                    ps.setString(11, "FILE");                   // TYPE
+                    ps.setString(12, filewa);                       // FILE
+
+                    ps.executeUpdate();
+                } catch (Exception rptexcpt) {
+                    System.out.println("Report Can't view because : " + rptexcpt);
+                    JOptionPane.showMessageDialog(null, "Report Can't view because : " + rptexcpt);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }    
+    
     public void autoNomer(DefaultTableModel tabMode,String strAwal,Integer pnj,javax.swing.JTextField teks){        
         s=Integer.toString(tabMode.getRowCount()+1);
         j=s.length();

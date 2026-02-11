@@ -116,7 +116,7 @@
 					<font fontName="Cambria" size="11" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nm_pasien}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[org.apache.commons.lang3.text.WordUtils.capitalizeFully($F{nm_pasien})]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="67" y="180" width="109" height="14" uuid="60138df8-1dd2-4f7d-ae05-d21db39a5e23">
@@ -139,14 +139,14 @@
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<textField pattern="dd - MM - yyyy">
-				<reportElement x="186" y="180" width="90" height="14" uuid="6330b068-a683-4fb4-8ae8-e1520038ee03">
+				<reportElement x="186" y="180" width="298" height="14" uuid="6330b068-a683-4fb4-8ae8-e1520038ee03">
 					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
 				</reportElement>
 				<textElement>
 					<font fontName="Cambria" size="11"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{tmp_lahir}+","]]></textFieldExpression>
+				<textFieldExpression><![CDATA[org.apache.commons.lang3.text.WordUtils.capitalizeFully($F{tmp_lahir})+", " + new SimpleDateFormat("dd MMMM yyyy", new java.util.Locale("id")).format($F{tgl_lahir})]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="67" y="194" width="109" height="14" uuid="2b69ead5-548b-467f-8ae1-f9afc8d8c11d"/>
@@ -172,17 +172,7 @@
 					<font fontName="Cambria" size="11"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{alamat}]]></textFieldExpression>
-			</textField>
-			<textField pattern=" d MMMM yyyy">
-				<reportElement x="266" y="180" width="218" height="14" uuid="4faa4000-e23d-4c46-bb0e-39cac813fad2">
-					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
-				</reportElement>
-				<textElement>
-					<font fontName="Cambria" size="11"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new SimpleDateFormat("dd  MMMM  yyyy", new java.util.Locale("id")).format($F{tgl_lahir})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[org.apache.commons.lang3.text.WordUtils.capitalizeFully($F{alamat})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="50" y="247" width="439" height="14" uuid="714d37fb-7585-4cf5-9a79-3d921aa799ba">
@@ -332,7 +322,7 @@
 					<font fontName="Cambria" size="11" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Nomor : "+$P{nosurat}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Nomor : 0"+$P{nosurat}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="183" y="276" width="111" height="14" uuid="79879758-4039-4923-a70c-1869f9c551f8">

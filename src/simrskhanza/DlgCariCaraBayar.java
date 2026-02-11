@@ -59,6 +59,8 @@ public final class DlgCariCaraBayar extends javax.swing.JDialog {
     private int i=0;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
+    private String copyTarifLab;
+    private String kdCopy;
     /** Creates new form DlgPenyakit
      * @param parent
      * @param modal */
@@ -685,4 +687,6 @@ public final class DlgCariCaraBayar extends javax.swing.JDialog {
         executor.shutdownNow();
         super.dispose();
     }
+    
+
 }

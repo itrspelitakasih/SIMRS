@@ -108,7 +108,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         }
         tbObat.setDefaultRenderer(Object.class, new WarnaTable());
         
-        NoSurat.setDocument(new batasInput((byte)20).getKata(NoSurat));
+        NoSurat.setDocument(new batasInput((byte)26).getKata(NoSurat));
         TNoRw.setDocument(new batasInput((byte)17).getKata(TNoRw));  
         Keperluan.setDocument(new batasInput((byte)300).getKata(Keperluan));         
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));           
@@ -854,7 +854,8 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
                 LCount.setText(""+tabMode.getRowCount());
                 emptTeks();
             }else{
-                autoSKBN();
+                nomorSurat();
+                //autoSKBN();
             }
         }
 }//GEN-LAST:event_BtnSimpanActionPerformed
@@ -1482,7 +1483,8 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         hasil4.setSelectedItem("NEGATIF");
         hasil5.setSelectedItem("NEGATIF");
         hasil6.setSelectedItem("NEGATIF");
-        autoSKBN();
+        //autoSKBN();
+        nomorSurat();
         NoSurat.requestFocus();
     }
 
@@ -1518,7 +1520,8 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         TDokter.setText(namadokter);
         ChkInput.setSelected(true);
         isForm();
-        autoSKBN();
+        nomorSurat();
+        //autoSKBN();
     }
     
     private void isRawat() {
@@ -1552,6 +1555,96 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         BtnSimpan.setEnabled(akses.getsurat_bebas_narkoba());
         BtnHapus.setEnabled(akses.getsurat_bebas_narkoba());
         BtnEdit.setEnabled(akses.getsurat_bebas_narkoba());
+    }
+    private void nomorSurat() {
+        try {
+            // Ambil bulan dari tanggal yang dipilih di TanggalSurat
+            String tanggalStr = Valid.SetTgl(TanggalSurat.getSelectedItem().toString());
+            String bulanStr = tanggalStr.substring(5, 7); // Format: yyyy-mm-dd, ambil mm
+            String tahunStr = tanggalStr.substring(0, 4);  // Format: yyyy-mm-dd, ambil yyyy
+
+            // Konversi bulan ke romawi
+            String bln_romawi = "";
+            int bulanInt = Integer.parseInt(bulanStr);
+
+            switch (bulanInt) {
+                case 1:
+                    bln_romawi = "I";
+                    break;
+                case 2:
+                    bln_romawi = "II";
+                    break;
+                case 3:
+                    bln_romawi = "III";
+                    break;
+                case 4:
+                    bln_romawi = "IV";
+                    break;
+                case 5:
+                    bln_romawi = "V";
+                    break;
+                case 6:
+                    bln_romawi = "VI";
+                    break;
+                case 7:
+                    bln_romawi = "VII";
+                    break;
+                case 8:
+                    bln_romawi = "VIII";
+                    break;
+                case 9:
+                    bln_romawi = "IX";
+                    break;
+                case 10:
+                    bln_romawi = "X";
+                    break;
+                case 11:
+                    bln_romawi = "XI";
+                    break;
+                case 12:
+                    bln_romawi = "XII";
+                    break;
+                default:
+                    bln_romawi = "I";
+                    break;
+            }
+
+            // Format yang akan dicari: %/RJ/RSPK/VIII/2025
+            String formatPattern = "/SKBN/RJ-RSPK/" + bln_romawi + "/" + tahunStr;
+
+            // Query untuk mencari nomor terakhir
+            String query = "SELECT IFNULL(MAX(CAST(SUBSTRING_INDEX(no_surat, '/', 1) AS UNSIGNED)), 0) "
+                    + "FROM surat_keterangan_sehat "
+                    + "WHERE no_surat LIKE '%" + formatPattern + "'";
+
+            // Eksekusi query secara manual
+            PreparedStatement ps = koneksi.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+
+            int nomorTerakhir = 0;
+            if (rs.next()) {
+                nomorTerakhir = rs.getInt(1);
+            }
+
+            // Increment nomor
+            int nomorBaru = nomorTerakhir + 1;
+
+            // Format nomor dengan leading zero (3 digit)
+            String nomorFormat = String.format("%03d", nomorBaru);
+
+            // Set nomor surat lengkap
+            String nomorSuratLengkap = nomorFormat + formatPattern;
+            NoSurat.setText(nomorSuratLengkap);
+
+            rs.close();
+            ps.close();
+
+        } catch (Exception e) {
+            System.out.println("Error generating nomor surat: " + e.getMessage());
+            e.printStackTrace();
+            // Fallback: set nomor manual
+            NoSurat.setText("0001/SKBN/RJ-RSPK/VIII/2025");
+        }
     }
 }
 
