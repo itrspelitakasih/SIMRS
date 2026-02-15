@@ -20,20 +20,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,7 +44,6 @@ import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 import laporan.DlgBerkasRawat;
-import static org.apache.http.client.methods.RequestBuilder.get;
 import rekammedis.RMRiwayatPerawatan;
 import surat.SuratKeteranganCovid;
 
@@ -6350,7 +6343,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     }//GEN-LAST:event_ppKirimPasienActionPerformed
 
     private void BtnSimpan1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpan1ActionPerformed
-        KirimWaDelphi();
+        prosesKirimLab();
     }//GEN-LAST:event_BtnSimpan1ActionPerformed
 
     private void BtnSimpan1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSimpan1KeyPressed
@@ -7153,227 +7146,245 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
 
         return hari + " " + bulan[bulanIndex] + " " + tahun;
     }
+   private boolean prosesKirimLab() {
 
-    private boolean prosesKirimLab() {
+    bersihkanFileLama(); // AUTO DELETE 3 HARI
 
-        PreparedStatement ps4 = null;
-        ResultSet rs = null;
+    PreparedStatement ps4 = null;
+    ResultSet rs = null;
 
+    try {
+
+        if (tbDokter.getSelectedRow() == -1) return false;
+
+        String noRawat = tbDokter.getValueAt(tbDokter.getSelectedRow(), 0).toString();
+        String tgl = tbDokter.getValueAt(tbDokter.getSelectedRow(), 3).toString();
+        String jam = tbDokter.getValueAt(tbDokter.getSelectedRow(), 4).toString();
+
+        /* ================= QUERY HEADER ================= */
+        ps4 = koneksi.prepareStatement(
+            "select periksa_lab.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,pasien.umur,"
+            + "petugas.nama,DATE_FORMAT(periksa_lab.tgl_periksa,'%d-%m-%Y') as tgl_periksa,"
+            + "periksa_lab.jam,periksa_lab.nip,periksa_lab.dokter_perujuk,"
+            + "periksa_lab.kd_dokter,"
+            + "concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat,"
+            + "dokter.nm_dokter,pasien.tgl_lahir "
+            + "from periksa_lab "
+            + "inner join reg_periksa on periksa_lab.no_rawat=reg_periksa.no_rawat "
+            + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
+            + "inner join petugas on periksa_lab.nip=petugas.nip "
+            + "inner join dokter on periksa_lab.kd_dokter=dokter.kd_dokter "
+            + "inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel "
+            + "inner join kecamatan on pasien.kd_kec=kecamatan.kd_kec "
+            + "inner join kabupaten on pasien.kd_kab=kabupaten.kd_kab "
+            + "where periksa_lab.kategori='PK' and "
+            + "periksa_lab.tgl_periksa=? and periksa_lab.jam=? and periksa_lab.no_rawat=?"
+        );
+
+        ps4.setString(1, tgl);
+        ps4.setString(2, jam);
+        ps4.setString(3, noRawat);
+
+        rs = ps4.executeQuery();
+        if (!rs.next()) return false;
+
+        String noRM = rs.getString("no_rkm_medis");
+        String namaPasien = rs.getString("nm_pasien");
+        String jk = rs.getString("jk");
+        String umur = rs.getString("umur");
+        String tglPeriksa = rs.getString("tgl_periksa");
+        String namaDokter = rs.getString("nm_dokter");
+        String namaPetugas = rs.getString("nama");
+        String dokterPerujuk = rs.getString("dokter_perujuk");
+        String alamat = rs.getString("alamat");
+        Date tglLahir = rs.getDate("tgl_lahir");
+
+        /* ================= PASSWORD ================= */
+        String pwdPdf = "01011990";
+        if (tglLahir != null) {
+            Calendar c = Calendar.getInstance();
+            c.setTime(tglLahir);
+            pwdPdf = String.format("%02d%02d%04d",
+                    c.get(Calendar.DAY_OF_MONTH),
+                    c.get(Calendar.MONTH) + 1,
+                    c.get(Calendar.YEAR));
+        }
+
+        /* ================= PARAMETER REPORT ================= */
+        Map<String, Object> param = new HashMap<>();
+
+        param.put("noperiksa", noRawat);
+        param.put("norm", noRM);
+        param.put("namapasien", namaPasien);
+        param.put("jkel", jk);
+        param.put("umur", umur);
+        param.put("pengirim", Sequel.cariIsi(
+                "select nm_dokter from dokter where kd_dokter=?",
+                dokterPerujuk));
+        param.put("tanggal", tglPeriksa);
+        param.put("penjab", namaDokter);
+        param.put("petugas", namaPetugas);
+        param.put("jam", jam);
+        param.put("alamat", alamat);
+        param.put("kamar", "");
+        param.put("namakamar", "");
+
+        param.put("finger",
+                "Dikeluarkan di " + akses.getnamars()
+                + "\nDitandatangani secara elektronik oleh "
+                + namaDokter + "\n" + tglPeriksa);
+
+        param.put("finger2",
+                "http://apps.rspelitakasih.id/verify/?id="
+                + EnkripsiAES.encrypt("{'x':'lab','t':'" + noRawat + "'}"));
+
+        param.put("namars", akses.getnamars());
+        param.put("alamatrs", akses.getalamatrs());
+        param.put("kotars", akses.getkabupatenrs());
+        param.put("propinsirs", akses.getpropinsirs());
+        param.put("kontakrs", akses.getkontakrs());
+        param.put("emailrs", akses.getemailrs());
+        param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
+
+        /* ================= ISI TEMPORARY 38 KOLOM ================= */
+        Sequel.queryu("delete from temporary_lab");
+
+        PreparedStatement ps2 = koneksi.prepareStatement(
+            "select jns_perawatan_lab.kd_jenis_prw,jns_perawatan_lab.nm_perawatan "
+            + "from periksa_lab inner join jns_perawatan_lab "
+            + "on periksa_lab.kd_jenis_prw=jns_perawatan_lab.kd_jenis_prw "
+            + "where periksa_lab.kategori='PK' and periksa_lab.no_rawat=? "
+            + "and periksa_lab.tgl_periksa=? and periksa_lab.jam=?"
+        );
+
+        ps2.setString(1, noRawat);
+        ps2.setString(2, Valid.SetTgl(tglPeriksa));
+        ps2.setString(3, jam);
+
+        ResultSet rs2 = ps2.executeQuery();
+
+        PreparedStatement insertTemp = koneksi.prepareStatement(
+            "insert into temporary_lab values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+        );
+
+        int i = 0;
+
+        while (rs2.next()) {
+
+            insertTemp.setString(1, String.valueOf(i));
+            insertTemp.setString(2, rs2.getString("nm_perawatan"));
+            for (int c = 3; c <= 38; c++) insertTemp.setString(c, "");
+            insertTemp.executeUpdate();
+            i++;
+
+            PreparedStatement ps3 = koneksi.prepareStatement(
+                "select template_laboratorium.Pemeriksaan, detail_periksa_lab.nilai,"
+                + "template_laboratorium.satuan,detail_periksa_lab.nilai_rujukan,"
+                + "detail_periksa_lab.keterangan "
+                + "from detail_periksa_lab "
+                + "inner join template_laboratorium "
+                + "on detail_periksa_lab.id_template=template_laboratorium.id_template "
+                + "where detail_periksa_lab.no_rawat=? "
+                + "and detail_periksa_lab.kd_jenis_prw=? "
+                + "and detail_periksa_lab.tgl_periksa=? "
+                + "and detail_periksa_lab.jam=? "
+                + "order by template_laboratorium.urut"
+            );
+
+            ps3.setString(1, noRawat);
+            ps3.setString(2, rs2.getString("kd_jenis_prw"));
+            ps3.setString(3, Valid.SetTgl(tglPeriksa));
+            ps3.setString(4, jam);
+
+            ResultSet rs3 = ps3.executeQuery();
+
+            while (rs3.next()) {
+                insertTemp.setString(1, String.valueOf(i));
+                insertTemp.setString(2, "  " + rs3.getString("Pemeriksaan"));
+                insertTemp.setString(3, rs3.getString("nilai"));
+                insertTemp.setString(4, rs3.getString("satuan"));
+                insertTemp.setString(5, rs3.getString("nilai_rujukan"));
+                insertTemp.setString(6, rs3.getString("keterangan"));
+                for (int c = 7; c <= 38; c++) insertTemp.setString(c, "");
+                insertTemp.executeUpdate();
+                i++;
+            }
+
+            rs3.close();
+            ps3.close();
+        }
+
+        rs2.close();
+        ps2.close();
+        insertTemp.close();
+
+        /* ================= GENERATE PDF ================= */
+        Valid.MyReportPDF("rptPeriksaLab9RSPK.jasper",
+                "report", "::[ Pemeriksaan Laboratorium ]::", param);
+
+        Thread.sleep(400);
+
+        File srcPdf = new File("report", "rptPeriksaLab9RSPK.pdf");
+        if (!srcPdf.exists()) return false;
+
+        File folder = new File("tmpPDF/lab");
+        if (!folder.exists()) folder.mkdirs();
+
+        String timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss")
+                .format(new java.util.Date());
+
+        String namaFile = "Lab_"
+                + noRawat.replaceAll("[^0-9A-Za-z]", "_")
+                + "_" + timestamp + "_secure.pdf";
+
+        File securePdf = new File(folder, namaFile);
+
+        File tempCopy = new File(folder, "temp_" + timestamp + ".pdf");
+
+        java.nio.file.Files.copy(
+                srcPdf.toPath(),
+                tempCopy.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING
+        );
+
+        PdfProtectorBox.encrypt(tempCopy, securePdf, pwdPdf,
+                "SIMRS_INTERNAL", 128);
+
+        tempCopy.delete();
+
+        String fileUrl = WAKirim.uploadPDFToServer(securePdf);
+        if (fileUrl == null) return false;
+
+        String noHP = Sequel.cariIsi(
+                "select no_tlp from pasien where no_rkm_medis=?",
+                noRM);
+
+        if (noHP == null) return false;
+
+        noHP = noHP.replaceAll("[^0-9]", "");
+        if (noHP.startsWith("0")) noHP = "62" + noHP.substring(1);
+
+        String pesan =
+            "*Yth. Bapak/Ibu " + namaPasien + "*\n\n"
+            + "Hasil pemeriksaan laboratorium Anda di *"
+            + akses.getnamars() + "* telah tersedia.\n\n"
+            + fileUrl
+            + "\n\n_Password PDF: tanggal lahir (DDMMYYYY)_";
+
+        return WAKirim.kirimText(noHP, pesan);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    } finally {
         try {
-
-            if (tbDokter.getSelectedRow() == -1) {
-                return false;
-            }
-
-            String noRawat = tbDokter.getValueAt(tbDokter.getSelectedRow(), 0).toString();
-            String tgl = tbDokter.getValueAt(tbDokter.getSelectedRow(), 3).toString();
-            String jam = tbDokter.getValueAt(tbDokter.getSelectedRow(), 4).toString();
-
-            /* ================= QUERY UTAMA (MODEL 9 ASLI) ================= */
-            ps4 = koneksi.prepareStatement(
-                    "select periksa_lab.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,pasien.umur,"
-                    + "petugas.nama,DATE_FORMAT(periksa_lab.tgl_periksa,'%d-%m-%Y') as tgl_periksa,"
-                    + "periksa_lab.jam,periksa_lab.nip,"
-                    + "periksa_lab.dokter_perujuk,periksa_lab.kd_dokter,"
-                    + "concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat,"
-                    + "dokter.nm_dokter,pasien.tgl_lahir "
-                    + "from periksa_lab "
-                    + "inner join reg_periksa on periksa_lab.no_rawat=reg_periksa.no_rawat "
-                    + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
-                    + "inner join petugas on periksa_lab.nip=petugas.nip "
-                    + "inner join dokter on periksa_lab.kd_dokter=dokter.kd_dokter "
-                    + "inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel "
-                    + "inner join kecamatan on pasien.kd_kec=kecamatan.kd_kec "
-                    + "inner join kabupaten on pasien.kd_kab=kabupaten.kd_kab "
-                    + "where periksa_lab.kategori='PK' and "
-                    + "periksa_lab.tgl_periksa=? and periksa_lab.jam=? and periksa_lab.no_rawat=?"
-            );
-
-            ps4.setString(1, tgl);
-            ps4.setString(2, jam);
-            ps4.setString(3, noRawat);
-
-            rs = ps4.executeQuery();
-            if (!rs.next()) {
-                System.out.println("DATA TIDAK DITEMUKAN");
-                return false;
-            }
-
-            /* ================= PASSWORD ================= */
-            String pwdPdf = "01011990";
-            Date lahir = rs.getDate("tgl_lahir");
-            if (lahir != null) {
-                Calendar c = Calendar.getInstance();
-                c.setTime(lahir);
-                pwdPdf = String.format("%02d%02d%04d",
-                        c.get(Calendar.DAY_OF_MONTH),
-                        c.get(Calendar.MONTH) + 1,
-                        c.get(Calendar.YEAR));
-            }
-
-            /* ================= PARAMETER MODEL 9 ================= */
-            Map<String, Object> param = new HashMap<>();
-
-            param.put("noperiksa", rs.getString("no_rawat"));
-            param.put("norm", rs.getString("no_rkm_medis"));
-            param.put("namapasien", rs.getString("nm_pasien"));
-            param.put("jkel", rs.getString("jk"));
-            param.put("umur", rs.getString("umur"));
-            param.put("pengirim", Sequel.cariIsi(
-                    "select nm_dokter from dokter where kd_dokter=?",
-                    rs.getString("dokter_perujuk")));
-            param.put("tanggal", rs.getString("tgl_periksa"));
-            param.put("penjab", rs.getString("nm_dokter"));
-            param.put("petugas", rs.getString("nama"));
-            param.put("jam", rs.getString("jam"));
-            param.put("alamat", rs.getString("alamat"));
-            param.put("namakamar", namakamar);
-
-            /* ================= POLI / KAMAR ================= */
-            String kamar = Sequel.cariIsi(
-                    "select ifnull(kamar_inap.kd_kamar,'') from kamar_inap "
-                    + "where kamar_inap.no_rawat=? order by kamar_inap.tgl_masuk desc,kamar_inap.jam_masuk desc limit 1",
-                    rs.getString("no_rawat")
-            );
-
-            String namakamar;
-
-            if (!kamar.equals("")) {
-                namakamar = kamar + ", " + Sequel.cariIsi(
-                        "select bangsal.nm_bangsal from bangsal inner join kamar "
-                        + "on bangsal.kd_bangsal=kamar.kd_bangsal where kamar.kd_kamar=?",
-                        kamar);
-                param.put("kamar", "Kamar");
-            } else {
-                param.put("kamar", "Poli");
-                namakamar = Sequel.cariIsi(
-                        "select poliklinik.nm_poli from poliklinik "
-                        + "inner join reg_periksa on poliklinik.kd_poli=reg_periksa.kd_poli "
-                        + "where reg_periksa.no_rawat=?",
-                        rs.getString("no_rawat"));
-            }
-
-            param.put("namakamar", namakamar);
-
-            /* ================= QR PENANGGUNG JAWAB ================= */
-            String finger = Sequel.cariIsi(
-                    "select sha1(sidikjari.sidikjari) from sidikjari "
-                    + "inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",
-                    rs.getString("kd_dokter"));
-
-            param.put("finger",
-                    "Dikeluarkan di " + akses.getnamars()
-                    + ", Kabupaten/Kota " + akses.getkabupatenrs()
-                    + "\nDitandatangani secara elektronik oleh "
-                    + rs.getString("nm_dokter")
-                    + "\nID " + (finger.equals("")
-                    ? rs.getString("kd_dokter") : finger)
-                    + "\n" + rs.getString("tgl_periksa"));
-
-            /* ================= QR PEMERIKSA ================= */
-            finger = Sequel.cariIsi(
-                    "select sha1(sidikjari.sidikjari) from sidikjari "
-                    + "inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",
-                    rs.getString("nip"));
-
-            param.put("finger", "http://apps.rspelitakasih.id/verify/?id=" + EnkripsiAES.encrypt("{'x':'lab','t':'" + NoRawat.getText() + "'}"));
-
-            /* ================= KOP RS ================= */
-            param.put("namars", akses.getnamars());
-            param.put("alamatrs", akses.getalamatrs());
-            param.put("kotars", akses.getkabupatenrs());
-            param.put("propinsirs", akses.getpropinsirs());
-            param.put("kontakrs", akses.getkontakrs());
-            param.put("emailrs", akses.getemailrs());
-            param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
-
-            /* ================= GENERATE ================= */
-            Valid.MyReportPDF("rptPeriksaLab9.jasper",
-                    "report", "::[ Pemeriksaan Laboratorium ]::", param);
-
-            File srcPdf = new File("report", "rptPeriksaLab9.pdf");
-            if (!srcPdf.exists()) {
-                return false;
-            }
-
-            // Bersihkan nama pasien
-            String namaPasienFile = rs.getString("nm_pasien")
-                    .replaceAll("[^A-Za-z0-9]", "_");
-
-            // Bersihkan poli/kamar
-            if (namakamar == null || namakamar.trim().equals("")) {
-                namakamar = "Poli";
-            }
-
-            String poliFile = namakamar
-                    .replaceAll("[^A-Za-z0-9]", "_");
-
-            // Tambahkan timestamp unik
-            String timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss")
-                    .format(new java.util.Date());
-
-            // Gabungkan
-            String namaFile = "Lab_" + poliFile + "_" + namaPasienFile + "_" + timestamp + "_secure.pdf";
-
-            File securePdf = new File("report", namaFile);
-
-            PdfProtectorBox.encrypt(srcPdf, securePdf, pwdPdf, "SIMRS_INTERNAL", 128);
-
-            String fileUrl = WAKirim.uploadPDFToServer(securePdf);
-            if (fileUrl == null) {
-                return false;
-            }
-
-            /* ================= NOMOR WA ================= */
-            String noHP = Sequel.cariIsi(
-                    "select no_tlp from pasien where no_rkm_medis=?",
-                    rs.getString("no_rkm_medis"));
-
-            if (noHP == null) {
-                return false;
-            }
-
-            noHP = noHP.replaceAll("[^0-9]", "");
-            if (noHP.startsWith("0")) {
-                noHP = "62" + noHP.substring(1);
-            }
-            if (!noHP.startsWith("62")) {
-                noHP = "62" + noHP;
-            }
-
-            if (noHP.length() < 10) {
-                return false;
-            }
-
-            String pesan
-                    = "*Yth. Bapak/Ibu " + rs.getString("nm_pasien") + "*\n\n"
-                    + "Salam sejahtera 🙏\n\n"
-                    + "Kami informasikan bahwa *hasil pemeriksaan laboratorium* Anda di *"
-                    + akses.getnamars() + "* telah tersedia.\n\n"
-                    + "Silakan mengunduh hasil pemeriksaan melalui tautan berikut:\n"
-                    + fileUrl + "\n\n"
-                    + "_🔐 Password dokumen PDF menggunakan tanggal lahir_\n"
-                    + "_(format: DDMMYYYY)_\n\n"
-                    + "*Layanan & Informasi Rumah Sakit:*\n"
-                    + "🌐 Pendaftaran Online:\n"
-                    + "_https://rspelitakasih.id/epasien_\n\n"
-                    + "💬 Konfirmasi Pendaftaran:\n"
-                    + "_0813-4641-6008_\n\n"
-                    + "🚑 *Unit Gawat Darurat (UGD):*\n"
-                    + "_0823-5490-2767(24 Jam)_\n\n"
-                    + "_Pesan ini dikirim secara otomatis oleh sistem._\n"
-                    + "_Mohon tidak membalas pesan ini dan dapat diabaikan._\n\n"
-                    + "Atas perhatian dan kepercayaan Anda, kami ucapkan *terima kasih*.\n\n"
-                    + "*Hormat kami,*\n"
-                    + "*" + akses.getnamars() + "*";
-
-            return WAKirim.kirimText(noHP, pesan);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            if (rs != null) rs.close();
+            if (ps4 != null) ps4.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
+}
 
     private void KirimWaDelphi() {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -7535,4 +7546,34 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
         }
         this.setCursor(Cursor.getDefaultCursor());
     }
+    /* ================= AUTO DELETE FILE > 3 HARI ================= */
+    private void bersihkanFileLama() {
+        try {
+            File folder = new File("tmpPDF/lab");
+            if (!folder.exists()) {
+                return;
+            }
+
+            File[] files = folder.listFiles();
+            if (files == null) {
+                return;
+            }
+
+            long sekarang = System.currentTimeMillis();
+            long tigaHari = 3L * 24 * 60 * 60 * 1000;
+
+            for (File file : files) {
+                if (file.isFile() && file.getName().contains("_secure.pdf")) {
+                    long umur = sekarang - file.lastModified();
+                    if (umur > tigaHari) {
+                        file.delete();
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
