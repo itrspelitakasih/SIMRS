@@ -3,7 +3,7 @@ package simrskhanza;
 import AESsecurity.EnkripsiAES;
 //import bridging.WAKirim;
 import fungsi.PdfProtectorBox;
-import fungsi.ServiceWAHA;
+import wa.ServiceWAHA;
 import kepegawaian.DlgCariPetugas;
 import keuangan.Jurnal;
 import fungsi.WarnaTable;
@@ -21,6 +21,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,6 +31,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
@@ -45,9 +47,10 @@ import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 import laporan.DlgBerkasRawat;
+import net.sf.jasperreports.engine.JasperExportManager;
 import rekammedis.RMRiwayatPerawatan;
 import surat.SuratKeteranganCovid;
-
+import wa.ServiceWADelphi;
 
 public class DlgCariPeriksaLab extends javax.swing.JDialog {
 
@@ -87,8 +90,8 @@ public class DlgCariPeriksaLab extends javax.swing.JDialog {
     public DlgCariPeriksaLab(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
-        Object[] row = {"No.Rawat", "Pasien", "Petugas", "Tgl.Periksa", "Jam Periksa", "Dokter Perujuk", "Penanggung Jawab"};
+
+        Object[] row = {"No.Rawat", "Pasien", "Petugas", "Tgl.Periksa", "Jam Periksa", "Dokter Perujuk", "Penanggung Jawab", "No. Telp"};
         tabMode = new DefaultTableModel(null, row) {
             @Override
             public boolean isCellEditable(int rowIndex, int colIndex) {
@@ -100,7 +103,7 @@ public class DlgCariPeriksaLab extends javax.swing.JDialog {
         tbDokter.setPreferredScrollableViewportSize(new Dimension(800, 800));
         tbDokter.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 7; i++) {
+        for (i = 0; i < 8; i++) {
             TableColumn column = tbDokter.getColumnModel().getColumn(i);
             if (i == 0) {
                 column.setPreferredWidth(110);
@@ -115,6 +118,8 @@ public class DlgCariPeriksaLab extends javax.swing.JDialog {
             } else if (i == 5) {
                 column.setPreferredWidth(200);
             } else if (i == 6) {
+                column.setPreferredWidth(200);
+            } else if (i == 7) {
                 column.setPreferredWidth(200);
             }
         }
@@ -374,7 +379,6 @@ public class DlgCariPeriksaLab extends javax.swing.JDialog {
         BtnAll = new widget.Button();
         BtnPrint = new widget.Button();
         BtnKeluar = new widget.Button();
-        BtnWa = new widget.Button();
         TabRawat = new javax.swing.JTabbedPane();
         scrollPane1 = new widget.ScrollPane();
         tbDokter = new widget.Table();
@@ -1185,19 +1189,6 @@ public class DlgCariPeriksaLab extends javax.swing.JDialog {
             }
         });
         panelisi1.add(BtnKeluar);
-
-        BtnWa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/wa.png"))); // NOI18N
-        BtnWa.setMnemonic('K');
-        BtnWa.setText("Kirim Wa");
-        BtnWa.setToolTipText("Alt+K");
-        BtnWa.setName("BtnWa"); // NOI18N
-        BtnWa.setPreferredSize(new java.awt.Dimension(100, 30));
-        BtnWa.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnWaActionPerformed(evt);
-            }
-        });
-        panelisi1.add(BtnWa);
 
         internalFrame1.add(panelisi1, java.awt.BorderLayout.PAGE_END);
 
@@ -6169,10 +6160,6 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
         }.execute();
     }//GEN-LAST:event_ppKirimPasienActionPerformed
 
-    private void BtnWaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnWaActionPerformed
-       
-    }//GEN-LAST:event_BtnWaActionPerformed
-
     /**
      * @param args the command line arguments
      */
@@ -6197,7 +6184,6 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.Button BtnKeluar;
     private widget.Button BtnPrint;
     private widget.Button BtnSimpan;
-    private widget.Button BtnWa;
     private widget.TextBox Kd2;
     private widget.TextArea Kesan;
     private widget.editorpane LoadHTML1;
@@ -6277,7 +6263,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
             if (NoRawat.getText().equals("") && kdmem.getText().equals("") && kdptg.getText().equals("") && TCari.getText().equals("")) {
                 ps = koneksi.prepareStatement(
                         "select periksa_lab.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,petugas.nama,periksa_lab.tgl_periksa,periksa_lab.jam,"
-                        + "periksa_lab.dokter_perujuk,periksa_lab.kd_dokter,dokter.nm_dokter,penjab.png_jawab "
+                        + "periksa_lab.dokter_perujuk,periksa_lab.kd_dokter,dokter.nm_dokter,penjab.png_jawab,pasien.no_tlp "
                         + "from periksa_lab inner join reg_periksa on periksa_lab.no_rawat=reg_periksa.no_rawat "
                         + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
                         + "inner join petugas on periksa_lab.nip=petugas.nip "
@@ -6288,7 +6274,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
             } else {
                 ps = koneksi.prepareStatement(
                         "select periksa_lab.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,petugas.nama,periksa_lab.tgl_periksa,periksa_lab.jam,"
-                        + "periksa_lab.dokter_perujuk,periksa_lab.kd_dokter,dokter.nm_dokter,penjab.png_jawab "
+                        + "periksa_lab.dokter_perujuk,periksa_lab.kd_dokter,dokter.nm_dokter,penjab.png_jawab,pasien.no_tlp "
                         + "from periksa_lab inner join reg_periksa on periksa_lab.no_rawat=reg_periksa.no_rawat "
                         + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
                         + "inner join petugas on periksa_lab.nip=petugas.nip "
@@ -6347,7 +6333,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                     }
                     tabMode.addRow(new Object[]{rs.getString("no_rawat"), rs.getString("no_rkm_medis") + " " + rs.getString("nm_pasien") + " (" + kamar + " : " + namakamar + ")",
                         rs.getString("nama"), rs.getString("tgl_periksa"), rs.getString("jam"),
-                        Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?", rs.getString("dokter_perujuk")), rs.getString("nm_dokter")});
+                        Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?", rs.getString("dokter_perujuk")), rs.getString("nm_dokter"), rs.getString("no_tlp")});
                     tabMode.addRow(new Object[]{"", "Cara Bayar : " + rs.getString("png_jawab"), "Pemeriksaan", "Hasil", "Satuan", "Nilai Rujukan", "Keterangan"});
                     ps2 = koneksi.prepareStatement(
                             "select jns_perawatan_lab.kd_jenis_prw,jns_perawatan_lab.nm_perawatan,periksa_lab.biaya from periksa_lab inner join jns_perawatan_lab "
@@ -6949,7 +6935,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                     + "periksa_lab.jam,periksa_lab.nip,periksa_lab.dokter_perujuk,"
                     + "periksa_lab.kd_dokter,"
                     + "concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat,"
-                    + "dokter.nm_dokter,pasien.tgl_lahir "
+                    + "dokter.nm_dokter,pasien.tgl_lahir,pasien.no_tlp "
                     + "from periksa_lab "
                     + "inner join reg_periksa on periksa_lab.no_rawat=reg_periksa.no_rawat "
                     + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
@@ -7139,27 +7125,42 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
 
             Thread.sleep(500);
 
-            /* ================= AMBIL NOMOR HP ================= */
-            String noHP = Sequel.cariIsi(
-                    "select no_tlp from pasien where no_rkm_medis=?",
-                    noRM);
+            // ================= AMBIL NO HP =================
+            String noHP = rs.getString("no_tlp");
 
-            if (noHP == null || noHP.trim().equals("")) {
-                JOptionPane.showMessageDialog(null,
-                        "Nomor HP pasien tidak ditemukan!");
+// ================= VALIDASI NOMOR =================
+            if (noHP == null || noHP.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "Nomor HP pasien tidak tersedia.");
                 return false;
             }
 
-            /* ================= PANGGIL SERVICE WAHA ================= */
-           
+// ================= KIRIM WA =================
             ServiceWAHA service = new ServiceWAHA();
-            return service.kirimLab(
-                    namaPasien,
+            String pesan = "Halo *" + namaPasien + "* 👋\n\n"
+                    + "Berikut hasil Pemeriksaan Laboratorium Anda.\n\n"
+                    + "🔐 Password PDF: tanggal lahir (ddMMyyyy)\n\n"
+                    + "Terima kasih.";
+
+            boolean sukses = service.kirimTextWithFile(
+                    "rptPeriksaLab2.pdf",
+                    "Hasil Laboratorium",
+                    pesan,
                     noHP,
                     noRawat,
-                    pwdPdf,
-                    akses.getnamars()
+                    pwdPdf
             );
+// ================= NOTIFIKASI =================
+            if (sukses) {
+                JOptionPane.showMessageDialog(this,
+                        "Hasil laboratorium berhasil dikirim via WhatsApp.");
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Gagal mengirim WhatsApp.");
+            }
+
+            return sukses;
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -7175,6 +7176,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                 ex.printStackTrace();
             }
         }
+
     }
 
 }

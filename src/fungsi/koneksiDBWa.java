@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.sql.Connection;
 import java.util.Properties;
 import javax.swing.JOptionPane;
+import static org.primefaces.component.selectonemenu.SelectOneMenuBase.PropertyKeys.var;
 
 /**
  *
@@ -48,7 +49,10 @@ public class koneksiDBWa {
                 "Gagal load setting database WA : "+e);
         }
     }
-
+    public static String FOLDERWA(){
+        load();
+        return prop.getProperty("FOLDERWA", "").trim();
+    }
 
     public static String WAHA_BASE_URL() {
         load();

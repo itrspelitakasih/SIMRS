@@ -156,7 +156,7 @@ public final class validasi {
         } catch (Exception e) {
             System.out.println(e);
         }
-    }    
+    }   
     
     public void autoNomer(DefaultTableModel tabMode,String strAwal,Integer pnj,javax.swing.JTextField teks){        
         s=Integer.toString(tabMode.getRowCount()+1);
