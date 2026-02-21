@@ -15,9 +15,14 @@ import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -533,7 +538,7 @@ public class SuratKontrol extends javax.swing.JDialog {
         R2.setPreferredSize(new java.awt.Dimension(90, 23));
         panelCari.add(R2);
 
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-02-2026" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-02-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -556,7 +561,7 @@ public class SuratKontrol extends javax.swing.JDialog {
         jLabel22.setPreferredSize(new java.awt.Dimension(25, 23));
         panelCari.add(jLabel22);
 
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-02-2026" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-02-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -577,7 +582,7 @@ public class SuratKontrol extends javax.swing.JDialog {
         R3.setPreferredSize(new java.awt.Dimension(85, 23));
         panelCari.add(R3);
 
-        DTPCari3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-02-2026" }));
+        DTPCari3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-02-2026" }));
         DTPCari3.setDisplayFormat("dd-MM-yyyy");
         DTPCari3.setName("DTPCari3"); // NOI18N
         DTPCari3.setOpaque(false);
@@ -600,7 +605,7 @@ public class SuratKontrol extends javax.swing.JDialog {
         jLabel25.setPreferredSize(new java.awt.Dimension(25, 23));
         panelCari.add(jLabel25);
 
-        DTPCari4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-02-2026" }));
+        DTPCari4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-02-2026" }));
         DTPCari4.setDisplayFormat("dd-MM-yyyy");
         DTPCari4.setName("DTPCari4"); // NOI18N
         DTPCari4.setOpaque(false);
@@ -684,7 +689,7 @@ public class SuratKontrol extends javax.swing.JDialog {
         TPasien.setBounds(185, 10, 190, 23);
 
         TanggalSurat.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-02-2026 12:22:11" }));
+        TanggalSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-02-2026 11:02:17" }));
         TanggalSurat.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TanggalSurat.setName("TanggalSurat"); // NOI18N
         TanggalSurat.setOpaque(false);
@@ -839,7 +844,7 @@ public class SuratKontrol extends javax.swing.JDialog {
         jLabel14.setBounds(0, 160, 92, 23);
 
         TanggalPeriksa.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalPeriksa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-02-2026 12:22:11" }));
+        TanggalPeriksa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-02-2026 11:02:18" }));
         TanggalPeriksa.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TanggalPeriksa.setName("TanggalPeriksa"); // NOI18N
         TanggalPeriksa.setOpaque(false);
@@ -982,7 +987,7 @@ public class SuratKontrol extends javax.swing.JDialog {
                 }
             }
         }
-        
+
 }//GEN-LAST:event_BtnSimpanActionPerformed
 
     private void BtnSimpanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSimpanKeyPressed
@@ -1589,10 +1594,74 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 param.put("kontakrs", akses.getkontakrs());
                 param.put("emailrs", akses.getemailrs());
                 param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
+                //TAMBAH PARAMETER
+                // ===== ALAMAT =====
+                String alamat = Sequel.cariIsi("select alamat from pasien where no_rkm_medis=?", TNoRM.getText());
+                param.put("alamat", alamat == null ? "" : alamat);
+                // Formatter
+                SimpleDateFormat inputFormat
+                        = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
+                SimpleDateFormat tanggalIndoFormat
+                        = new SimpleDateFormat("dd MMMM yyyy", new Locale("id", "ID"));
+
+                SimpleDateFormat jamFormat
+                        = new SimpleDateFormat("HH:mm");
+
+// ================================
+// TANGGAL PERIKSA KEMBALI
+// ================================
+                Object objKembali = TanggalPeriksa.getSelectedItem();
+
+                String tanggalKembali = "";
+                String jamKembali = "";
+
+                if (objKembali != null) {
+                    try {
+                        Date fullDate = inputFormat.parse(objKembali.toString().trim());
+
+                        // HANYA tanggal Indonesia
+                        tanggalKembali = tanggalIndoFormat.format(fullDate);
+
+                        // Jam terpisah
+                        jamKembali = jamFormat.format(fullDate);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                param.put("tanggal_kembali", tanggalKembali);
+                param.put("jam_kembali", jamKembali);
+
+// ================================
+// TANGGAL SURAT
+// ================================
+                Object objSurat = TanggalSurat.getSelectedItem();
+
+                String tanggalSurat = "";
+                String jamSurat = "";
+
+                if (objSurat != null) {
+                    try {
+                        Date fullDate = inputFormat.parse(objSurat.toString().trim());
+
+                        // HANYA tanggal Indonesia
+                        tanggalSurat = tanggalIndoFormat.format(fullDate);
+
+                        // Jam terpisah
+                        jamSurat = jamFormat.format(fullDate);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                param.put("tanggal_surat", tanggalSurat);
+                param.put("jam_surat", jamSurat);
                 finger = Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?", tbObat.getValueAt(tbObat.getSelectedRow(), 13).toString());
                 //param.put("finger", "Dikeluarkan di " + akses.getnamars() + ", Kabupaten/Kota " + akses.getkabupatenrs() + "\nDitandatangani secara elektronik oleh " + tbObat.getValueAt(tbObat.getSelectedRow(), 14).toString() + "\nID " + (finger.equals("") ? tbObat.getValueAt(tbObat.getSelectedRow(), 13).toString() : finger) + "\n" + Valid.SetTgl3(tbObat.getValueAt(tbObat.getSelectedRow(), 10).toString()));
-                param.put("finger", "http://apps.rspelitakasih.id/verify/?id=" + EnkripsiAES.encrypt("{'x':'lab','t':'" + TNoRM + "'}"));
+                param.put("finger", "https://apps.rspelitakasih.id/verifyPDF/?id=" + EnkripsiAES.encrypt("{'x':'lab','t':'" + TNoRM + "'}"));
                 Sequel.queryu("delete from temporary_booking_registrasi");
                 Sequel.menyimpan("temporary_booking_registrasi", "'0','"
                         + tabMode.getValueAt(tbObat.getSelectedRow(), 0).toString() + "','"
@@ -1615,9 +1684,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         + tabMode.getValueAt(tbObat.getSelectedRow(), 17).toString() + "','','','','','','','','','','','','','','','','','','',''", "Surat Kotrol");
 
                 param.put("umur", Sequel.cariIsi("select pasien.umur from pasien where no_rkm_medis=?", TNoRM.getText()));
-
                 Valid.MyReport("rptSuratKontrolRSPK.jasper", "report", "::[ Surat Kontrol ]::", param);
                 this.setCursor(Cursor.getDefaultCursor());
+
             } else {
                 JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih terlebih dulu data yang mau anda hapus...\n Klik data pada table untuk memilih data...!!!!");
             }
@@ -1702,10 +1771,80 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 param.put("kontakrs", akses.getkontakrs());
                 param.put("emailrs", akses.getemailrs());
                 param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
+                //TAMBAH PARAMETER
+                // ===== ALAMAT =====
+                String alamat = Sequel.cariIsi("select alamat from pasien where no_rkm_medis=?", TNoRM.getText());
+                param.put("alamat", alamat == null ? "" : alamat);
+                // Formatter
+                SimpleDateFormat inputFormat
+                        = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
+                SimpleDateFormat tanggalIndoFormat
+                        = new SimpleDateFormat("dd MMMM yyyy", new Locale("id", "ID"));
+
+                SimpleDateFormat jamFormat
+                        = new SimpleDateFormat("HH:mm");
+
+                // ================================
+                // TANGGAL PERIKSA KEMBALI
+                // ================================
+                Object objKembali = TanggalPeriksa.getSelectedItem();
+
+                String tanggalKembali = "";
+                String jamKembali = "";
+
+                if (objKembali != null) {
+                    try {
+                        Date fullDate = inputFormat.parse(objKembali.toString().trim());
+
+                        // HANYA tanggal Indonesia
+                        tanggalKembali = tanggalIndoFormat.format(fullDate);
+
+                        // Jam terpisah
+                        jamKembali = jamFormat.format(fullDate);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                param.put("tanggal_kembali", tanggalKembali);
+                param.put("jam_kembali", jamKembali);
+
+                // ================================
+                // TANGGAL SURAT
+                // ================================
+                Object objSurat = TanggalSurat.getSelectedItem();
+
+                String tanggalSurat = "";
+                String jamSurat = "";
+
+                if (objSurat != null) {
+                    try {
+                        Date fullDate = inputFormat.parse(objSurat.toString().trim());
+
+                        // HANYA tanggal Indonesia
+                        tanggalSurat = tanggalIndoFormat.format(fullDate);
+
+                        // Jam terpisah
+                        jamSurat = jamFormat.format(fullDate);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                param.put("tanggal_surat", tanggalSurat);
+                param.put("jam_surat", jamSurat);
                 finger = Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?", tbObat.getValueAt(tbObat.getSelectedRow(), 13).toString());
-                //param.put("finger", "Dikeluarkan di " + akses.getnamars() + ", Kabupaten/Kota " + akses.getkabupatenrs() + "\nDitandatangani secara elektronik oleh " + tbObat.getValueAt(tbObat.getSelectedRow(), 14).toString() + "\nID " + (finger.equals("") ? tbObat.getValueAt(tbObat.getSelectedRow(), 13).toString() : finger) + "\n" + Valid.SetTgl3(tbObat.getValueAt(tbObat.getSelectedRow(), 10).toString()));
-                param.put("finger", "http://apps.rspelitakasih.id/verify/?id=" + EnkripsiAES.encrypt("{'x':'lab','t':'" + TNoRM + "'}"));
+                //param.put("finger","https://apps.rspelitakasih.id/verifyPDF/?id=" +EnkripsiAES.encrypt("{'x':'surkon','t':'"+noantri+"'}"));
+                String noantri = tabMode.getValueAt(tbObat.getSelectedRow(), 11).toString();
+
+                param.put("finger",
+                        "https://apps.rspelitakasih.id/verifyPDF/?id="
+                        + EnkripsiAES.encrypt("{'x':'surkon','t':'" + noantri + "'}")
+                );
+
                 Sequel.queryu("delete from temporary_booking_registrasi");
                 Sequel.menyimpan("temporary_booking_registrasi", "'0','"
                         + tabMode.getValueAt(tbObat.getSelectedRow(), 0).toString() + "','"
@@ -1728,63 +1867,21 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         + tabMode.getValueAt(tbObat.getSelectedRow(), 17).toString() + "','','','','','','','','','','','','','','','','','','',''", "Surat Kotrol");
 
                 param.put("umur", Sequel.cariIsi("select pasien.umur from pasien where no_rkm_medis=?", TNoRM.getText()));
-
                 Valid.MyReportPDF("rptSuratKontrolRSPK.jasper", "report", "::[ Surat Kontrol ]::", param);
-                String namaPasien = TPasien.getText();
-                String noRM = TNoRM.getText();
-                // Ambil NoReg sebagai ID dokumen
-                String noReg = tabMode.getValueAt(tbObat.getSelectedRow(), 0).toString();
-
-                String noHP = Sequel.cariIsi(
-                        "select no_tlp from pasien where no_rkm_medis=?",
-                        noRM
-                );
-
-                if (noHP == null || noHP.trim().isEmpty()) {
-                    JOptionPane.showMessageDialog(this,
-                            "Nomor HP pasien tidak tersedia.");
-                    return;
-                }
-
-                String tglLahirStr = Sequel.cariIsi(
-                        "select tgl_lahir from pasien where no_rkm_medis=?",
-                        noRM
-                );
-
-                String pwdPdf = "01011990";
-
-                if (tglLahirStr != null && !tglLahirStr.trim().isEmpty()) {
-                    java.sql.Date tglLahir = java.sql.Date.valueOf(tglLahirStr);
-
-                    Calendar c = Calendar.getInstance();
-                    c.setTime(tglLahir);
-
-                    pwdPdf = String.format("%02d%02d%04d",
-                            c.get(Calendar.DAY_OF_MONTH),
-                            c.get(Calendar.MONTH) + 1,
-                            c.get(Calendar.YEAR));
-                }
-
-                ServiceWAHA service = new ServiceWAHA();
-                String pesan = "Halo *" + namaPasien + "* 👋\n\n"
-                        + "Berikut Surat Kontrol Anda.\n\n"
+                String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
+                        + "Berikut Surat Sakit Anda.\n\n"
                         + "🔐 Password PDF: tanggal lahir (ddMMyyyy)\n\n"
                         + "Terima kasih.";
 
-                boolean sukses = service.kirimTextWithFile(
+                boolean sukses = new ServiceWAHA().kirimDokumenDariNoRM(
                         "rptSuratKontrolRSPK.pdf",
                         "Surat Kontrol",
-                        pesan, // ✅ pesan di sini
-                        noHP,
-                        noReg,
-                        pwdPdf
+                        TNoRM.getText(), // langsung pakai no rekam medis
+                        NoSurat.getText(),
+                        pesan
                 );
-
-                this.setCursor(Cursor.getDefaultCursor());
-            } else {
-                JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih terlebih dulu data yang mau anda hapus...\n Klik data pada table untuk memilih data...!!!!");
+                NotifKontrol();
             }
-            NotifKontrol();
         }
     }//GEN-LAST:event_BtnKirimWaActionPerformed
 
@@ -2126,6 +2223,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         executor.shutdownNow();
         super.dispose();
     }
+
     private void NotifKontrol() {
         try {
             // ⛔ CEK NOTIF AKTIF DULU
@@ -2141,7 +2239,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             );
 
             // Ambil nomor pasien
-            String nohp = Sequel.cariIsi("select no_tlp from pasien where no_rkm_medis=?",TNoRM.getText());
+            String nohp = Sequel.cariIsi("select no_tlp from pasien where no_rkm_medis=?", TNoRM.getText());
 
             if (nohp == null || nohp.trim().equals("")) {
                 System.out.println("Nomor HP kosong, tidak kirim WA");
@@ -2150,19 +2248,19 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
             // Buat pesan
             String pesan
-                    = "📢 *REMINDER KONTROL POLI*\n"
+                    = "*REMINDER KONTROL POLI*\n"
                     + "━━━━━━━━━━━━━━━━━━━━━━\n"
-                    + "👤 *Nama Pasien* : " + TPasien.getText() + "\n"
-                    + "🆔 *No. RM* : " + TNoRM.getText() + "\n"
-                    + "👨‍⚕️ *Dokter Tujuan* : " + NmDokter.getText() + "\n"
-                    + "🏥 *Poli Tujuan* : " + NmPoli.getText() + "\n"
-                    + "📅 *Tanggal Kontrol* : "
+                    + "*Nama Pasien* : " + TPasien.getText() + "\n"
+                    + "*No. RM* : " + TNoRM.getText() + "\n"
+                    + "*Dokter Tujuan* : " + NmDokter.getText() + "\n"
+                    + "*Poli Tujuan* : " + NmPoli.getText() + "\n"
+                    + "*Tanggal Kontrol* : "
                     + TanggalPeriksa.getSelectedItem().toString().substring(0, 10) + "\n"
                     + "━━━━━━━━━━━━━━━━━━━━━━\n"
-                    + "⚠️ _Harap melakukan konfirmasi pendaftaran ke poliklinik._\n"
-                    + "🙏 Terima kasih atas perhatian Anda.\n\n"
-                    + "🏥 *" + akses.getnamars() + "*";
-
+                    + "Cek Pendaftaran di https://rspelitakasih.id/epasien \n"
+                    + "_Harap melakukan konfirmasi pendaftaran ke poliklinik._\n"
+                    + "Terima kasih atas perhatian Anda.\n\n"
+                    + "*" + akses.getnamars() + "*";
 
             ServiceWADelphi wa = new ServiceWADelphi();
 

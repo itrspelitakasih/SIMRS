@@ -30,6 +30,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import AESsecurity.EnkripsiAES;
+import wa.ServiceWAHA;
 
 /**
  * 
@@ -770,10 +771,10 @@ public final class SuratButaWarna extends javax.swing.JDialog {
                 param.put("kontakrs",akses.getkontakrs());
                 param.put("emailrs",akses.getemailrs());    
                 finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());
-                param.put("finger","http://apps.rspelitakasih.id/verify/?id="+EnkripsiAES.encrypt("{'x':'bw','t':'"+NoSurat.getText()+"'}"));
+                param.put("finger","https://apps.rspelitakasih.id/verifyPDF/?id="+EnkripsiAES.encrypt("{'x':'bw','t':'"+NoSurat.getText()+"'}"));
                 //param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+tbObat.getValueAt(tbObat.getSelectedRow(),7).toString()+"\nID "+(finger.equals("")?tbObat.getValueAt(tbObat.getSelectedRow(),6).toString():finger)+"\n"+Valid.SetTgl3(tbObat.getValueAt(tbObat.getSelectedRow(),4).toString()));  
                 param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
-                Valid.MyReportqry("rptSuratTidakButaWarnaRSPK.jasper","report","::[ Surat Keterangan Buta Warna/ Tidak Buta Warna ]::",
+                Valid.MyReportqrypdf("rptSuratTidakButaWarnaRSPK.jasper","report","::[ Surat Keterangan Buta Warna/ Tidak Buta Warna ]::",
                               " select surat_buta_warna.no_surat,surat_buta_warna.tanggalperiksa,surat_buta_warna.hasilperiksa,dokter.nm_dokter,pasien.jk,dokter.nm_dokter,pasien.jk,reg_periksa.kd_dokter,dokter.no_ijn_praktek," +
                               " pasien.nm_pasien,pasien.tgl_lahir,pasien.tmp_lahir,pasien.pekerjaan,dokter.kd_dokter,"+
                               " concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat" +
@@ -781,7 +782,20 @@ public final class SuratButaWarna extends javax.swing.JDialog {
                               " on reg_periksa.no_rkm_medis=pasien.no_rkm_medis and reg_periksa.kd_dokter=dokter.kd_dokter and pasien.kd_kel=kelurahan.kd_kel and "+
                               " pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab and reg_periksa.no_rawat=surat_buta_warna.no_rawat "+
                               " where reg_periksa.no_rawat='"+TNoRw.getText()+"' ",param);
-                this.setCursor(Cursor.getDefaultCursor());  
+                //GENERATE WAHA KIRIM PDF//
+               String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
+                       + "Berikut Surat Sakit Anda.\n\n"
+                       + "🔐 Password PDF: tanggal lahir (ddMMyyyy)\n\n"
+                       + "Terima kasih.";
+
+               boolean sukses = new ServiceWAHA().kirimDokumenDariNoRawat(
+                       "rptSuratTidakButaWarnaRSPK.pdf",
+                       "Surat Keterangan Buta Warna",
+                       TNoRw.getText(),
+                       NoSurat.getText(),
+                       pesan
+               );
+               this.setCursor(Cursor.getDefaultCursor());  
        }
     }//GEN-LAST:event_MnCetakSuratButaWarnaActionPerformed
 

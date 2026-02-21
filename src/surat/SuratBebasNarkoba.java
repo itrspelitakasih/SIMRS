@@ -21,6 +21,7 @@ import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,6 +34,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import kepegawaian.DlgCariDokter;
+import wa.ServiceWAHA;
 
 
 /**
@@ -1106,10 +1108,10 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
             param.put("kontakrs", akses.getkontakrs());
             param.put("emailrs", akses.getemailrs());
             finger = Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?", KdDok.getText());
-            param.put("finger","http://apps.rspelitakasih.id/verify/?id="+EnkripsiAES.encrypt("{'x':'skbn','t':'"+NoSurat.getText()+"'}"));
+            param.put("finger","https://apps.rspelitakasih.id/verifyPDF/?id="+EnkripsiAES.encrypt("{'x':'skbn','t':'"+NoSurat.getText()+"'}"));
             //param.put("finger", "Dikeluarkan di " + akses.getnamars() + ", Kabupaten/Kota " + akses.getkabupatenrs() + "\nDitandatangani secara elektronik oleh " + TDokter.getText() + "\nID " + (finger.equals("") ? KdDok.getText() : finger) + "\n" + TanggalSurat.getSelectedItem());
             param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
-            Valid.MyReportqry(
+            Valid.MyReportqrypdf(
                     "rptBebasNarkoba6p.jasper",
                     "report",
                     "::[ Surat SKBN 2 ]::",
@@ -1139,11 +1141,22 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
                     + " inner join suku_bangsa on pasien.suku_bangsa = suku_bangsa.id "
                     + " inner join dokter on reg_periksa.kd_dokter = dokter.kd_dokter "
                     + " where reg_periksa.no_rawat = '" + TNoRw.getText() + "' ",
-                    param
-            );
+                    param);
+                //GENERATE WAHA KIRIM PDF//
+               String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
+                       + "Berikut SKBN Anda.\n\n"
+                       + "🔐 Password PDF: tanggal lahir (ddMMyyyy)\n\n"
+                       + "Terima kasih.";
 
-            this.setCursor(Cursor.getDefaultCursor());
-        }
+               boolean sukses = new ServiceWAHA().kirimDokumenDariNoRawat(
+                       "rptBebasNarkoba6p.pdf",
+                       "Surat Keterangan Bebas Narkoba",
+                       TNoRw.getText(),
+                       NoSurat.getText(),
+                       pesan
+               );
+               this.setCursor(Cursor.getDefaultCursor());  
+       }
     }//GEN-LAST:event_MnCetakSuratSKBNActionPerformed
 
     private void MnCetakSuratSKBN1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnCetakSuratSKBN1ActionPerformed
@@ -1170,7 +1183,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
                 param.put("kontakrs",akses.getkontakrs());
                 param.put("emailrs",akses.getemailrs());  
                 finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",KdDok.getText());
-                param.put("finger","http://apps.rspelitakasih.id/verify/?id="+EnkripsiAES.encrypt("{'x':'skbn','t':'"+NoSurat.getText()+"'}"));
+                param.put("finger","https://apps.rspelitakasih.id/verifyPDF/?id="+EnkripsiAES.encrypt("{'x':'skbn','t':'"+NoSurat.getText()+"'}"));
                 //param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+TDokter.getText()+"\nID "+(finger.equals("")?KdDok.getText():finger)+"\n"+TanggalSurat.getSelectedItem());  
                 param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
                Valid.MyReportqry(
@@ -1203,11 +1216,22 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
                     + " inner join suku_bangsa on pasien.suku_bangsa = suku_bangsa.id "
                     + " inner join dokter on reg_periksa.kd_dokter = dokter.kd_dokter "
                     + " where reg_periksa.no_rawat = '" + TNoRw.getText() + "' ",
-                    param
-            );
+                    param);
+                //GENERATE WAHA KIRIM PDF//
+               String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
+                       + "Berikut SKBN Anda.\n\n"
+                       + "🔐 Password PDF: tanggal lahir (ddMMyyyy)\n\n"
+                       + "Terima kasih.";
 
-                this.setCursor(Cursor.getDefaultCursor());  
-       }
+               boolean sukses = new ServiceWAHA().kirimDokumenDariNoRawat(
+                       "rptBebasNarkoba5p.pdf",
+                       "Surat Keterangan Bebas Narkoba",
+                       TNoRw.getText(),
+                       NoSurat.getText(),
+                       pesan
+               );
+               this.setCursor(Cursor.getDefaultCursor()); 
+        }
     }//GEN-LAST:event_MnCetakSuratSKBN1ActionPerformed
 
     private void MnCetakSuratSKBN2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnCetakSuratSKBN2ActionPerformed

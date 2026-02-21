@@ -7042,7 +7042,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                     rs.getString("nip"));
 
             param.put("finger2",
-                    "http://apps.rspelitakasih.id/verify/?id="
+                    "https://apps.rspelitakasih.id/verifyPDF/?id="
                     + EnkripsiAES.encrypt("{'x':'lab','t':'" + NoRawat + "'}"));
 
             param.put("namars", akses.getnamars());

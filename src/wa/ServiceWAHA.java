@@ -2,6 +2,7 @@ package wa;
 
 import fungsi.PdfProtectorBox;
 import fungsi.koneksiDBWa;
+import fungsi.sekuel;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -15,6 +16,7 @@ import java.util.Date;
 
 public class ServiceWAHA {
 
+    private sekuel Sequel = new sekuel();
     private static final int CONNECT_TIMEOUT = 7000;
     private static final int READ_TIMEOUT = 15000;
 
@@ -72,7 +74,9 @@ public class ServiceWAHA {
             }
 
             File folder = new File("tmpPDF");
-            if (!folder.exists()) folder.mkdirs();
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
 
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
                     .format(new Date());
@@ -140,7 +144,9 @@ public class ServiceWAHA {
                 + "\"message\":\"" + pesanAman + "\"}";
 
         SendResult r1 = postJson(baseUrl + "/api/sendText", payloadA, apiKey);
-        if (r1.ok) return r1;
+        if (r1.ok) {
+            return r1;
+        }
 
         String payloadB = "{\"chatId\":\"" + phone + "@c.us\","
                 + "\"text\":\"" + pesanAman + "\","
@@ -186,17 +192,21 @@ public class ServiceWAHA {
         } catch (Exception e) {
             return new SendResult(false, 0, null, e.getMessage());
         } finally {
-            if (conn != null) conn.disconnect();
+            if (conn != null) {
+                conn.disconnect();
+            }
         }
     }
 
     private String readBody(HttpURLConnection conn) {
-        try (InputStream is =
-                     (conn.getResponseCode() >= 200 && conn.getResponseCode() < 300)
-                             ? conn.getInputStream()
-                             : conn.getErrorStream()) {
+        try (InputStream is
+                = (conn.getResponseCode() >= 200 && conn.getResponseCode() < 300)
+                ? conn.getInputStream()
+                : conn.getErrorStream()) {
 
-            if (is == null) return "";
+            if (is == null) {
+                return "";
+            }
             return new String(is.readAllBytes(), StandardCharsets.UTF_8);
 
         } catch (Exception e) {
@@ -218,8 +228,8 @@ public class ServiceWAHA {
             String boundary = "----SIMRS-" + System.currentTimeMillis();
             String CRLF = "\r\n";
 
-            HttpURLConnection conn =
-                    (HttpURLConnection) new URL(uploadUrl).openConnection();
+            HttpURLConnection conn
+                    = (HttpURLConnection) new URL(uploadUrl).openConnection();
 
             conn.setConnectTimeout(10000);
             conn.setReadTimeout(20000);
@@ -230,9 +240,8 @@ public class ServiceWAHA {
             conn.setRequestProperty("Content-Type",
                     "multipart/form-data; boundary=" + boundary);
 
-            try (OutputStream output = conn.getOutputStream();
-                 PrintWriter writer = new PrintWriter(
-                         new OutputStreamWriter(output, StandardCharsets.UTF_8), true)) {
+            try (OutputStream output = conn.getOutputStream(); PrintWriter writer = new PrintWriter(
+                    new OutputStreamWriter(output, StandardCharsets.UTF_8), true)) {
 
                 writer.append("--").append(boundary).append(CRLF);
                 writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"")
@@ -252,7 +261,9 @@ public class ServiceWAHA {
                     ? conn.getInputStream()
                     : conn.getErrorStream();
 
-            if (is == null) return null;
+            if (is == null) {
+                return null;
+            }
 
             String response = new String(is.readAllBytes(), StandardCharsets.UTF_8);
 
@@ -284,14 +295,16 @@ public class ServiceWAHA {
             String session = koneksiDBWa.SESSION();
 
             URL url = new URL(baseUrl + "/api/sessions/" + session);
-            HttpURLConnection conn =
-                    (HttpURLConnection) url.openConnection();
+            HttpURLConnection conn
+                    = (HttpURLConnection) url.openConnection();
 
             conn.setRequestMethod("GET");
             conn.setRequestProperty("X-API-Key", apiKey);
 
             int code = conn.getResponseCode();
-            if (code != 200) return false;
+            if (code != 200) {
+                return false;
+            }
 
             String response = new String(
                     conn.getInputStream().readAllBytes(),
@@ -309,15 +322,23 @@ public class ServiceWAHA {
        ================= UTIL ===============================
        ===================================================== */
     private String normalizePhone(String raw) {
-        if (raw == null) return "";
+        if (raw == null) {
+            return "";
+        }
         String d = raw.replaceAll("[^0-9]", "");
-        if (d.startsWith("0")) d = "62" + d.substring(1);
-        if (!d.startsWith("62")) d = "62" + d;
+        if (d.startsWith("0")) {
+            d = "62" + d.substring(1);
+        }
+        if (!d.startsWith("62")) {
+            d = "62" + d;
+        }
         return d;
     }
 
     private String escapeJson(String text) {
-        if (text == null) return "";
+        if (text == null) {
+            return "";
+        }
         return text.replace("\\", "\\\\")
                 .replace("\"", "\\\"")
                 .replace("\r", "")
@@ -328,17 +349,285 @@ public class ServiceWAHA {
        ================= RESULT =============================
        ===================================================== */
     public static class SendResult {
+
         public boolean ok;
         public int httpCode;
         public String responseBody;
         public String error;
 
         public SendResult(boolean ok, int httpCode,
-                          String responseBody, String error) {
+                String responseBody, String error) {
             this.ok = ok;
             this.httpCode = httpCode;
             this.responseBody = responseBody;
             this.error = error;
+        }
+    }
+
+    public boolean kirimFileYangSudahAda(
+            File existingFile,
+            String jenisDokumen,
+            String pesan,
+            String noHP,
+            String idDokumen,
+            String passwordPdf
+    ) {
+
+        if (!isSessionReady()) {
+            System.err.println("WAHA Session belum WORKING.");
+            return false;
+        }
+
+        try {
+
+            if (!existingFile.exists() || existingFile.length() == 0) {
+                System.err.println("File tidak ditemukan atau kosong.");
+                return false;
+            }
+
+            File folder = new File("tmpPDF");
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            String timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss")
+                    .format(new java.util.Date());
+
+            String safeId = (idDokumen == null || idDokumen.trim().isEmpty())
+                    ? "DOC"
+                    : idDokumen.replaceAll("[^0-9A-Za-z]", "_");
+
+            String namaFile = jenisDokumen.replaceAll("\\s+", "_")
+                    + "_" + safeId
+                    + "_" + timestamp + "_secure.pdf";
+
+            File securePdf = new File(folder, namaFile);
+
+            // PROTECT
+            PdfProtectorBox.encrypt(
+                    existingFile,
+                    securePdf,
+                    passwordPdf.trim(),
+                    passwordPdf.trim(),
+                    128
+            );
+
+            // UPLOAD
+            String fileUrl = uploadPDFToServer(securePdf);
+
+            if (fileUrl == null) {
+                System.err.println("Upload gagal.");
+                return false;
+            }
+
+            // Gabungkan pesan + link
+            String finalMessage = pesan + "\n\n🔗 Download:\n" + fileUrl;
+
+            return kirimTextOnly(noHP, finalMessage);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean kirimDokumenDariNoRawat(
+            String namaFileReport,
+            String jenisDokumen,
+            String noRawat,
+            String idDokumen,
+            String pesanDariForm
+    ) {
+
+        if (!isSessionReady()) {
+            System.err.println("WAHA Session belum WORKING.");
+            return false;
+        }
+
+        try {
+
+            File existingFile = new File("report/" + namaFileReport);
+
+            if (!existingFile.exists() || existingFile.length() == 0) {
+                System.err.println("File report tidak ditemukan atau kosong.");
+                return false;
+            }
+
+            // ===== Ambil Data =====
+            String noRM = Sequel.cariIsi(
+                    "select no_rkm_medis from reg_periksa where no_rawat=?",
+                    noRawat
+            );
+
+            if (noRM == null || noRM.trim().isEmpty()) {
+                return false;
+            }
+
+            String noHP = Sequel.cariIsi(
+                    "select no_tlp from pasien where no_rkm_medis=?",
+                    noRM
+            );
+
+            if (noHP == null || noHP.trim().isEmpty()) {
+                return false;
+            }
+
+            String tglLahirStr = Sequel.cariIsi(
+                    "select tgl_lahir from pasien where no_rkm_medis=?",
+                    noRM
+            );
+
+            String passwordPdf = generatePasswordFromBirthDate(tglLahirStr);
+
+            // ===== Protect =====
+            File folder = new File("tmpPDF");
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            String timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss")
+                    .format(new java.util.Date());
+
+            String safeId = idDokumen.replaceAll("[^0-9A-Za-z]", "_");
+
+            File securePdf = new File(folder,
+                    jenisDokumen.replaceAll("\\s+", "_")
+                    + "_" + safeId
+                    + "_" + timestamp + "_secure.pdf");
+
+            PdfProtectorBox.encrypt(
+                    existingFile,
+                    securePdf,
+                    passwordPdf,
+                    passwordPdf,
+                    128
+            );
+
+            // ===== Upload =====
+            String fileUrl = uploadPDFToServer(securePdf);
+            if (fileUrl == null) {
+                return false;
+            }
+
+            // ===== Kirim persis pesan dari form + link =====
+            String finalMessage = pesanDariForm + "\n\n" + fileUrl;
+
+            return kirimTextOnly(noHP, finalMessage);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private String generatePasswordFromBirthDate(String tglLahir) {
+
+        if (tglLahir == null || tglLahir.trim().isEmpty()) {
+            return "01011990";
+        }
+
+        try {
+            java.util.Date date
+                    = new java.text.SimpleDateFormat("yyyy-MM-dd")
+                            .parse(tglLahir.trim());
+
+            return new java.text.SimpleDateFormat("ddMMyyyy")
+                    .format(date);
+
+        } catch (Exception e) {
+            return "01011990";
+        }
+    }
+
+    public boolean kirimDokumenDariNoRM(
+            String namaFileReport,
+            String jenisDokumen,
+            String noRM,
+            String idDokumen,
+            String pesanDariForm
+    ) {
+
+        if (!isSessionReady()) {
+            System.err.println("WAHA Session belum WORKING.");
+            return false;
+        }
+
+        try {
+
+            File existingFile = new File("report/" + namaFileReport);
+
+            if (!existingFile.exists() || existingFile.length() == 0) {
+                System.err.println("File report tidak ditemukan atau kosong.");
+                return false;
+            }
+
+            /* ================= AMBIL DATA PASIEN ================= */
+            String namaPasien = Sequel.cariIsi(
+                    "select nm_pasien from pasien where no_rkm_medis=?",
+                    noRM
+            );
+
+            if (namaPasien == null || namaPasien.trim().isEmpty()) {
+                System.err.println("Nama pasien tidak ditemukan.");
+                return false;
+            }
+
+            String noHP = Sequel.cariIsi(
+                    "select no_tlp from pasien where no_rkm_medis=?",
+                    noRM
+            );
+
+            if (noHP == null || noHP.trim().isEmpty()) {
+                System.err.println("Nomor HP pasien tidak tersedia.");
+                return false;
+            }
+
+            /* ================= PASSWORD ================= */
+            String tglLahirStr = Sequel.cariIsi(
+                    "select tgl_lahir from pasien where no_rkm_medis=?",
+                    noRM
+            );
+
+            String passwordPdf = generatePasswordFromBirthDate(tglLahirStr);
+
+            /* ================= PROTECT ================= */
+            File folder = new File("tmpPDF");
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            String timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss")
+                    .format(new java.util.Date());
+
+            String safeId = idDokumen.replaceAll("[^0-9A-Za-z]", "_");
+
+            File securePdf = new File(folder,
+                    jenisDokumen.replaceAll("\\s+", "_")
+                    + "_" + safeId
+                    + "_" + timestamp + "_secure.pdf");
+
+            PdfProtectorBox.encrypt(
+                    existingFile,
+                    securePdf,
+                    passwordPdf,
+                    passwordPdf,
+                    128
+            );
+
+            /* ================= UPLOAD ================= */
+            String fileUrl = uploadPDFToServer(securePdf);
+            if (fileUrl == null) {
+                return false;
+            }
+
+            /* ================= KIRIM ================= */
+            String finalMessage = pesanDariForm + "\n\n" + fileUrl;
+
+            return kirimTextOnly(noHP, finalMessage);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }
