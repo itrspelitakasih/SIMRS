@@ -786,7 +786,10 @@ public final class SuratButaWarna extends javax.swing.JDialog {
                String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
                        + "Berikut Surat Sakit Anda.\n\n"
                        + "🔐 Password PDF: tanggal lahir (ddMMyyyy)\n\n"
-                       + "Terima kasih.";
+                       + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
+                       + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
+                       + "Terima kasih.\n"
+                       + akses.getnamars() + "\n";
 
                boolean sukses = new ServiceWAHA().kirimDokumenDariNoRawat(
                        "rptSuratTidakButaWarnaRSPK.pdf",

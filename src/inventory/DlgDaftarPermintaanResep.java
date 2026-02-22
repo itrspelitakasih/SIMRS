@@ -1754,7 +1754,8 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(null,"Maaf, silahkan buka Permintaan Resep Pulang...!!!!");
                 TCari.requestFocus();
             }      
-        }            
+        }
+        
 }//GEN-LAST:event_BtnTambahActionPerformed
 
     private void BtnTambahKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnTambahKeyPressed
@@ -3753,6 +3754,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         dlgobt.setLocationRelativeTo(internalFrame1);
         TeksKosong();
         dlgobt.setVisible(true);   
+        
     }
     
     private void TeksKosong(){

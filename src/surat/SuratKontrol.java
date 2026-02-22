@@ -1837,14 +1837,13 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 param.put("tanggal_surat", tanggalSurat);
                 param.put("jam_surat", jamSurat);
                 finger = Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?", tbObat.getValueAt(tbObat.getSelectedRow(), 13).toString());
-                //param.put("finger","https://apps.rspelitakasih.id/verifyPDF/?id=" +EnkripsiAES.encrypt("{'x':'surkon','t':'"+noantri+"'}"));
-                String noantri = tabMode.getValueAt(tbObat.getSelectedRow(), 11).toString();
+                //QR SCAN
+                String norm = TNoRM.getText();
+                String tanggal = tbObat.getValueAt(tbObat.getSelectedRow(), 10).toString().substring(0, 10);
+                String value = norm + "|" + tanggal;
 
-                param.put("finger",
-                        "https://apps.rspelitakasih.id/verifyPDF/?id="
-                        + EnkripsiAES.encrypt("{'x':'surkon','t':'" + noantri + "'}")
-                );
-
+                param.put("finger","https://apps.rspelitakasih.id/verifyPDF/?id="+ EnkripsiAES.encrypt("{'x':'surkon','t':'" + value + "'}"));
+                
                 Sequel.queryu("delete from temporary_booking_registrasi");
                 Sequel.menyimpan("temporary_booking_registrasi", "'0','"
                         + tabMode.getValueAt(tbObat.getSelectedRow(), 0).toString() + "','"
@@ -1868,10 +1867,13 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
                 param.put("umur", Sequel.cariIsi("select pasien.umur from pasien where no_rkm_medis=?", TNoRM.getText()));
                 Valid.MyReportPDF("rptSuratKontrolRSPK.jasper", "report", "::[ Surat Kontrol ]::", param);
-                String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
-                        + "Berikut Surat Sakit Anda.\n\n"
-                        + "🔐 Password PDF: tanggal lahir (ddMMyyyy)\n\n"
-                        + "Terima kasih.";
+                String pesan = "Yth. *" + TPasien.getText() + "*\n\n"
+                    + "Berikut kami kirimkan *Surat Sakit* Anda dari *" + akses.getnamars() + "*.\n\n"
+                    + "🔐 Password PDF: tanggal lahir (format: ddMMyyyy)\n\n"
+                    + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
+                    + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
+                    + "Terima kasih.\n"
+                    + akses.getnamars() + "\n";
 
                 boolean sukses = new ServiceWAHA().kirimDokumenDariNoRM(
                         "rptSuratKontrolRSPK.pdf",
@@ -1973,7 +1975,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables
 
-    private void tampil() {
+    public void tampil() {
         if (R1.isSelected() == true) {
             status = " skdp_bpjs.status='Menunggu' ";
         } else if (R2.isSelected() == true) {

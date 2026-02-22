@@ -106,6 +106,7 @@ public final class DlgCariObat extends javax.swing.JDialog {
         initComponents();
         this.setLocation(10,2);
         setSize(656,250);
+        
 
         tabModeobat=new DefaultTableModel(null,new Object[]{
                 "K","Jumlah","Kode Barang","Nama Barang","Satuan","Kandungan",
@@ -148,7 +149,8 @@ public final class DlgCariObat extends javax.swing.JDialog {
             }else if(i==3){
                 column.setPreferredWidth(200);
             }else if(i==4){
-                column.setPreferredWidth(45);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==5){
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
@@ -461,6 +463,8 @@ public final class DlgCariObat extends javax.swing.JDialog {
         TPasien = new widget.TextBox();
         TNoRM = new widget.TextBox();
         LblNoRawat = new widget.TextBox();
+        jLabel13 = new widget.Label();
+        BB = new widget.TextBox();
         TabRawat = new javax.swing.JTabbedPane();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
@@ -778,7 +782,7 @@ public final class DlgCariObat extends javax.swing.JDialog {
         jLabel8.setBounds(4, 40, 65, 23);
 
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "13-04-2023" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "21-02-2026" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -910,6 +914,18 @@ public final class DlgCariObat extends javax.swing.JDialog {
         LblNoRawat.setPreferredSize(new java.awt.Dimension(207, 23));
         FormInput.add(LblNoRawat);
         LblNoRawat.setBounds(72, 10, 123, 23);
+
+        jLabel13.setText("Berat Badan :");
+        jLabel13.setName("jLabel13"); // NOI18N
+        jLabel13.setPreferredSize(new java.awt.Dimension(68, 23));
+        FormInput.add(jLabel13);
+        jLabel13.setBounds(690, 10, 80, 23);
+
+        BB.setEditable(false);
+        BB.setName("BB"); // NOI18N
+        BB.setPreferredSize(new java.awt.Dimension(207, 23));
+        FormInput.add(BB);
+        BB.setBounds(780, 10, 70, 23);
 
         internalFrame1.add(FormInput, java.awt.BorderLayout.PAGE_START);
 
@@ -1082,6 +1098,7 @@ public final class DlgCariObat extends javax.swing.JDialog {
                 }
             }
         }
+        
 }//GEN-LAST:event_tbObatMouseClicked
 
     private void tbObatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbObatKeyPressed
@@ -2090,6 +2107,7 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private widget.TextBox BB;
     private widget.Button BtnAll;
     private widget.Button BtnCari;
     private widget.Button BtnGudang;
@@ -2128,6 +2146,7 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     private widget.Label jLabel10;
     private widget.Label jLabel11;
     private widget.Label jLabel12;
+    private widget.Label jLabel13;
     private widget.Label jLabel5;
     private widget.Label jLabel6;
     private widget.Label jLabel7;
@@ -3277,6 +3296,7 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     }
 
     private void getDataobat() {
+        
         if(nmgudang.getText().trim().equals("")){
             Valid.textKosong(kdgudang,"Lokasi");
         }else{
@@ -3380,7 +3400,7 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
                 }
             }
         }
-            
+                    
     }
     
     private void getDataobat(int data) {        

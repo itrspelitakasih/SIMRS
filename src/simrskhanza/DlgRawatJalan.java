@@ -1613,7 +1613,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         FormInput.add(btnSurat);
         btnSurat.setBounds(1140, 10, 23, 23);
 
-        cmbJnsSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SKS", "SKK", "Buta Warna","Bebas Narkoba" }));
+        cmbJnsSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Surat Kontrol", "SKK", "Buta Warna","Bebas Narkoba","SKS" }));
         cmbJnsSurat.setName("cmbJnsSurat"); // NOI18N
         cmbJnsSurat.setPreferredSize(new java.awt.Dimension(150, 23));
         cmbJnsSurat.addActionListener(new java.awt.event.ActionListener() {
@@ -5407,6 +5407,16 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
                     dlg.setNoRm(TNoRw.getText(),TNoRM.getText(),TPasien.getText(), KdDok.getText(),TDokter.getText(),DTPCari1.getDate(),DTPCari2.getDate());
                     dlg.tampil();
                     dlg.setVisible(true);
+                    break;
+                }
+                case "Surat Kontrol": {
+                    SuratKontrol form=new SuratKontrol(null,false);
+                    form.isCek();
+                    form.setSize(internalFrame1.getWidth(), internalFrame1.getHeight());
+                    form.setLocationRelativeTo(internalFrame1);
+                    form.emptTeks();
+                    form.setNoRm(TNoRM.getText(), TPasien.getText(), kode_poli, Sequel.cariIsi("select poliklinik.nm_poli from poliklinik where poliklinik.kd_poli=?", kode_poli), KdDok.getText(), TDokter.getText());
+                    form.setVisible(true);
                     break;
                 }
 

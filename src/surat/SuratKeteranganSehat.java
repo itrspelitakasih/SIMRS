@@ -1129,9 +1129,12 @@ public final class SuratKeteranganSehat extends javax.swing.JDialog {
                               " where reg_periksa.no_rawat='"+TNoRw.getText()+"' ",param);
                 //GENERATE WAHA KIRIM PDF//
                 String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
-                        + "Berikut Surat Keterangan Sehat Anda.\n\n"
-                        + "🔐 Password PDF: tanggal lahir (ddMMyyyy)\n\n"
-                        + "Terima kasih.";
+                   + "Berikut Surat Keterangan Sehat Anda.\n\n"
+                   + "🔐 Password PDF: tanggal lahir (format: ddMMyyyy)\n\n"
+                   + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
+                   + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
+                   + "Terima kasih.\n"
+                   + akses.getnamars() + "\n";
 
                 boolean sukses = new ServiceWAHA().kirimDokumenDariNoRawat(
                         "rptSuratKeteranganSehatRSPK.pdf",
@@ -1181,8 +1184,11 @@ public final class SuratKeteranganSehat extends javax.swing.JDialog {
                 //GENERATE WAHA KIRIM PDF//
             String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
                     + "Berikut Surat Keterangan Sehat Anda.\n\n"
-                    + "🔐 Password PDF: tanggal lahir (ddMMyyyy)\n\n"
-                    + "Terima kasih.";
+                    + "🔐 Password PDF: tanggal lahir (format: ddMMyyyy)\n\n"
+                    + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
+                    + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
+                    + "Terima kasih.\n"
+                    + akses.getnamars() + "\n";
 
             boolean sukses = new ServiceWAHA().kirimDokumenDariNoRawat(
                     "rptSuratKeteranganSehatBMI.pdf",
