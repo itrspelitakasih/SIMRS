@@ -345,6 +345,10 @@ public class ServiceWAHA {
                 .replace("\n", "\\n");
     }
 
+//    private String normalisasiNomor(String noHP) {
+//        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//    }
+
     /* =====================================================
        ================= RESULT =============================
        ===================================================== */
@@ -520,22 +524,26 @@ public class ServiceWAHA {
         }
     }
 
-    private String generatePasswordFromBirthDate(String tglLahir) {
-
-        if (tglLahir == null || tglLahir.trim().isEmpty()) {
-            return "01011990";
-        }
+    private String generatePasswordFromBirthDate(String tglLahirStr) {
 
         try {
-            java.util.Date date
-                    = new java.text.SimpleDateFormat("yyyy-MM-dd")
-                            .parse(tglLahir.trim());
 
-            return new java.text.SimpleDateFormat("ddMMyyyy")
-                    .format(date);
+            tglLahirStr = tglLahirStr.trim();
+
+            if (tglLahirStr.length() >= 10) {
+                tglLahirStr = tglLahirStr.substring(0, 10);
+            }
+
+            java.time.LocalDate date
+                    = java.time.LocalDate.parse(tglLahirStr);
+
+            return date.format(
+                    java.time.format.DateTimeFormatter.ofPattern("ddMMyyyy")
+            );
 
         } catch (Exception e) {
-            return "01011990";
+            e.printStackTrace();
+            return "00000000";
         }
     }
 
@@ -630,4 +638,120 @@ public class ServiceWAHA {
             return false;
         }
     }
+
+    public boolean kirimDokumenLAB(
+            String namaFileReport,
+            String jenisDokumen,
+            String noRawat,
+            String idDokumen,
+            String pesanDariForm,
+            String noHPForm
+    ) {
+
+        if (!isSessionReady()) {
+            System.err.println("WAHA Session belum WORKING.");
+            return false;
+        }
+
+        try {
+
+            /* ================= VALIDASI INPUT ================= */
+            noRawat = noRawat == null ? "" : noRawat.trim();
+            if (noRawat.isEmpty()) {
+                System.err.println("No Rawat kosong.");
+                return false;
+            }
+
+            if (noHPForm == null || noHPForm.trim().isEmpty()) {
+                System.err.println("Nomor HP kosong.");
+                return false;
+            }
+
+            String noHP = normalizePhone(noHPForm.trim());
+            if (noHP == null) {
+                System.err.println("Format nomor HP tidak valid.");
+                return false;
+            }
+
+            /* ================= CEK FILE ================= */
+            File existingFile = new File("report/" + namaFileReport);
+            if (!existingFile.exists() || existingFile.length() == 0) {
+                System.err.println("File report tidak ditemukan.");
+                return false;
+            }
+
+            /* ================= AMBIL No RM ================= */
+            String noRM = Sequel.cariIsi(
+                    "select no_rkm_medis from reg_periksa where no_rawat=?",
+                    noRawat
+            );
+
+            if (noRM == null || noRM.trim().isEmpty()) {
+                System.err.println("No RM tidak ditemukan.");
+                return false;
+            }
+
+            /* ================= AMBIL TANGGAL LAHIR ================= */
+            String tglLahirStr = Sequel.cariIsi(
+                    "select tgl_lahir from pasien where no_rkm_medis=?",
+                    noRM.trim()
+            );
+
+            if (tglLahirStr == null || tglLahirStr.trim().isEmpty()) {
+                System.err.println("Tanggal lahir tidak ditemukan.");
+                return false;
+            }
+
+            /* ================= GENERATE PASSWORD ddMMyyyy ================= */
+            tglLahirStr = tglLahirStr.trim();
+            if (tglLahirStr.length() >= 10) {
+                tglLahirStr = tglLahirStr.substring(0, 10);
+            }
+
+            java.time.LocalDate date = java.time.LocalDate.parse(tglLahirStr);
+            String passwordPdf = date.format(
+                    java.time.format.DateTimeFormatter.ofPattern("ddMMyyyy")
+            );
+
+            /* ================= PROTECT PDF ================= */
+            File folder = new File("tmpPDF");
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            String timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss")
+                    .format(new java.util.Date());
+
+            String safeId = idDokumen.replaceAll("[^0-9A-Za-z]", "_");
+
+            File securePdf = new File(folder,
+                    jenisDokumen.replaceAll("\\s+", "_")
+                    + "_" + safeId
+                    + "_" + timestamp + "_secure.pdf");
+
+            PdfProtectorBox.encrypt(
+                    existingFile,
+                    securePdf,
+                    passwordPdf,
+                    passwordPdf,
+                    128
+            );
+
+            /* ================= UPLOAD ================= */
+            String fileUrl = uploadPDFToServer(securePdf);
+            if (fileUrl == null) {
+                return false;
+            }
+
+            /* ================= KIRIM WA ================= */
+            String finalMessage = pesanDariForm + "\n\n" + fileUrl;
+
+            return kirimTextOnly(noHP, finalMessage);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
