@@ -303,8 +303,8 @@
 			</image>
 			<textField>
 				<reportElement x="150" y="2" width="305" height="24" uuid="41b3187b-4276-419c-ba28-92d2cd06cb6e"/>
-				<textElement textAlignment="Center">
-					<font fontName="Cambria" size="11" isBold="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{namars}]]></textFieldExpression>
@@ -456,7 +456,7 @@
 				<text><![CDATA[Pemeriksa]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="328" y="50" width="181" height="15" uuid="f3995151-bd28-4f43-9bce-07185b3d5f20"/>
+				<reportElement stretchType="RelativeToBandHeight" x="322" y="51" width="189" height="15" uuid="f3995151-bd28-4f43-9bce-07185b3d5f20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Cambria" size="10" isBold="true" isUnderline="true"/>
 					<paragraph lineSpacing="Single"/>
@@ -464,7 +464,7 @@
 				<textFieldExpression><![CDATA[$P{petugas}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement x="391" y="-2" width="50" height="50" isRemoveLineWhenBlank="true" uuid="03619d47-c302-4373-bf67-caff9d5b336c"/>
+				<reportElement x="391" y="0" width="50" height="50" isRemoveLineWhenBlank="true" uuid="03619d47-c302-4373-bf67-caff9d5b336c"/>
 				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
 					<jr:codeExpression><![CDATA[$P{finger2}]]></jr:codeExpression>
 				</jr:QRCode>

@@ -1755,6 +1755,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }//GEN-LAST:event_btnDiagnosaKeyPressed
 
     private void BtnKirimWaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKirimWaActionPerformed
+        runBackground(() -> {
+            NotifKontrol();
+        });
         if (tabMode.getRowCount() == 0) {
             JOptionPane.showMessageDialog(null, "Maaf, data sudah habis...!!!!");
             TanggalSurat.requestFocus();
@@ -1842,8 +1845,8 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 String tanggal = tbObat.getValueAt(tbObat.getSelectedRow(), 10).toString().substring(0, 10);
                 String value = norm + "|" + tanggal;
 
-                param.put("finger","https://apps.rspelitakasih.id/verifyPDF/?id="+ EnkripsiAES.encrypt("{'x':'surkon','t':'" + value + "'}"));
-                
+                param.put("finger", "https://apps.rspelitakasih.id/verifyPDF/?id=" + EnkripsiAES.encrypt("{'x':'surkon','t':'" + value + "'}"));
+
                 Sequel.queryu("delete from temporary_booking_registrasi");
                 Sequel.menyimpan("temporary_booking_registrasi", "'0','"
                         + tabMode.getValueAt(tbObat.getSelectedRow(), 0).toString() + "','"
@@ -1868,12 +1871,12 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 param.put("umur", Sequel.cariIsi("select pasien.umur from pasien where no_rkm_medis=?", TNoRM.getText()));
                 Valid.MyReportPDF("rptSuratKontrolRSPK.jasper", "report", "::[ Surat Kontrol ]::", param);
                 String pesan = "Yth. *" + TPasien.getText() + "*\n\n"
-                    + "Berikut kami kirimkan *Surat Sakit* Anda dari *" + akses.getnamars() + "*.\n\n"
-                    + "🔐 Password PDF: tanggal lahir (format: ddMMyyyy)\n\n"
-                    + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
-                    + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
-                    + "Terima kasih.\n"
-                    + akses.getnamars() + "\n";
+                        + "Berikut kami kirimkan *Surat Sakit* Anda dari *" + akses.getnamars() + "*.\n\n"
+                        + "🔐 Password PDF: tanggal lahir (format: ddMMyyyy)\n\n"
+                        + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
+                        + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
+                        + "Terima kasih.\n"
+                        + akses.getnamars() + "\n";
 
                 boolean sukses = new ServiceWAHA().kirimDokumenDariNoRM(
                         "rptSuratKontrolRSPK.pdf",
@@ -1882,7 +1885,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         NoSurat.getText(),
                         pesan
                 );
-                NotifKontrol();
+
             }
         }
     }//GEN-LAST:event_BtnKirimWaActionPerformed

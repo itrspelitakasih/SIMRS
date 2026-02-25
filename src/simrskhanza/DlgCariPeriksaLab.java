@@ -378,8 +378,8 @@ public class DlgCariPeriksaLab extends javax.swing.JDialog {
         BtnAll = new widget.Button();
         BtnPrint = new widget.Button();
         BtnKeluar = new widget.Button();
+        CbPassword = new javax.swing.JComboBox<>();
         BtnKirimWa = new widget.Button();
-        label17 = new widget.Label();
         nohp = new widget.TextBox();
         TabRawat = new javax.swing.JTabbedPane();
         scrollPane1 = new widget.ScrollPane();
@@ -1177,10 +1177,17 @@ public class DlgCariPeriksaLab extends javax.swing.JDialog {
         });
         panelisi1.add(BtnKeluar);
 
+        CbPassword.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        CbPassword.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Password", "No Password" }));
+        CbPassword.setName("CbPassword"); // NOI18N
+        CbPassword.setPreferredSize(new java.awt.Dimension(100, 20));
+        panelisi1.add(CbPassword);
+
         BtnKirimWa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/16whatsapp.png"))); // NOI18N
         BtnKirimWa.setMnemonic('K');
         BtnKirimWa.setText("Kirim ke");
         BtnKirimWa.setToolTipText("Alt+K");
+        BtnKirimWa.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         BtnKirimWa.setName("BtnKirimWa"); // NOI18N
         BtnKirimWa.setPreferredSize(new java.awt.Dimension(100, 30));
         BtnKirimWa.addActionListener(new java.awt.event.ActionListener() {
@@ -1189,11 +1196,6 @@ public class DlgCariPeriksaLab extends javax.swing.JDialog {
             }
         });
         panelisi1.add(BtnKirimWa);
-
-        label17.setText("No Wa :");
-        label17.setName("label17"); // NOI18N
-        label17.setPreferredSize(new java.awt.Dimension(60, 23));
-        panelisi1.add(label17);
 
         nohp.setMinimumSize(new java.awt.Dimension(80, 24));
         nohp.setName("nohp"); // NOI18N
@@ -6292,14 +6294,32 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                         // ================= KIRIM WA =================
                             Thread.sleep(500);
 
-                            boolean sukses = new ServiceWAHA().kirimDokumenLAB(
-                                    namaFilePdf,
-                                    "Hasil Laboratorium",
-                                    noRawat,
-                                    noRawat,
-                                    pesan,
-                                    nohp.getText()
-                            );
+                            boolean sukses;
+
+                            String modePassword = CbPassword.getSelectedItem().toString();
+
+                            if (modePassword.equalsIgnoreCase("Password")) {
+
+                                sukses = new ServiceWAHA().kirimDokumenLAB(
+                                        namaFilePdf,
+                                        "Hasil Laboratorium",
+                                        noRawat,
+                                        noRawat,
+                                        pesan,
+                                        nohp.getText()
+                                );
+
+                            } else {
+
+                                sukses = new ServiceWAHA().kirimDokumenNoPassword(
+                                        namaFilePdf,
+                                        "Hasil Laboratorium",
+                                        nohp.getText(),
+                                        noRawat,
+                                        pesan
+                                );
+                            }
+                            
                         } catch (Exception e) {
                             System.out.println("Notif : " + e);
                         } finally {
@@ -6354,6 +6374,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.Button BtnKirimWa;
     private widget.Button BtnPrint;
     private widget.Button BtnSimpan;
+    private javax.swing.JComboBox<String> CbPassword;
     private widget.TextBox Kd2;
     private widget.TextArea Kesan;
     private widget.editorpane LoadHTML1;
@@ -6411,7 +6432,6 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.Label label13;
     private widget.Label label15;
     private widget.Label label16;
-    private widget.Label label17;
     private widget.Label label18;
     private widget.Label label9;
     private widget.TextBox nmmem;

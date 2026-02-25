@@ -1930,6 +1930,7 @@ public class frmUtama extends javax.swing.JFrame {
         jSeparator16 = new javax.swing.JPopupMenu.Separator();
         MnAntrianPoli = new javax.swing.JMenuItem();
         MnLaporanRL = new javax.swing.JMenuItem();
+        MnKadaluarsa = new javax.swing.JMenuItem();
 
         DlgLogin.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         DlgLogin.setName("DlgLogin"); // NOI18N
@@ -2136,7 +2137,7 @@ public class frmUtama extends javax.swing.JFrame {
 
         tanggal.setEditable(false);
         tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06/02/2026" }));
+        tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "24/02/2026" }));
         tanggal.setDisplayFormat("dd/MM/yyyy");
         tanggal.setName("tanggal"); // NOI18N
         tanggal.setOpaque(false);
@@ -8460,7 +8461,7 @@ public class frmUtama extends javax.swing.JFrame {
         MnLaporanRL.setBackground(new java.awt.Color(255, 255, 254));
         MnLaporanRL.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         MnLaporanRL.setForeground(new java.awt.Color(50, 90, 40));
-        MnLaporanRL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/tasksgroup.png"))); // NOI18N
+        MnLaporanRL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/report24.png"))); // NOI18N
         MnLaporanRL.setText("Laporan RL");
         MnLaporanRL.setName("MnLaporanRL"); // NOI18N
         MnLaporanRL.setPreferredSize(new java.awt.Dimension(205, 30));
@@ -8470,6 +8471,20 @@ public class frmUtama extends javax.swing.JFrame {
             }
         });
         jMenuUpdate.add(MnLaporanRL);
+
+        MnKadaluarsa.setBackground(new java.awt.Color(255, 255, 254));
+        MnKadaluarsa.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnKadaluarsa.setForeground(new java.awt.Color(50, 90, 40));
+        MnKadaluarsa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Pills.png"))); // NOI18N
+        MnKadaluarsa.setText("Kadaluarsa Obat");
+        MnKadaluarsa.setName("MnKadaluarsa"); // NOI18N
+        MnKadaluarsa.setPreferredSize(new java.awt.Dimension(205, 30));
+        MnKadaluarsa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnKadaluarsaActionPerformed(evt);
+            }
+        });
+        jMenuUpdate.add(MnKadaluarsa);
 
         MenuBar.add(jMenuUpdate);
 
@@ -14909,6 +14924,12 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         Valid.panggilUrl("laporan");
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_MnLaporanRLActionPerformed
+
+    private void MnKadaluarsaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnKadaluarsaActionPerformed
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        Valid.panggilUrl("obatqrqr2grvw/dashboard_ed.php");
+        this.setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_MnKadaluarsaActionPerformed
 
     private void btnKategoriPerpustakaanActionPerformed(java.awt.event.ActionEvent evt) {
         isTutup();
@@ -23529,6 +23550,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     private javax.swing.JMenuItem MnInfoLaborat2;
     private javax.swing.JMenuItem MnInfoLaborat3;
     private javax.swing.JMenuItem MnInfoMobileJKN;
+    private javax.swing.JMenuItem MnKadaluarsa;
     private javax.swing.JMenuItem MnKoleksiPenelitian;
     private javax.swing.JMenuItem MnLaporanRL;
     private javax.swing.JMenuItem MnLogin;
