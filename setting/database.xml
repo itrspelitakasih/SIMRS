@@ -2,16 +2,16 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <comment>KhanzaHMS</comment> 
-    <entry key="HOST">5k7+C7EnUw9nUv2Nix+DBA==</entry>
+    <entry key="HOST">YnF1fPmK3MdR5KiIQ4klbA==</entry>
     <entry key="DATABASE">II7kWWVCcygbZSbR0kyAiA==</entry>
     <entry key="PORT">E0ORmBXhoVXo8Hx2rC3QBQ==</entry>
     <entry key="USER">3fsjwvKJn8IpzysMeNu3bA==</entry>
     <entry key="PAS">YJclwRpDyd6OLNGeJZrJew==</entry>
     <entry key="CARICEPAT">aktif</entry>
-    <entry key="HOSTHYBRIDWEB">CvuOi+ONlhlR0B7s1+7sug==</entry>
+    <entry key="HOSTHYBRIDWEB">YnF1fPmK3MdR5KiIQ4klbA==</entry>
     <entry key="USERHYBRIDWEB">FRNi6PtBDhBUveVhACTQkw==</entry>
     <entry key="PASHYBRIDWEB">CdQlnSfhHEHpEgIwWRnIOA==</entry>
-    <entry key="HYBRIDWEB">webapps</entry>
+    <entry key="HYBRIDWEB">webappsrspk2</entry>
     <entry key="PORTWEB">80</entry>
     <entry key="AKTIFKANWARNARALAN">yes</entry>
     <entry key="ANTRIAN">player</entry>
@@ -112,7 +112,7 @@
     <entry key="URLAPIINHEALTH">http://development.inhealth.co.id/pelkesws2</entry>
     <entry key="TOKENINHEALTH">YJclwRpDyd6OLNGeJZrJew==</entry>
     <entry key="PEMBULATANHARGAOBAT">no</entry>
-    <entry key="AKTIFKANBATCHOBAT">no</entry>
+    <entry key="AKTIFKANBATCHOBAT">yes</entry>
     <entry key="CETAKRINCIANOBAT">no</entry>
     <entry key="DEPOAKTIFOBAT"></entry>
     <entry key="VALIDASIULANGBERIOBAT">no</entry>
@@ -126,7 +126,7 @@
     <entry key="USERDUKCAPIL">YJclwRpDyd6OLNGeJZrJew==</entry>
     <entry key="PASSDUKCAPIL">YJclwRpDyd6OLNGeJZrJew==</entry>
     <entry key="IPUSERDUKCAPIL">10.160.57.2</entry>
-    <entry key="AKTIFKANTRACKSQL">cj8o6eBdSn+TiUrBgGoElQ==</entry>
+    <entry key="AKTIFKANTRACKSQL">88tE0ZUstuza/UrtfBYkFA==</entry>
     <entry key="HOSTWSLICA">http://localhost/bridging-lica/public</entry>
     <entry key="KEYWSLICA">yLT3/8b0KAb5QK1ueFkW7g==</entry>
     <entry key="HOSTFUJI">YnF1fPmK3MdR5KiIQ4klbA==</entry>
@@ -204,22 +204,23 @@
     <entry key="USERDUTAPARKING">3fsjwvKJn8IpzysMeNu3bA==</entry>
     <entry key="PASDUTAPARKING">YJclwRpDyd6OLNGeJZrJew==</entry>
     <!-- SETTING WEB SERVER WA -->
-    <entry key="WAGATEWAY">maskofa</entry>
-    <entry key="HOSTWAWEB">naEwz5xm184zPyUVtLhb8g==</entry>
-    <entry key="PORTWEBWA">gq12A7IIaBgZ3Jh33icGRQ==</entry>
-    <entry key="FOLDERFILEWA">WAGW</entry>
-    <!--SETTING DATABASEWA-->
-    <entry key="HOSTWA">YnF1fPmK3MdR5KiIQ4klbA==</entry> 
-    <entry key="PORTWA">E0ORmBXhoVXo8Hx2rC3QBQ==</entry>
+    <entry key="WAGATEWAY">maskofa</entry>  <!--fonnte,maskofa-->
+    <entry key="HOSTWA">YnF1fPmK3MdR5KiIQ4klbA==</entry>
     <entry key="DATABASEWA">0UrT1WN+rQHnqufxxCo7Jg==</entry>
+    <entry key="PORTWA">E0ORmBXhoVXo8Hx2rC3QBQ==</entry>
     <entry key="USERWA">3fsjwvKJn8IpzysMeNu3bA==</entry>
-    <entry key="PASSWA">YJclwRpDyd6OLNGeJZrJew==</entry>
-    <entry key="NOTIFWA">yes</entry>
+    <entry key="PASWA">YJclwRpDyd6OLNGeJZrJew==</entry>
+    <entry key="FOLDERWA">wa-gateway\media</entry>
+    <entry key="NOTIFWAKONTROL">yes</entry>
     <!-- ================= WAHA CONFIG ================= -->
-    <entry key="WAHA_BASE_URL">http://10.66.66.6:3031</entry>
+    <entry key="WAHA_BASE_URL">https://waha.rspelitakasih.id</entry>
     <entry key="WAHA_SESSION">default</entry>
     <entry key="WAHA_API_KEY">dc14b5e569684e6f919e35d3b75dd651</entry>
     <entry key="TOKEN">5cc70a324eca4f50803f368edefa11d8</entry>
     <entry key="WAHA_FILE_BASE_URL">https://apps.rspelitakasih.id</entry>
+    <!-- ================= GOWA CONFIG ================= -->
+    <entry key="GOWA_BASE_URL">https://gowa.rspelitakasih.id</entry>
+    <entry key="GOWA_USERNAME">admin</entry>
+    <entry key="GOWA_PASSWORD">2326dc9c3a8746f29960d6922e435ac2</entry>
     
 </properties>

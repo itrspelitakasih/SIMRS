@@ -33,6 +33,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import kepegawaian.DlgCariDokter;
+import wa.GoWAService;
 import wa.ServiceWAHA;
 
 /**
@@ -210,6 +211,10 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         BtnPrint = new widget.Button();
         BtnAll = new widget.Button();
         BtnKeluar = new widget.Button();
+        CbPassword = new javax.swing.JComboBox<>();
+        CbSurat = new javax.swing.JComboBox<>();
+        nohp = new widget.TextBox();
+        BtnKirimGOWa = new widget.Button();
         panelGlass9 = new widget.panelisi();
         jLabel19 = new widget.Label();
         DTPCari1 = new widget.Tanggal();
@@ -476,6 +481,37 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         });
         panelGlass8.add(BtnKeluar);
 
+        CbPassword.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        CbPassword.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Password", "No Password" }));
+        CbPassword.setName("CbPassword"); // NOI18N
+        CbPassword.setPreferredSize(new java.awt.Dimension(100, 20));
+        panelGlass8.add(CbPassword);
+
+        CbSurat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        CbSurat.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "6p", "5p" }));
+        CbSurat.setName("CbSurat"); // NOI18N
+        CbSurat.setPreferredSize(new java.awt.Dimension(50, 20));
+        panelGlass8.add(CbSurat);
+
+        nohp.setMinimumSize(new java.awt.Dimension(80, 24));
+        nohp.setName("nohp"); // NOI18N
+        nohp.setPreferredSize(new java.awt.Dimension(100, 23));
+        panelGlass8.add(nohp);
+
+        BtnKirimGOWa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/16whatsapp.png"))); // NOI18N
+        BtnKirimGOWa.setMnemonic('K');
+        BtnKirimGOWa.setText("Kirim PDF");
+        BtnKirimGOWa.setToolTipText("Alt+K");
+        BtnKirimGOWa.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimGOWa.setName("BtnKirimGOWa"); // NOI18N
+        BtnKirimGOWa.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnKirimGOWa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnKirimGOWaActionPerformed(evt);
+            }
+        });
+        panelGlass8.add(BtnKirimGOWa);
+
         jPanel3.add(panelGlass8, java.awt.BorderLayout.CENTER);
 
         panelGlass9.setName("panelGlass9"); // NOI18N
@@ -488,7 +524,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-08-2025" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-02-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -502,7 +538,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-08-2025" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-02-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -622,7 +658,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         jLabel18.setBounds(511, 40, 100, 23);
 
         TanggalSurat.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-08-2025" }));
+        TanggalSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-02-2026" }));
         TanggalSurat.setDisplayFormat("dd-MM-yyyy");
         TanggalSurat.setName("TanggalSurat"); // NOI18N
         TanggalSurat.setOpaque(false);
@@ -1163,21 +1199,25 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
                     + " where reg_periksa.no_rawat = '" + TNoRw.getText() + "' ",
                     param);
             //GENERATE WAHA KIRIM PDF//
-            String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
-                    + "Berikut SKBN Anda.\n\n"
-                    + "🔐 Password PDF: tanggal lahir (format: ddMMyyyy)\n\n"
-                    + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
-                    + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
-                    + "Terima kasih.\n"
-                    + akses.getnamars() + "\n";
-
-            boolean sukses = new ServiceWAHA().kirimDokumenDariNoRawat(
-                    "rptBebasNarkoba6p.pdf",
-                    "Surat Keterangan Bebas Narkoba",
-                    TNoRw.getText(),
-                    NoSurat.getText(),
-                    pesan
-            );
+//            String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
+//                    + "Berikut SKBN Anda.\n\n"
+//                    + "🔐 Password PDF: tanggal lahir (format: ddMMyyyy)\n\n"
+//                    + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
+//                    + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
+//                    + "Terima kasih.\n"
+//                    + akses.getnamars() + "\n";
+//
+//            String modePassword = CbPassword.getSelectedItem().toString();
+//            boolean pakaiPassword = modePassword.equalsIgnoreCase("Password");
+//
+//            boolean sukses = GoWAService.kirimDariNoRawat(
+//                    "rptBebasNarkoba6p.pdf",
+//                    "SKBN",
+//                    TNoRw.getText(),
+//                    nohp.getText(),
+//                    pakaiPassword,
+//                    pesan
+//            );
             this.setCursor(Cursor.getDefaultCursor());
         }
     }//GEN-LAST:event_MnCetakSuratSKBNActionPerformed
@@ -1241,21 +1281,25 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
                     + " where reg_periksa.no_rawat = '" + TNoRw.getText() + "' ",
                     param);
             //GENERATE WAHA KIRIM PDF//
-            String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
-                    + "Berikut SKBN Anda.\n\n"
-                    + "🔐 Password PDF: tanggal lahir (format: ddMMyyyy)\n\n"
-                    + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
-                    + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
-                    + "Terima kasih.\n"
-                    + akses.getnamars() + "\n";
-
-            boolean sukses = new ServiceWAHA().kirimDokumenDariNoRawat(
-                    "rptBebasNarkoba5p.pdf",
-                    "Surat Keterangan Bebas Narkoba",
-                    TNoRw.getText(),
-                    NoSurat.getText(),
-                    pesan
-            );
+//            String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
+//                    + "Berikut SKBN Anda.\n\n"
+//                    + "🔐 Password PDF: tanggal lahir (format: ddMMyyyy)\n\n"
+//                    + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
+//                    + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
+//                    + "Terima kasih.\n"
+//                    + akses.getnamars() + "\n";
+//
+//            String modePassword = CbPassword.getSelectedItem().toString();
+//            boolean pakaiPassword = modePassword.equalsIgnoreCase("Password");
+//
+//            boolean sukses = GoWAService.kirimDariNoRawat(
+//                    "rptBebasNarkoba5p.pdf",
+//                    "SKBN",
+//                    TNoRw.getText(),
+//                    nohp.getText(),
+//                    pakaiPassword,
+//                    pesan
+//            );
             this.setCursor(Cursor.getDefaultCursor());
         }
     }//GEN-LAST:event_MnCetakSuratSKBN1ActionPerformed
@@ -1383,6 +1427,171 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
         Valid.pindah(evt, Kategori, Keperluan);
     }//GEN-LAST:event_btnDokterKeyPressed
 
+    private void BtnKirimGOWaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKirimGOWaActionPerformed
+
+        if (TPasien.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null,
+                    "Maaf, Silahkan anda pilih dulu pasien...!!!");
+            return;
+        }
+
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+
+            // =====================================================
+            // ================== PARAM REPORT =====================
+            // =====================================================
+            Map<String, Object> param = new HashMap<>();
+
+            param.put("keperluan", Keperluan.getText());
+            param.put("tanggalsurat", TanggalSurat.getDate());
+            param.put("kategori", Kategori.getSelectedItem().toString());
+            param.put("nosurat", NoSurat.getText());
+            param.put("dokter", TDokter.getText());
+            param.put("opiat", hasil1.getSelectedItem().toString());
+            param.put("ganja", hasil2.getSelectedItem().toString());
+            param.put("amphetamin", hasil3.getSelectedItem().toString());
+            param.put("methamphetamin", hasil4.getSelectedItem().toString());
+            param.put("benzodiazepin", hasil5.getSelectedItem().toString());
+            param.put("cocain", hasil6.getSelectedItem().toString());
+
+            param.put("namars", akses.getnamars());
+            param.put("alamatrs", akses.getalamatrs());
+            param.put("kotars", akses.getkabupatenrs());
+            param.put("propinsirs", akses.getpropinsirs());
+            param.put("kontakrs", akses.getkontakrs());
+            param.put("emailrs", akses.getemailrs());
+
+            param.put("finger",
+                    "https://apps.rspelitakasih.id/verifyPDF/?id="
+                    + EnkripsiAES.encrypt(
+                            "{'x':'skbn','t':'" + NoSurat.getText() + "'}"
+                    )
+            );
+
+            param.put("logo",
+                    Sequel.cariGambar("select setting.logo from setting"));
+
+            // =====================================================
+            // ================== PILIH REPORT =====================
+            // =====================================================
+            String pilihanSurat = String.valueOf(
+                    CbSurat.getSelectedItem()
+            ).trim().toLowerCase();
+
+            String namaJasper;
+            String namaPdf;
+            String jenisDokumen;
+
+            switch (pilihanSurat) {
+
+                case "5p":
+                    namaJasper = "rptBebasNarkoba5p.jasper";
+                    namaPdf = "rptBebasNarkoba5p.pdf";
+                    jenisDokumen = "SKBN 5P";
+                    break;
+
+                case "6p":
+                    namaJasper = "rptBebasNarkoba6p.jasper";
+                    namaPdf = "rptBebasNarkoba6p.pdf";
+                    jenisDokumen = "SKBN 6P";
+                    break;
+
+                default:
+                    JOptionPane.showMessageDialog(null,
+                            "Jenis surat tidak valid!");
+                    return;
+            }
+
+            // =====================================================
+            // ================== GENERATE PDF =====================
+            // =====================================================
+            Valid.MyReportqrypdf(
+                    namaJasper,
+                    "report",
+                    "::[ Surat SKBN ]::",
+                    " select reg_periksa.tgl_registrasi, "
+                    + " reg_periksa.jam_reg, "
+                    + " reg_periksa.no_rawat, "
+                    + " perusahaan_pasien.nama_perusahaan, "
+                    + " pasien.keluarga, "
+                    + " pasien.namakeluarga, "
+                    + " pasien.tgl_lahir, "
+                    + " concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur) as umur, "
+                    + " pasien.tmp_lahir, "
+                    + " pasien.agama, "
+                    + " pasien.nm_pasien, "
+                    + " pasien.jk, "
+                    + " pasien.pekerjaan, "
+                    + " concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat, "
+                    + " suku_bangsa.nama_suku_bangsa, "
+                    + " reg_periksa.kd_dokter, "
+                    + " dokter.no_ijn_praktek "
+                    + " from reg_periksa "
+                    + " inner join pasien on reg_periksa.no_rkm_medis = pasien.no_rkm_medis "
+                    + " inner join kelurahan on pasien.kd_kel = kelurahan.kd_kel "
+                    + " inner join perusahaan_pasien on pasien.perusahaan_pasien = perusahaan_pasien.kode_perusahaan "
+                    + " inner join kecamatan on pasien.kd_kec = kecamatan.kd_kec "
+                    + " inner join kabupaten on pasien.kd_kab = kabupaten.kd_kab "
+                    + " inner join suku_bangsa on pasien.suku_bangsa = suku_bangsa.id "
+                    + " inner join dokter on reg_periksa.kd_dokter = dokter.kd_dokter "
+                    + " where reg_periksa.no_rawat = '" + TNoRw.getText() + "' ",
+                    param
+            );
+
+            // =====================================================
+            // ================== MODE PASSWORD ====================
+            // =====================================================
+            boolean pakaiPassword
+                    = "password".equalsIgnoreCase(
+                            String.valueOf(
+                                    CbPassword.getSelectedItem()
+                            ).trim()
+                    );
+
+            // =====================================================
+            // ================== PESAN WA =========================
+            // =====================================================
+            String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
+                    + "Berikut " + jenisDokumen + " Anda.\n\n"
+                    + (pakaiPassword
+                            ? "🔐 Password PDF: tanggal lahir (format: ddMMyyyy)\n\n"
+                            : "")
+                    + "⚠️ Pesan ini merupakan notifikasi otomatis.\n"
+                    + "Nomor ini tidak dapat menerima balasan.\n\n"
+                    + "Terima kasih.\n"
+                    + akses.getnamars();
+
+            // =====================================================
+            // ================== KIRIM WA =========================
+            // =====================================================
+            boolean sukses = GoWAService.kirimDariNoRawat(
+                    namaPdf,
+                    jenisDokumen,
+                    TNoRw.getText(),
+                    nohp.getText(),
+                    pakaiPassword,
+                    pesan
+            );
+
+            if (sukses) {
+                JOptionPane.showMessageDialog(null,
+                        "Berhasil dikirim via WhatsApp ✅");
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "Gagal mengirim WhatsApp ❌");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,
+                    "Terjadi kesalahan: " + e.getMessage());
+        } finally {
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }//GEN-LAST:event_BtnKirimGOWaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1406,8 +1615,11 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
     private widget.Button BtnEdit;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
+    private widget.Button BtnKirimGOWa;
     private widget.Button BtnPrint;
     private widget.Button BtnSimpan;
+    private javax.swing.JComboBox<String> CbPassword;
+    private javax.swing.JComboBox<String> CbSurat;
     private widget.CekBox ChkInput;
     private widget.Tanggal DTPCari1;
     private widget.Tanggal DTPCari2;
@@ -1455,6 +1667,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
     private widget.Label jLabel7;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.TextBox nohp;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
     private widget.Table tbObat;
@@ -1694,6 +1907,67 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
             e.printStackTrace();
             // Fallback: set nomor manual
             NoSurat.setText("0001/SKBN/RJ-RSPK/VIII/2025");
+        }
+    }
+
+    private void kirimWA() {
+
+        // ================= CEK PASSWORD =================
+        boolean pakaiPassword
+                = "Password".equalsIgnoreCase(
+                        String.valueOf(CbPassword.getSelectedItem()).trim()
+                );
+
+        // ================= CEK JENIS SURAT =================
+        String pilihanSurat = String.valueOf(
+                CbSurat.getSelectedItem()
+        ).trim();
+
+        String namaReport;
+        String jenisDokumen;
+
+        if ("5P".equalsIgnoreCase(pilihanSurat)) {
+
+            namaReport = "rptSuratSKBN5P.pdf";
+            jenisDokumen = "Surat SKBN 5P";
+
+        } else if ("6P".equalsIgnoreCase(pilihanSurat)) {
+
+            namaReport = "rptSuratSKBN6P.pdf";
+            jenisDokumen = "Surat SKBN 6P";
+
+        } else {
+
+            JOptionPane.showMessageDialog(null,
+                    "Silakan pilih jenis surat (5P / 6P)");
+            return;
+        }
+
+        // ================= PESAN =================
+        String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
+                + "Berikut SKBN Anda.\n\n"
+                + "🔐 Password PDF: tanggal lahir (format: ddMMyyyy)\n\n"
+                + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
+                + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
+                + "Terima kasih.\n"
+                + akses.getnamars() + "\n";
+
+        // ================= KIRIM =================
+        boolean sukses = GoWAService.kirimDariNoRawat(
+                namaReport,
+                jenisDokumen,
+                TNoRw.getText(),
+                nohp.getText(),
+                pakaiPassword,
+                pesan
+        );
+
+        if (sukses) {
+            JOptionPane.showMessageDialog(null,
+                    "Berhasil dikirim ✅");
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "Gagal mengirim ❌");
         }
     }
 }

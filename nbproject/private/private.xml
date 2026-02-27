@@ -20,11 +20,10 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Khanza/SIMRS/src/fungsi/WarnaTable2.java</file>
-            <file>file:/D:/Khanza/SIMRS/src/simrskhanza/frmUtama.java</file>
-            <file>file:/D:/Khanza/SIMRS/setting/database.xml</file>
-            <file>file:/D:/Khanza/SIMRS/src/inventory/DlgMonitoringKadaluarsa.java</file>
-            <file>file:/D:/Khanza/SIMRS/src/inventory/DlgCariObat.java</file>
+            <file>file:/D:/RSPK/Khanza/SIMRS/src/fungsi/koneksiDBWa.java</file>
+            <file>file:/D:/RSPK/Khanza/SIMRS/setting/database.xml</file>
+            <file>file:/D:/RSPK/Khanza/SIMRS/src/simrskhanza/DlgCariPeriksaLab.java</file>
+            <file>file:/D:/RSPK/Khanza/SIMRS/src/wa/GoWAService.java</file>
         </group>
     </open-files>
 </project-private>

@@ -35,6 +35,7 @@ import org.apache.poi.hssf.record.formula.functions.Setvalue;
 import AESsecurity.EnkripsiAES;
 import java.io.File;
 import java.sql.SQLException;
+import wa.GoWAService;
 import wa.ServiceWAHA;
 
 
@@ -174,6 +175,9 @@ public final class SuratKeteranganSehat extends javax.swing.JDialog {
         BtnPrint = new widget.Button();
         BtnAll = new widget.Button();
         BtnKeluar = new widget.Button();
+        CbPassword = new javax.swing.JComboBox<>();
+        nohp = new widget.TextBox();
+        BtnKirimGOWa = new widget.Button();
         panelGlass9 = new widget.panelisi();
         jLabel19 = new widget.Label();
         DTPCari1 = new widget.Tanggal();
@@ -421,6 +425,31 @@ public final class SuratKeteranganSehat extends javax.swing.JDialog {
         });
         panelGlass8.add(BtnKeluar);
 
+        CbPassword.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        CbPassword.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Password", "No Password" }));
+        CbPassword.setName("CbPassword"); // NOI18N
+        CbPassword.setPreferredSize(new java.awt.Dimension(100, 20));
+        panelGlass8.add(CbPassword);
+
+        nohp.setMinimumSize(new java.awt.Dimension(80, 24));
+        nohp.setName("nohp"); // NOI18N
+        nohp.setPreferredSize(new java.awt.Dimension(100, 23));
+        panelGlass8.add(nohp);
+
+        BtnKirimGOWa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/16whatsapp.png"))); // NOI18N
+        BtnKirimGOWa.setMnemonic('K');
+        BtnKirimGOWa.setText("Kirim PDF");
+        BtnKirimGOWa.setToolTipText("Alt+K");
+        BtnKirimGOWa.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimGOWa.setName("BtnKirimGOWa"); // NOI18N
+        BtnKirimGOWa.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnKirimGOWa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnKirimGOWaActionPerformed(evt);
+            }
+        });
+        panelGlass8.add(BtnKirimGOWa);
+
         jPanel3.add(panelGlass8, java.awt.BorderLayout.CENTER);
 
         panelGlass9.setName("panelGlass9"); // NOI18N
@@ -433,7 +462,7 @@ public final class SuratKeteranganSehat extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "22-02-2026" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-02-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -447,7 +476,7 @@ public final class SuratKeteranganSehat extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "22-02-2026" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-02-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -706,7 +735,7 @@ public final class SuratKeteranganSehat extends javax.swing.JDialog {
         CmbKesimpulan.setBounds(600, 100, 114, 23);
 
         TanggalSurat.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "22-02-2026" }));
+        TanggalSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-02-2026" }));
         TanggalSurat.setDisplayFormat("dd-MM-yyyy");
         TanggalSurat.setName("TanggalSurat"); // NOI18N
         TanggalSurat.setOpaque(false);
@@ -1369,6 +1398,57 @@ public final class SuratKeteranganSehat extends javax.swing.JDialog {
             }
         });
     }//GEN-LAST:event_TbKeyReleased
+
+    private void BtnKirimGOWaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKirimGOWaActionPerformed
+        if(TPasien.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                Map<String, Object> param = new HashMap<>();
+                param.put("namars",akses.getnamars());
+                param.put("alamatrs",akses.getalamatrs());
+                param.put("kotars",akses.getkabupatenrs());
+                param.put("propinsirs",akses.getpropinsirs());
+                param.put("kontakrs",akses.getkontakrs());
+                param.put("emailrs",akses.getemailrs());  
+                param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
+                kodedokter=Sequel.cariIsi("select reg_periksa.kd_dokter from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText());
+                namadokter=Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",kodedokter);
+                finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kodedokter);
+                param.put("finger","https://apps.rspelitakasih.id/verifyPDF/?id="+EnkripsiAES.encrypt("{'x':'skk','t':'"+NoSurat.getText()+"'}"));
+                //param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+namadokter+"\nID "+(finger.equals("")?kodedokter:finger)+"\n"+Sequel.cariIsi("select DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y') from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));  
+                Valid.MyReportqrypdf("rptSuratKeteranganSehatRSPK.jasper","report","::[ Surat Keterangan Sehat ]::",
+                              " select surat_keterangan_sehat.no_surat,surat_keterangan_sehat.tanggalsurat as tanggalsurat,surat_keterangan_sehat.berat,surat_keterangan_sehat.tinggi,surat_keterangan_sehat.tensi,surat_keterangan_sehat.suhu,surat_keterangan_sehat.spo2,surat_keterangan_sehat.nadi,pasien.tmp_lahir,pasien.tgl_lahir,surat_keterangan_sehat.butawarna, "+
+                              " surat_keterangan_sehat.butawarna,surat_keterangan_sehat.keperluan,surat_keterangan_sehat.kesimpulan,dokter.nm_dokter,pasien.jk,reg_periksa.kd_dokter,dokter.no_ijn_praktek," +
+                              " pasien.nm_pasien,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat" +
+                              " from surat_keterangan_sehat inner join reg_periksa inner join pasien inner join dokter inner join kelurahan inner join kecamatan inner join kabupaten" +
+                              " on reg_periksa.no_rkm_medis=pasien.no_rkm_medis and reg_periksa.kd_dokter=dokter.kd_dokter and pasien.kd_kel=kelurahan.kd_kel and "+
+                              " pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab and reg_periksa.no_rawat=surat_keterangan_sehat.no_rawat "+
+                              " where reg_periksa.no_rawat='"+TNoRw.getText()+"' ",param);
+                //GENERATE WAHA KIRIM PDF//
+                String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
+                   + "Berikut Surat Keterangan Sehat Anda.\n\n"
+                   + "🔐 Password PDF: tanggal lahir (format: ddMMyyyy)\n\n"
+                   + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
+                   + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
+                   + "Terima kasih.\n"
+                   + akses.getnamars() + "\n";
+
+                // ================= FILE ASLI DARI JASPER =================
+            String modePassword = CbPassword.getSelectedItem().toString();
+            boolean pakaiPassword = modePassword.equalsIgnoreCase("Password");
+
+            boolean sukses = GoWAService.kirimDariNoRawat(
+                    "rptSuratKeteranganSehatRSPK.pdf",
+                    "SKK",
+                    TNoRw.getText(),
+                    nohp.getText(),
+                    pakaiPassword,
+                    pesan
+            );
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+    }//GEN-LAST:event_BtnKirimGOWaActionPerformed
                            
 
     /**
@@ -1396,9 +1476,11 @@ public final class SuratKeteranganSehat extends javax.swing.JDialog {
     private widget.Button BtnEdit;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
+    private widget.Button BtnKirimGOWa;
     private widget.Button BtnPrint;
     private widget.Button BtnRiwayatSurat;
     private widget.Button BtnSimpan;
+    private javax.swing.JComboBox<String> CbPassword;
     private widget.CekBox ChkInput;
     private widget.ComboBox CmbButaWarna;
     private widget.ComboBox CmbKesimpulan;
@@ -1450,6 +1532,7 @@ public final class SuratKeteranganSehat extends javax.swing.JDialog {
     private widget.Label jLabel7;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.TextBox nohp;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
     private widget.Table tbObat;

@@ -82,5 +82,21 @@ public class koneksiDBWa {
         load();
         return prop.getProperty("WAHA_API_KEY", "").trim();
     }
-    
+   
+   //SETTING GOWA
+
+    public static String GOWA_BASE_URL() {
+        load();
+        return prop.getProperty("GOWA_BASE_URL", "").trim();
+    }
+
+    public static String GOWA_USERNAME() {
+        load();
+        return prop.getProperty("GOWA_USERNAME", "").trim();
+    }
+
+    public static String GOWA_PASSWORD() {
+        load();
+        return prop.getProperty("GOWA_PASSWORD", "").trim();
+    }
 }

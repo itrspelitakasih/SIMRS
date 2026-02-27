@@ -50,6 +50,7 @@ import laporan.DlgBerkasRawat;
 import net.sf.jasperreports.engine.JasperExportManager;
 import rekammedis.RMRiwayatPerawatan;
 import surat.SuratKeteranganCovid;
+import wa.GoWAService;
 import wa.ServiceWADelphi;
 
 public class DlgCariPeriksaLab extends javax.swing.JDialog {
@@ -379,7 +380,7 @@ public class DlgCariPeriksaLab extends javax.swing.JDialog {
         BtnPrint = new widget.Button();
         BtnKeluar = new widget.Button();
         CbPassword = new javax.swing.JComboBox<>();
-        BtnKirimWa = new widget.Button();
+        BtnKirimGOWa = new widget.Button();
         nohp = new widget.TextBox();
         TabRawat = new javax.swing.JTabbedPane();
         scrollPane1 = new widget.ScrollPane();
@@ -1183,19 +1184,19 @@ public class DlgCariPeriksaLab extends javax.swing.JDialog {
         CbPassword.setPreferredSize(new java.awt.Dimension(100, 20));
         panelisi1.add(CbPassword);
 
-        BtnKirimWa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/16whatsapp.png"))); // NOI18N
-        BtnKirimWa.setMnemonic('K');
-        BtnKirimWa.setText("Kirim ke");
-        BtnKirimWa.setToolTipText("Alt+K");
-        BtnKirimWa.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        BtnKirimWa.setName("BtnKirimWa"); // NOI18N
-        BtnKirimWa.setPreferredSize(new java.awt.Dimension(100, 30));
-        BtnKirimWa.addActionListener(new java.awt.event.ActionListener() {
+        BtnKirimGOWa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/16whatsapp.png"))); // NOI18N
+        BtnKirimGOWa.setMnemonic('K');
+        BtnKirimGOWa.setText("Kirim PDF");
+        BtnKirimGOWa.setToolTipText("Alt+K");
+        BtnKirimGOWa.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimGOWa.setName("BtnKirimGOWa"); // NOI18N
+        BtnKirimGOWa.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnKirimGOWa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnKirimWaActionPerformed(evt);
+                BtnKirimGOWaActionPerformed(evt);
             }
         });
-        panelisi1.add(BtnKirimWa);
+        panelisi1.add(BtnKirimGOWa);
 
         nohp.setMinimumSize(new java.awt.Dimension(80, 24));
         nohp.setName("nohp"); // NOI18N
@@ -6139,7 +6140,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
         }
     }//GEN-LAST:event_ppRiwayatBtnPrintActionPerformed
 
-    private void BtnKirimWaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKirimWaActionPerformed
+    private void BtnKirimGOWaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKirimGOWaActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         if (tabMode.getRowCount() == 0) {
             JOptionPane.showMessageDialog(null, "Maaf, data sudah habis...!!!!");
@@ -6285,40 +6286,46 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                                     + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
                                     + "Terima kasih.\n"
                                     + akses.getnamars();
-                            String namaFilePdf = "rptPeriksaLab2RSPK.pdf";
+                        // ================= FILE ASLI DARI JASPER =================
+                            String namaFileAsli = "rptPeriksaLab2RSPK.pdf";
+                        // Bersihkan karakter ilegal Windows
+                            namaPasien = namaPasien.replaceAll("[^a-zA-Z0-9 ]", "");
+                            namaPasien = namaPasien.trim().replaceAll("\\s+", "_");
 
-                            if (param.containsKey("nopermintaan")) {
-                                namaFilePdf = "rptPeriksaLab2RSPK.pdf";
-                            }
+                        // ================= FORMAT TANGGAL =================
+                        // rs.getString("tgl_periksa") format: dd-MM-yyyy
+                            String tanggalRaw = rs.getString("tgl_periksa").replace("-", "");
 
+                        // ================= FORMAT JAM =================
+                            String jamRaw = rs.getString("jam").replace(":", "");
+
+                        // ================= MODE PASSWORD =================
+                            boolean pakaiPassword = CbPassword.getSelectedItem()
+                                    .toString()
+                                    .equalsIgnoreCase("Password");
+
+                        // ================= NAMA FILE UNTUK DIKIRIM =================
+                            String displayFileName = tanggalRaw
+                                    + "_"
+                                    + jamRaw
+                                    + "_"
+                                    + namaPasien
+                                    + (pakaiPassword ? "_protect" : "")
+                                    + ".pdf";
+                           
                         // ================= KIRIM WA =================
                             Thread.sleep(500);
+                            boolean sukses = GoWAService.kirimDariNoRawat(
+                                    namaFileAsli,
+                                    "Hasil Laboratorium",
+                                    noRawat,
+                                    nohp.getText(),
+                                    "Password".equalsIgnoreCase(
+                                            String.valueOf(CbPassword.getSelectedItem()).trim()
+                                    ),
+                                    pesan
+                            );
 
-                            boolean sukses;
-
-                            String modePassword = CbPassword.getSelectedItem().toString();
-
-                            if (modePassword.equalsIgnoreCase("Password")) {
-
-                                sukses = new ServiceWAHA().kirimDokumenLAB(
-                                        namaFilePdf,
-                                        "Hasil Laboratorium",
-                                        noRawat,
-                                        noRawat,
-                                        pesan,
-                                        nohp.getText()
-                                );
-
-                            } else {
-
-                                sukses = new ServiceWAHA().kirimDokumenNoPassword(
-                                        namaFilePdf,
-                                        "Hasil Laboratorium",
-                                        nohp.getText(),
-                                        noRawat,
-                                        pesan
-                                );
-                            }
                             
                         } catch (Exception e) {
                             System.out.println("Notif : " + e);
@@ -6347,7 +6354,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
             }
         }
         this.setCursor(Cursor.getDefaultCursor());
-    }//GEN-LAST:event_BtnKirimWaActionPerformed
+    }//GEN-LAST:event_BtnKirimGOWaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -6371,7 +6378,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.Button BtnCloseIn5;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
-    private widget.Button BtnKirimWa;
+    private widget.Button BtnKirimGOWa;
     private widget.Button BtnPrint;
     private widget.Button BtnSimpan;
     private javax.swing.JComboBox<String> CbPassword;
@@ -7367,5 +7374,4 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
 //        }
 //
 //    }
-
 }

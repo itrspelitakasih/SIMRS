@@ -39,6 +39,7 @@ import laporan.DlgCariPenyakit;
 import simrskhanza.DlgCariPoli;
 import simrskhanza.DlgCariPoli2;
 import wa.DlgWahaKirim;
+import wa.GoWAService;
 import wa.ServiceWADelphi;
 import wa.ServiceWAHA;
 
@@ -211,7 +212,9 @@ public class SuratKontrol extends javax.swing.JDialog {
         BtnPrint = new widget.Button();
         BtnAll = new widget.Button();
         BtnKeluar = new widget.Button();
-        BtnKirimWa = new widget.Button();
+        BtnKirimGOWa = new widget.Button();
+        nohp = new widget.TextBox();
+        CbPassword = new javax.swing.JComboBox<>();
         panelGlass10 = new widget.panelisi();
         jLabel6 = new widget.Label();
         TCari = new widget.TextBox();
@@ -453,18 +456,30 @@ public class SuratKontrol extends javax.swing.JDialog {
         });
         panelGlass8.add(BtnKeluar);
 
-        BtnKirimWa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/16whatsapp.png"))); // NOI18N
-        BtnKirimWa.setMnemonic('K');
-        BtnKirimWa.setText("Kirim");
-        BtnKirimWa.setToolTipText("Alt+K");
-        BtnKirimWa.setName("BtnKirimWa"); // NOI18N
-        BtnKirimWa.setPreferredSize(new java.awt.Dimension(100, 30));
-        BtnKirimWa.addActionListener(new java.awt.event.ActionListener() {
+        BtnKirimGOWa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/16whatsapp.png"))); // NOI18N
+        BtnKirimGOWa.setMnemonic('K');
+        BtnKirimGOWa.setText("Kirim PDF");
+        BtnKirimGOWa.setToolTipText("Alt+K");
+        BtnKirimGOWa.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimGOWa.setName("BtnKirimGOWa"); // NOI18N
+        BtnKirimGOWa.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnKirimGOWa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnKirimWaActionPerformed(evt);
+                BtnKirimGOWaActionPerformed(evt);
             }
         });
-        panelGlass8.add(BtnKirimWa);
+        panelGlass8.add(BtnKirimGOWa);
+
+        nohp.setMinimumSize(new java.awt.Dimension(80, 24));
+        nohp.setName("nohp"); // NOI18N
+        nohp.setPreferredSize(new java.awt.Dimension(100, 23));
+        panelGlass8.add(nohp);
+
+        CbPassword.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        CbPassword.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Password", "No Password" }));
+        CbPassword.setName("CbPassword"); // NOI18N
+        CbPassword.setPreferredSize(new java.awt.Dimension(100, 20));
+        panelGlass8.add(CbPassword);
 
         jPanel3.add(panelGlass8, java.awt.BorderLayout.PAGE_END);
 
@@ -538,7 +553,7 @@ public class SuratKontrol extends javax.swing.JDialog {
         R2.setPreferredSize(new java.awt.Dimension(90, 23));
         panelCari.add(R2);
 
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-02-2026" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-02-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -561,7 +576,7 @@ public class SuratKontrol extends javax.swing.JDialog {
         jLabel22.setPreferredSize(new java.awt.Dimension(25, 23));
         panelCari.add(jLabel22);
 
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-02-2026" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-02-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -582,7 +597,7 @@ public class SuratKontrol extends javax.swing.JDialog {
         R3.setPreferredSize(new java.awt.Dimension(85, 23));
         panelCari.add(R3);
 
-        DTPCari3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-02-2026" }));
+        DTPCari3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-02-2026" }));
         DTPCari3.setDisplayFormat("dd-MM-yyyy");
         DTPCari3.setName("DTPCari3"); // NOI18N
         DTPCari3.setOpaque(false);
@@ -605,7 +620,7 @@ public class SuratKontrol extends javax.swing.JDialog {
         jLabel25.setPreferredSize(new java.awt.Dimension(25, 23));
         panelCari.add(jLabel25);
 
-        DTPCari4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-02-2026" }));
+        DTPCari4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-02-2026" }));
         DTPCari4.setDisplayFormat("dd-MM-yyyy");
         DTPCari4.setName("DTPCari4"); // NOI18N
         DTPCari4.setOpaque(false);
@@ -689,7 +704,7 @@ public class SuratKontrol extends javax.swing.JDialog {
         TPasien.setBounds(185, 10, 190, 23);
 
         TanggalSurat.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-02-2026 11:02:17" }));
+        TanggalSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-02-2026 13:30:49" }));
         TanggalSurat.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TanggalSurat.setName("TanggalSurat"); // NOI18N
         TanggalSurat.setOpaque(false);
@@ -844,7 +859,7 @@ public class SuratKontrol extends javax.swing.JDialog {
         jLabel14.setBounds(0, 160, 92, 23);
 
         TanggalPeriksa.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalPeriksa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-02-2026 11:02:18" }));
+        TanggalPeriksa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-02-2026 13:30:50" }));
         TanggalPeriksa.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TanggalPeriksa.setName("TanggalPeriksa"); // NOI18N
         TanggalPeriksa.setOpaque(false);
@@ -1754,10 +1769,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         Valid.pindah(evt, Status, Terapi);
     }//GEN-LAST:event_btnDiagnosaKeyPressed
 
-    private void BtnKirimWaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKirimWaActionPerformed
-        runBackground(() -> {
-            NotifKontrol();
-        });
+    private void BtnKirimGOWaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKirimGOWaActionPerformed
+        runBackground(()
+                -> Reminder());
         if (tabMode.getRowCount() == 0) {
             JOptionPane.showMessageDialog(null, "Maaf, data sudah habis...!!!!");
             TanggalSurat.requestFocus();
@@ -1841,11 +1855,14 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 param.put("jam_surat", jamSurat);
                 finger = Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?", tbObat.getValueAt(tbObat.getSelectedRow(), 13).toString());
                 //QR SCAN
+                // ================= QR VALUE =================
                 String norm = TNoRM.getText();
                 String tanggal = tbObat.getValueAt(tbObat.getSelectedRow(), 10).toString().substring(0, 10);
                 String value = norm + "|" + tanggal;
-
-                param.put("finger", "https://apps.rspelitakasih.id/verifyPDF/?id=" + EnkripsiAES.encrypt("{'x':'surkon','t':'" + value + "'}"));
+                // ================= ENKRIPSI =================
+                String encrypted = EnkripsiAES.encrypt("{'x':'surkon','t':'" + value + "'}");
+                // ================= PARAM QR =================
+                param.put("finger","https://apps.rspelitakasih.id/verifyPDF/?id=" + encrypted);
 
                 Sequel.queryu("delete from temporary_booking_registrasi");
                 Sequel.menyimpan("temporary_booking_registrasi", "'0','"
@@ -1877,18 +1894,21 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
                         + "Terima kasih.\n"
                         + akses.getnamars() + "\n";
+                
+                String modePassword = CbPassword.getSelectedItem().toString();
+                boolean pakaiPassword = modePassword.equalsIgnoreCase("Password");
 
-                boolean sukses = new ServiceWAHA().kirimDokumenDariNoRM(
+                boolean sukses = GoWAService.kirimDariNoRM(
                         "rptSuratKontrolRSPK.pdf",
                         "Surat Kontrol",
-                        TNoRM.getText(), // langsung pakai no rekam medis
-                        NoSurat.getText(),
+                        TNoRM.getText(),
+                        nohp.getText(),
+                        pakaiPassword,
                         pesan
                 );
-
             }
         }
-    }//GEN-LAST:event_BtnKirimWaActionPerformed
+    }//GEN-LAST:event_BtnKirimGOWaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1916,10 +1936,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Button BtnEdit;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
-    private widget.Button BtnKirimWa;
+    private widget.Button BtnKirimGOWa;
     private widget.Button BtnPoli;
     private widget.Button BtnPrint;
     private widget.Button BtnSimpan;
+    private javax.swing.JComboBox<String> CbPassword;
     private widget.CekBox ChkInput;
     private widget.Tanggal DTPCari1;
     private widget.Tanggal DTPCari2;
@@ -1972,6 +1993,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Label jLabel9;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.TextBox nohp;
     private widget.panelisi panelCari;
     private widget.panelisi panelGlass10;
     private widget.panelisi panelGlass8;
@@ -2229,7 +2251,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         super.dispose();
     }
 
-    private void NotifKontrol() {
+    private void Reminder() {
         try {
             // ⛔ CEK NOTIF AKTIF DULU
             if (!ServiceWADelphi.isNotifAktif()) {
@@ -2237,10 +2259,15 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 return;
             }
             // Hitung H-1
-            String datajam = Sequel.cariIsi(
-                    "select DATE_ADD(concat('"
-                    + Valid.SetTgl(TanggalPeriksa.getSelectedItem().toString())
-                    + "'),INTERVAL -1 DAY)"
+           LocalDate tglKontrol = LocalDate.parse(
+                    Valid.SetTgl(TanggalPeriksa.getSelectedItem().toString())
+            );
+
+            LocalDateTime kirim = tglKontrol
+                    .atTime(7, 0); // jam 07:00 pagi (Hari H)
+
+            String datajam = kirim.format(
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             );
 
             // Ambil nomor pasien
@@ -2254,17 +2281,18 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             // Buat pesan
             String pesan
                     = "*REMINDER KONTROL POLI*\n"
-                    + "━━━━━━━━━━━━━━━━━━━━━━\n"
+                    + "-----------------------\n"
                     + "*Nama Pasien* : " + TPasien.getText() + "\n"
                     + "*No. RM* : " + TNoRM.getText() + "\n"
                     + "*Dokter Tujuan* : " + NmDokter.getText() + "\n"
                     + "*Poli Tujuan* : " + NmPoli.getText() + "\n"
                     + "*Tanggal Kontrol* : "
                     + TanggalPeriksa.getSelectedItem().toString().substring(0, 10) + "\n"
-                    + "━━━━━━━━━━━━━━━━━━━━━━\n"
+                    + "-----------------------\n\n"
                     + "Cek Pendaftaran di https://rspelitakasih.id/epasien \n"
                     + "_Harap melakukan konfirmasi pendaftaran ke poliklinik._\n"
-                    + "Terima kasih atas perhatian Anda.\n\n"
+                    + "_Pesan ini merupakan notifikasi otomatis dari sistem._\n\n"
+                    + "Terima kasih.\n"
                     + "*" + akses.getnamars() + "*";
 
             ServiceWADelphi wa = new ServiceWADelphi();
@@ -2277,5 +2305,4 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             System.out.println("Gagal kirim WA : " + e);
         }
     }
-
 }

@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
-import net.sf.jasperreports.engine.JasperExportManager;
 
 public class ServiceWADelphi {
     
@@ -47,23 +46,22 @@ public class ServiceWADelphi {
         Connection koneksi = koneksiDBWa.condb();
 
         String sql = "INSERT INTO wa_outbox "
-                + "(NOMOR,NOWA,PESAN,TANGGAL_JAM,STATUS,SOURCE,SENDER,SUCCESS,RESPONSE,REQUEST,FILE,TYPE) "
-                + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+                + "(NOWA,PESAN,TANGGAL_JAM,STATUS,SOURCE,SENDER,SUCCESS,RESPONSE,REQUEST,FILE,TYPE) "
+                + "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
         PreparedStatement ps = koneksi.prepareStatement(sql);
 
-        ps.setDouble(1, 0);
-        ps.setString(2, formatNomor(nomor)); // otomatis jadi 62xxxx@c.us
-        ps.setString(3, pesan);
-        ps.setString(4, tanggalJam);
-        ps.setString(5, "ANTRIAN");
-        ps.setString(6, source);
-        ps.setString(7, "NODEJS");
-        ps.setString(8, "");
-        ps.setString(9, "");
-        ps.setString(10, "");
-        ps.setString(11, "");
-        ps.setString(12, "TEXT");
+        ps.setString(1, formatNomor(nomor));
+        ps.setString(2, pesan);
+        ps.setString(3, tanggalJam);
+        ps.setString(4, "ANTRIAN");
+        ps.setString(5, source);
+        ps.setString(6, "NODEJS");
+        ps.setString(7, null);
+        ps.setString(8, null);
+        ps.setString(9, null);
+        ps.setString(10, null);
+        ps.setString(11, "TEXT");
 
         ps.executeUpdate();
         ps.close();
@@ -78,23 +76,22 @@ public class ServiceWADelphi {
         Connection koneksi = koneksiDBWa.condb();
 
         String sql = "INSERT INTO wa_outbox "
-                + "(NOMOR, NOWA, PESAN, TANGGAL_JAM, STATUS, SOURCE, SENDER, SUCCESS, RESPONSE, REQUEST, TYPE, FILE) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "(NOWA,PESAN,TANGGAL_JAM,STATUS,SOURCE,SENDER,SUCCESS,RESPONSE,REQUEST,TYPE,FILE) "
+                + "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
         PreparedStatement ps = koneksi.prepareStatement(sql);
 
-        ps.setLong(1, 0);
-        ps.setString(2, formatNomor(nomor));
-        ps.setString(3, pesan);
-        ps.setString(4, now());
-        ps.setString(5, "ANTRIAN");
-        ps.setString(6, "KHANZA");
-        ps.setString(7, "NODEJS");
-        ps.setString(8, "");
-        ps.setString(9, "");
-        ps.setString(10, "");
-        ps.setString(11, "FILE");
-        ps.setString(12, namaFile);
+        ps.setString(1, formatNomor(nomor));
+        ps.setString(2, pesan);
+        ps.setString(3, now());
+        ps.setString(4, "ANTRIAN");
+        ps.setString(5, "KHANZA");
+        ps.setString(6, "NODEJS");
+        ps.setString(7, null);
+        ps.setString(8, null);
+        ps.setString(9, null);
+        ps.setString(10, "FILE");
+        ps.setString(11, namaFile);
 
         ps.executeUpdate();
         ps.close();

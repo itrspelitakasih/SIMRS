@@ -46,57 +46,9 @@ public class ServiceWAHA {
                 payload,
                 apiKey
         );
-
+        System.out.println("FINAL RESULT: " + r.ok);
         return r.ok;
     }
-
-    /* =====================================================
-       ================= CORE DOKUMEN ======================
-       ===================================================== */
-    private boolean kirimDokumenCore(
-            File existingFile,
-            String jenisDokumen,
-            String idDokumen,
-            String pesan,
-            String noHP,
-            String passwordPdf
-    ) {
-
-        try {
-
-            if (!existingFile.exists() || existingFile.length() == 0) {
-                return false;
-            }
-
-            File securePdf = preparePdf(
-                    existingFile,
-                    jenisDokumen,
-                    idDokumen,
-                    passwordPdf
-            );
-
-            if (securePdf == null) {
-                return false;
-            }
-
-            String fileUrl = uploadPDFToServer(securePdf);
-            if (fileUrl == null) {
-                return false;
-            }
-
-            String finalMessage = pesan + "\n\n" + fileUrl;
-
-            return kirimTextOnly(noHP, finalMessage);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /* =====================================================
-       ================= WRAPPER METHOD ====================
-       ===================================================== */
     public boolean kirimDokumenDariNoRM(
             String namaFileReport,
             String jenisDokumen,
@@ -132,6 +84,55 @@ public class ServiceWAHA {
                 password
         );
     }
+    /* =====================================================
+       ================= CORE DOKUMEN ======================
+       ===================================================== */
+    private boolean kirimDokumenCore(
+            File existingFile,
+            String jenisDokumen,
+            String idDokumen,
+            String pesan,
+            String noHP,
+            String passwordPdf
+    ) {
+        try {
+
+            if (!existingFile.exists() || existingFile.length() == 0) {
+                return false;
+            }
+
+            String phone = normalizePhone(noHP);
+
+            File securePdf = preparePdf(
+                    existingFile,
+                    jenisDokumen,
+                    idDokumen,
+                    passwordPdf
+            );
+
+            if (securePdf == null) {
+                return false;
+            }
+
+            String fileUrl = uploadPDFToServer(securePdf);
+            if (fileUrl == null) {
+                return false;
+            }
+
+            String finalMessage = pesan + "\n\n" + fileUrl;
+
+            return kirimTextOnly(phone, finalMessage);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /* =====================================================
+       ================= WRAPPER METHOD ====================
+       ===================================================== */
+    
 
     public boolean kirimDokumenDariNoRawat(
             String namaFileReport,
@@ -259,7 +260,7 @@ public class ServiceWAHA {
 
             String boundary = "----SIMRS-" + System.currentTimeMillis();
             String uploadUrl = koneksiDBWa.FILE_BASE_URL()
-                    + "/generatePDF/upload_lab.php";
+                    + "/generatePDF/generate_upload.php";
 
             HttpURLConnection conn
                     = (HttpURLConnection) new URL(uploadUrl).openConnection();
@@ -310,10 +311,40 @@ public class ServiceWAHA {
     /* =====================================================
        ================= SESSION ===========================
        ===================================================== */
+//    private boolean isSessionReady() {
+//
+//        try {
+//
+//            URL url = new URL(
+//                    koneksiDBWa.WAHA_BASE_URL()
+//                    + "/api/sessions/"
+//                    + koneksiDBWa.SESSION()
+//            );
+//
+//            HttpURLConnection conn
+//                    = (HttpURLConnection) url.openConnection();
+//
+//            conn.setRequestMethod("GET");
+//            conn.setRequestProperty("X-API-Key",
+//                    koneksiDBWa.WAHA_API_KEY());
+//
+//            if (conn.getResponseCode() != 200) {
+//                return false;
+//            }
+//
+//            String response = new String(
+//                    conn.getInputStream().readAllBytes(),
+//                    StandardCharsets.UTF_8
+//            );
+//
+//            return response.contains("\"status\":\"WORKING\"");
+//
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
     private boolean isSessionReady() {
-
         try {
-
             URL url = new URL(
                     koneksiDBWa.WAHA_BASE_URL()
                     + "/api/sessions/"
@@ -327,18 +358,20 @@ public class ServiceWAHA {
             conn.setRequestProperty("X-API-Key",
                     koneksiDBWa.WAHA_API_KEY());
 
-            if (conn.getResponseCode() != 200) {
-                return false;
-            }
+            int code = conn.getResponseCode();
+            System.out.println("SESSION CHECK CODE: " + code);
 
             String response = new String(
                     conn.getInputStream().readAllBytes(),
                     StandardCharsets.UTF_8
             );
 
+            System.out.println("SESSION RESPONSE: " + response);
+
             return response.contains("\"status\":\"WORKING\"");
 
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -414,51 +447,51 @@ public class ServiceWAHA {
 
     private SendResult postJson(String urlStr, String payload, String apiKey) {
 
-    try {
+        try {
 
-        HttpURLConnection conn =
-                (HttpURLConnection) new URL(urlStr).openConnection();
+            HttpURLConnection conn
+                    = (HttpURLConnection) new URL(urlStr).openConnection();
 
-        conn.setConnectTimeout(CONNECT_TIMEOUT);
-        conn.setReadTimeout(READ_TIMEOUT);
-        conn.setRequestMethod("POST");
-        conn.setDoOutput(true);
+            conn.setConnectTimeout(CONNECT_TIMEOUT);
+            conn.setReadTimeout(READ_TIMEOUT);
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
 
-        conn.setRequestProperty("Content-Type",
-                "application/json; charset=UTF-8");
-        conn.setRequestProperty("X-API-Key", apiKey);
+            conn.setRequestProperty("Content-Type",
+                    "application/json; charset=UTF-8");
+            conn.setRequestProperty("X-API-Key", apiKey);
 
-        conn.getOutputStream().write(
-                payload.getBytes(StandardCharsets.UTF_8)
-        );
+            conn.getOutputStream().write(
+                    payload.getBytes(StandardCharsets.UTF_8)
+            );
 
-        int code = conn.getResponseCode();
+            int code = conn.getResponseCode();
 
-        InputStream is = (code >= 200 && code < 300)
-                ? conn.getInputStream()
-                : conn.getErrorStream();
+            InputStream is = (code >= 200 && code < 300)
+                    ? conn.getInputStream()
+                    : conn.getErrorStream();
 
-        String response = "";
+            String response = "";
 
-        if (is != null) {
-            response = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            if (is != null) {
+                response = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            }
+
+            System.out.println("WAHA RESPONSE CODE: " + code);
+            System.out.println("WAHA RESPONSE BODY: " + response);
+
+            return new SendResult(
+                    code >= 200 && code < 300,
+                    code,
+                    response,
+                    null
+            );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new SendResult(false, 0, null, e.getMessage());
         }
-
-        System.out.println("WAHA RESPONSE CODE: " + code);
-        System.out.println("WAHA RESPONSE BODY: " + response);
-
-        return new SendResult(
-                code >= 200 && code < 300,
-                code,
-                response,
-                null
-        );
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        return new SendResult(false, 0, null, e.getMessage());
     }
-}
 
     public boolean kirimDokumenNoPassword(
             String namaFileReport,
