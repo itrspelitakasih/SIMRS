@@ -478,7 +478,7 @@
 					<font fontName="Cambria" size="11"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Demikianlah surat keterangan ini dibuat untuk dipergunakan sebagaimana mestinya.  :"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Demikianlah surat keterangan ini dibuat untuk dipergunakan sebagaimana mestinya."]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
