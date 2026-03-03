@@ -91,6 +91,7 @@
 		<property name="com.jaspersoft.studio.field.name" value="tgl_registrasi"/>
 		<property name="com.jaspersoft.studio.field.label" value="tgl_registrasi"/>
 	</field>
+	<field name="no_ijn_praktek" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -185,9 +186,9 @@
 				<textFieldExpression><![CDATA[org.apache.commons.lang3.text.WordUtils.capitalizeFully($F{alamat})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="2" y="498" width="189" height="24" uuid="77887c67-8b50-4660-a168-0752a1b57cbf"/>
-				<textElement textAlignment="Left">
-					<font fontName="Cambria" size="12" isBold="true"/>
+				<reportElement x="2" y="498" width="189" height="22" uuid="77887c67-8b50-4660-a168-0752a1b57cbf"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Cambria" size="12" isBold="true" isUnderline="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nm_dokter}]]></textFieldExpression>
@@ -279,6 +280,13 @@
 				</textElement>
 				<text><![CDATA[Demikianlah agar yang berkepentingan maklum adanya.]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="1" y="520" width="366" height="19" uuid="45d12213-128a-4a45-b0bd-ca7a98729564"/>
+				<textElement>
+					<font fontName="Cambria" size="12" isBold="false" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["SIP : "+$F{no_ijn_praktek}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<summary>

@@ -816,21 +816,21 @@ public final class SuratButaWarna extends javax.swing.JDialog {
                     + " pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab and reg_periksa.no_rawat=surat_buta_warna.no_rawat "
                     + " where reg_periksa.no_rawat='" + TNoRw.getText() + "' ", param);
             //GENERATE WAHA KIRIM PDF//
-            String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
-                    + "Berikut Surat Sakit Anda.\n\n"
-                    + "🔐 Password PDF: tanggal lahir (ddMMyyyy)\n\n"
-                    + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
-                    + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
-                    + "Terima kasih.\n"
-                    + akses.getnamars() + "\n";
-
-            boolean sukses = new ServiceWAHA().kirimDokumenDariNoRawat(
-                    "rptSuratTidakButaWarnaRSPK.pdf",
-                    "Surat Keterangan Buta Warna",
-                    TNoRw.getText(),
-                    NoSurat.getText(),
-                    pesan
-            );
+//            String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
+//                    + "Berikut Surat Sakit Anda.\n\n"
+//                    + "🔐 Password PDF: tanggal lahir (ddMMyyyy)\n\n"
+//                    + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
+//                    + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
+//                    + "Terima kasih.\n"
+//                    + akses.getnamars() + "\n";
+//
+//            boolean sukses = new ServiceWAHA().kirimDokumenDariNoRawat(
+//                    "rptSuratTidakButaWarnaRSPK.pdf",
+//                    "Surat Keterangan Buta Warna",
+//                    TNoRw.getText(),
+//                    NoSurat.getText(),
+//                    pesan
+//            );
             this.setCursor(Cursor.getDefaultCursor());
         }
     }//GEN-LAST:event_MnCetakSuratButaWarnaActionPerformed

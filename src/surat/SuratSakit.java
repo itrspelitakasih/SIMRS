@@ -901,21 +901,21 @@ public final class SuratSakit extends javax.swing.JDialog {
                       " and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab "+
                       "where reg_periksa.no_rawat='"+TNoRw.getText()+"' ",param);
             //GENERATE WAHA KIRIM PDF//
-            String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
-                    + "Berikut Surat Sakit Anda.\n\n"
-                    + "🔐 Password PDF: tanggal lahir (format: ddMMyyyy)\n\n"
-                    + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
-                    + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
-                    + "Terima kasih.\n"
-                    + akses.getnamars() + "\n";
-
-            boolean sukses = new ServiceWAHA().kirimDokumenDariNoRawat(
-                    "rptSuratSakitRSPK.pdf",
-                    "Surat Keterangan Sakit",
-                    TNoRw.getText(),
-                    NoSurat.getText(),
-                    pesan
-            );
+//            String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
+//                    + "Berikut Surat Sakit Anda.\n\n"
+//                    + "🔐 Password PDF: tanggal lahir (format: ddMMyyyy)\n\n"
+//                    + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
+//                    + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
+//                    + "Terima kasih.\n"
+//                    + akses.getnamars() + "\n";
+//
+//            boolean sukses = new ServiceWAHA().kirimDokumenDariNoRawat(
+//                    "rptSuratSakitRSPK.pdf",
+//                    "Surat Keterangan Sakit",
+//                    TNoRw.getText(),
+//                    NoSurat.getText(),
+//                    pesan
+//            );
                this.setCursor(Cursor.getDefaultCursor());  
        }
     }//GEN-LAST:event_MnCetakSuratSakit5ActionPerformed
@@ -947,7 +947,7 @@ public final class SuratSakit extends javax.swing.JDialog {
             //param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+namadokter+"\nID "+(finger.equals("")?kodedokter:finger)+"\n"+Sequel.cariIsi("select DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y') from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));  
             Valid.MyReportqrypdf("rptSuratSakitRSPK.jasper","report","::[ Surat Sakit ]::",
                       "select reg_periksa.no_rawat,dokter.nm_dokter,pasien.keluarga,pasien.namakeluarga,pasien.tgl_lahir,pasien.jk,reg_periksa.tgl_registrasi as tgl_registrasi,dokter.no_ijn_praktek," +
-                      " pasien.nm_pasien,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.pekerjaan,concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat" +
+                      " pasien.nm_pasien,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.pekerjaan,concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat,dokter.no_ijn_praktek" +
                       " from reg_periksa inner join pasien inner join dokter inner join kelurahan inner join kecamatan inner join kabupaten" +
                       " on reg_periksa.no_rkm_medis=pasien.no_rkm_medis and reg_periksa.kd_dokter=dokter.kd_dokter and pasien.kd_kel=kelurahan.kd_kel "+
                       " and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab "+
