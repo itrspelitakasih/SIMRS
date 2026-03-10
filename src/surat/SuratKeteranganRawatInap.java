@@ -165,6 +165,8 @@ public final class SuratKeteranganRawatInap extends javax.swing.JDialog {
         jLabel16 = new widget.Label();
         TanggalAwal = new widget.Tanggal();
         jLabel13 = new widget.Label();
+        TanggalSurat = new widget.Tanggal();
+        jLabel17 = new widget.Label();
         ChkInput = new widget.CekBox();
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
@@ -381,7 +383,7 @@ public final class SuratKeteranganRawatInap extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-02-2026" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-03-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -395,7 +397,7 @@ public final class SuratKeteranganRawatInap extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-02-2026" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-03-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -494,7 +496,7 @@ public final class SuratKeteranganRawatInap extends javax.swing.JDialog {
         TPasien.setBounds(330, 10, 390, 23);
 
         TanggalAkhir.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalAkhir.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-02-2026" }));
+        TanggalAkhir.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-03-2026" }));
         TanggalAkhir.setDisplayFormat("dd-MM-yyyy");
         TanggalAkhir.setName("TanggalAkhir"); // NOI18N
         TanggalAkhir.setOpaque(false);
@@ -509,7 +511,7 @@ public final class SuratKeteranganRawatInap extends javax.swing.JDialog {
             }
         });
         FormInput.add(TanggalAkhir);
-        TanggalAkhir.setBounds(630, 40, 90, 23);
+        TanggalAkhir.setBounds(440, 40, 90, 23);
 
         TNoRM.setEditable(false);
         TNoRM.setHighlighter(null);
@@ -517,13 +519,14 @@ public final class SuratKeteranganRawatInap extends javax.swing.JDialog {
         FormInput.add(TNoRM);
         TNoRM.setBounds(217, 10, 111, 23);
 
-        jLabel16.setText("Sampai Tanggal :");
+        jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel16.setText("s/d");
         jLabel16.setName("jLabel16"); // NOI18N
         FormInput.add(jLabel16);
-        jLabel16.setBounds(536, 40, 90, 23);
+        jLabel16.setBounds(410, 40, 20, 23);
 
         TanggalAwal.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalAwal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-02-2026" }));
+        TanggalAwal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-03-2026" }));
         TanggalAwal.setDisplayFormat("dd-MM-yyyy");
         TanggalAwal.setName("TanggalAwal"); // NOI18N
         TanggalAwal.setOpaque(false);
@@ -538,12 +541,26 @@ public final class SuratKeteranganRawatInap extends javax.swing.JDialog {
             }
         });
         FormInput.add(TanggalAwal);
-        TanggalAwal.setBounds(424, 40, 90, 23);
+        TanggalAwal.setBounds(310, 40, 90, 23);
 
         jLabel13.setText("Dari Tanggal :");
         jLabel13.setName("jLabel13"); // NOI18N
         FormInput.add(jLabel13);
-        jLabel13.setBounds(340, 40, 80, 23);
+        jLabel13.setBounds(220, 40, 80, 23);
+
+        TanggalSurat.setForeground(new java.awt.Color(50, 70, 50));
+        TanggalSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-03-2026" }));
+        TanggalSurat.setDisplayFormat("dd-MM-yyyy");
+        TanggalSurat.setName("TanggalSurat"); // NOI18N
+        TanggalSurat.setOpaque(false);
+        TanggalSurat.setPreferredSize(new java.awt.Dimension(141, 18));
+        FormInput.add(TanggalSurat);
+        TanggalSurat.setBounds(630, 40, 90, 23);
+
+        jLabel17.setText("Tanggal Surat :");
+        jLabel17.setName("jLabel17"); // NOI18N
+        FormInput.add(jLabel17);
+        jLabel17.setBounds(540, 40, 90, 23);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -818,6 +835,7 @@ public final class SuratKeteranganRawatInap extends javax.swing.JDialog {
         }else{
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 Map<String, Object> param = new HashMap<>();
+                param.put("sipdokter",Sequel.cariIsi("select no_ijn_praktek from dokter inner join dpjp_ranap on dpjp_ranap.kd_dokter=dokter.kd_dokter where dpjp_ranap.no_rawat=?",TNoRw.getText()));
                 param.put("TanggalAwal", TanggalAwal.getDate());
                 param.put("TanggalAkhir", TanggalAkhir.getDate());
                 param.put("nosakit",NoSurat.getText());
@@ -852,6 +870,7 @@ public final class SuratKeteranganRawatInap extends javax.swing.JDialog {
         }else{
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 Map<String, Object> param = new HashMap<>();
+                param.put("sipdokter",Sequel.cariIsi("select no_ijn_praktek from dokter inner join dpjp_ranap on dpjp_ranap.kd_dokter=dokter.kd_dokter where dpjp_ranap.no_rawat=?",TNoRw.getText()));
                 param.put("TanggalAwal", TanggalAwal.getDate());
                 param.put("TanggalAkhir", TanggalAkhir.getDate());
                 param.put("nosakit",NoSurat.getText());
@@ -877,7 +896,7 @@ public final class SuratKeteranganRawatInap extends javax.swing.JDialog {
                               "and pasien.perusahaan_pasien=perusahaan_pasien.kode_perusahaan and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab "+
                               "where reg_periksa.no_rawat='"+TNoRw.getText()+"' ",param);
                 //GENERATE WAHA KIRIM PDF//
-            String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
+            String pesan = "Halo *"+TPasien.getText()+"* 👋\n\n"
                     + "Berikut Surat Keterangan Rawat Inap Anda.\n\n"
                     + "🔐 Password PDF: tanggal lahir (format: ddMMyyyy)\n\n"
                     + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
@@ -942,9 +961,11 @@ public final class SuratKeteranganRawatInap extends javax.swing.JDialog {
     private widget.TextBox TPasien;
     private widget.Tanggal TanggalAkhir;
     private widget.Tanggal TanggalAwal;
+    private widget.Tanggal TanggalSurat;
     private widget.InternalFrame internalFrame1;
     private widget.Label jLabel13;
     private widget.Label jLabel16;
+    private widget.Label jLabel17;
     private widget.Label jLabel19;
     private widget.Label jLabel21;
     private widget.Label jLabel3;
@@ -1017,11 +1038,103 @@ public final class SuratKeteranganRawatInap extends javax.swing.JDialog {
         NoSurat.setText("");
         TanggalAwal.setDate(new Date());
         TanggalAkhir.setDate(new Date());
-        Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(surat_keterangan_rawat_inap.no_surat,3),signed)),0) from surat_keterangan_rawat_inap where surat_keterangan_rawat_inap.tanggalawal='"+Valid.SetTgl(TanggalAwal.getSelectedItem()+"")+"' ",
-                "SKR"+TanggalAwal.getSelectedItem().toString().substring(6,10)+TanggalAwal.getSelectedItem().toString().substring(3,5)+TanggalAwal.getSelectedItem().toString().substring(0,2),3,NoSurat); 
-        NoSurat.requestFocus();
+//        Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(surat_keterangan_rawat_inap.no_surat,3),signed)),0) from surat_keterangan_rawat_inap where surat_keterangan_rawat_inap.tanggalawal='"+Valid.SetTgl(TanggalAwal.getSelectedItem()+"")+"' ",
+//                "SKR"+TanggalAwal.getSelectedItem().toString().substring(6,10)+TanggalAwal.getSelectedItem().toString().substring(3,5)+TanggalAwal.getSelectedItem().toString().substring(0,2),3,NoSurat); 
+//        NoSurat.requestFocus();
+        nomorSurat();
     }
+    
+    private void nomorSurat() {
+        try {
+            // Ambil bulan dari tanggal yang dipilih di TanggalSurat
+            String tanggalStr = Valid.SetTgl(TanggalSurat.getSelectedItem().toString());
+            String bulanStr = tanggalStr.substring(5, 7); // Format: yyyy-mm-dd, ambil mm
+            String tahunStr = tanggalStr.substring(0, 4);  // Format: yyyy-mm-dd, ambil yyyy
 
+            // Konversi bulan ke romawi
+            String bln_romawi = "";
+            int bulanInt = Integer.parseInt(bulanStr);
+
+            switch (bulanInt) {
+                case 1:
+                    bln_romawi = "I";
+                    break;
+                case 2:
+                    bln_romawi = "II";
+                    break;
+                case 3:
+                    bln_romawi = "III";
+                    break;
+                case 4:
+                    bln_romawi = "IV";
+                    break;
+                case 5:
+                    bln_romawi = "V";
+                    break;
+                case 6:
+                    bln_romawi = "VI";
+                    break;
+                case 7:
+                    bln_romawi = "VII";
+                    break;
+                case 8:
+                    bln_romawi = "VIII";
+                    break;
+                case 9:
+                    bln_romawi = "IX";
+                    break;
+                case 10:
+                    bln_romawi = "X";
+                    break;
+                case 11:
+                    bln_romawi = "XI";
+                    break;
+                case 12:
+                    bln_romawi = "XII";
+                    break;
+                default:
+                    bln_romawi = "I";
+                    break;
+            }
+
+            // Format yang akan dicari: %/RJ/RSPK/VIII/2025
+            String formatPattern = "/SKet/RI-RSPK/" + bln_romawi + "/" + tahunStr;
+
+            // Query untuk mencari nomor terakhir
+            String query = "SELECT IFNULL(MAX(CAST(SUBSTRING_INDEX(no_surat, '/', 1) AS UNSIGNED)), 0) "
+                    + "FROM surat_keterangan_sehat "
+                    + "WHERE no_surat LIKE '%" + formatPattern + "'";
+
+            // Eksekusi query secara manual
+            PreparedStatement ps = koneksi.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+
+            int nomorTerakhir = 0;
+            if (rs.next()) {
+                nomorTerakhir = rs.getInt(1);
+            }
+
+            // Increment nomor
+            int nomorBaru = nomorTerakhir + 1;
+
+            // Format nomor dengan leading zero (3 digit)
+            String nomorFormat = String.format("%03d", nomorBaru);
+
+            // Set nomor surat lengkap
+            String nomorSuratLengkap = nomorFormat + formatPattern;
+            NoSurat.setText(nomorSuratLengkap);
+
+            rs.close();
+            ps.close();
+
+        } catch (Exception e) {
+            System.out.println("Error generating nomor surat: " + e.getMessage());
+            e.printStackTrace();
+            // Fallback: set nomor manual
+            NoSurat.setText("001/SKet/RI-RSPK/III/2026");
+        }
+    }
+    //TAMBAH ANGKA ROMAWI DISURAT
  
     private void getData() {
         if(tbObat.getSelectedRow()!= -1){

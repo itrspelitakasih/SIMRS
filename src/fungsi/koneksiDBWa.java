@@ -12,7 +12,7 @@ import java.io.FileInputStream;
 import java.sql.Connection;
 import java.util.Properties;
 import javax.swing.JOptionPane;
-import static org.primefaces.component.selectonemenu.SelectOneMenuBase.PropertyKeys.var;
+
 
 /**
  *
@@ -22,6 +22,7 @@ public class koneksiDBWa {
     private static Connection connection=null;
     private static final Properties prop = new Properties();  
     private static final MysqlDataSource dataSource=new MysqlDataSource();
+    private static String var="";
     
     public koneksiDBWa(){} 
     public static Connection condb(){ 
@@ -85,18 +86,58 @@ public class koneksiDBWa {
    
    //SETTING GOWA
 
+//    public static String GOWA_BASE_URL() {
+//        load();
+//        return prop.getProperty("GOWA_BASE_URL", "").trim();
+//    }
+//
+//    public static String GOWA_USERNAME() {
+//        load();
+//        return prop.getProperty("GOWA_USERNAME", "").trim();
+//    }
+//
+//    public static String GOWA_PASSWORD() {
+//        load();
+//        return prop.getProperty("GOWA_PASSWORD", "").trim();
+//    }
     public static String GOWA_BASE_URL() {
-        load();
-        return prop.getProperty("GOWA_BASE_URL", "").trim();
+        try (FileInputStream fis = new FileInputStream("setting/database.xml")) {
+            prop.loadFromXML(fis);
+            var = EnkripsiAES.decrypt(prop.getProperty("GOWA_BASE_URL"));
+        } catch (Exception e) {
+            var = "";
+        }
+        return var;
     }
 
     public static String GOWA_USERNAME() {
-        load();
-        return prop.getProperty("GOWA_USERNAME", "").trim();
+        try (FileInputStream fis = new FileInputStream("setting/database.xml")) {
+            prop.loadFromXML(fis);
+            var = EnkripsiAES.decrypt(prop.getProperty("GOWA_USERNAME"));
+        } catch (Exception e) {
+            var = "";
+        }
+        return var;
     }
 
     public static String GOWA_PASSWORD() {
-        load();
-        return prop.getProperty("GOWA_PASSWORD", "").trim();
+        try (FileInputStream fis = new FileInputStream("setting/database.xml")) {
+            prop.loadFromXML(fis);
+            var = EnkripsiAES.decrypt(prop.getProperty("GOWA_PASSWORD"));
+        } catch (Exception e) {
+            var = "";
+        }
+        return var;
+    }
+
+    public static String GOWA_DEVICE_ID() {
+        String var = "";
+        try (FileInputStream fis = new FileInputStream("setting/database.xml")) {
+            prop.loadFromXML(fis);
+            var = prop.getProperty("GOWA_DEVICE_ID");
+        } catch (Exception e) {
+            var = "";
+        }
+        return var;
     }
 }

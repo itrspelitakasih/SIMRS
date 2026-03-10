@@ -1596,6 +1596,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             if (tbObat.getSelectedRow() != -1) {
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 Map<String, Object> param = new HashMap<>();
+                param.put("sipdokter",Sequel.cariIsi("select dokter.no_ijn_praktek from dokter inner join skdp_bpjs on dokter.kd_dokter = skdp_bpjs.kd_dokter where skdp_bpjs.no_rkm_medis=?",TNoRM.getText()));
                 param.put("namars", akses.getnamars());
                 param.put("alamatrs", akses.getalamatrs());
                 param.put("kotars", akses.getkabupatenrs());
@@ -1775,6 +1776,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             if (tbObat.getSelectedRow() != -1) {
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 Map<String, Object> param = new HashMap<>();
+                param.put("sipdokter",Sequel.cariIsi("select dokter.no_ijn_praktek from dokter inner join skdp_bpjs on dokter.kd_dokter = skdp_bpjs.kd_dokter where skdp_bpjs.no_rkm_medis=?",TNoRM.getText()));
                 param.put("namars", akses.getnamars());
                 param.put("alamatrs", akses.getalamatrs());
                 param.put("kotars", akses.getkabupatenrs());
@@ -2009,6 +2011,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     + "skdp_bpjs.diagnosa,skdp_bpjs.terapi,skdp_bpjs.alasan1,skdp_bpjs.alasan2,"
                     + "skdp_bpjs.rtl1,skdp_bpjs.rtl2,skdp_bpjs.tanggal_datang,skdp_bpjs.tanggal_rujukan,"
                     + "skdp_bpjs.no_antrian,skdp_bpjs.kd_dokter,dokter.nm_dokter,skdp_bpjs.status "
+                    + "dokter.no_ijn_praktek"
                     + "from skdp_bpjs inner join pasien inner join dokter on "
                     + "skdp_bpjs.no_rkm_medis=pasien.no_rkm_medis and skdp_bpjs.kd_dokter=dokter.kd_dokter "
                     + "where " + status + " and skdp_bpjs.no_rkm_medis like ? or "

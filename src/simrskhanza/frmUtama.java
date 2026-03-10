@@ -50036,4 +50036,5 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
 
         return pengumuman.toString();
     }
+    
 }

@@ -264,6 +264,7 @@ public class DlgCariPeriksaRadiologi extends javax.swing.JDialog {
         FormPass2 = new widget.PanelBiasa();
         btnAmbilPhoto = new widget.Button();
         BtnRefreshPhoto = new widget.Button();
+        BtnKirimGOWa = new widget.Button();
         Scroll4 = new widget.ScrollPane();
         LoadHTML = new widget.editorpane();
         FormHasilRadiologi = new widget.PanelBiasa();
@@ -902,6 +903,20 @@ public class DlgCariPeriksaRadiologi extends javax.swing.JDialog {
             }
         });
         FormPass2.add(BtnRefreshPhoto);
+
+        BtnKirimGOWa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/16whatsapp.png"))); // NOI18N
+        BtnKirimGOWa.setMnemonic('K');
+        BtnKirimGOWa.setText("Kirim PDF");
+        BtnKirimGOWa.setToolTipText("Alt+K");
+        BtnKirimGOWa.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnKirimGOWa.setName("BtnKirimGOWa"); // NOI18N
+        BtnKirimGOWa.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnKirimGOWa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnKirimGOWaActionPerformed(evt);
+            }
+        });
+        FormPass2.add(BtnKirimGOWa);
 
         FormPhoto.add(FormPass2, java.awt.BorderLayout.PAGE_END);
 
@@ -2256,6 +2271,10 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
         }   
     }//GEN-LAST:event_formWindowOpened
 
+    private void BtnKirimGOWaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKirimGOWaActionPerformed
+        
+    }//GEN-LAST:event_BtnKirimGOWaActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -2279,6 +2298,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.Button BtnCloseIn4;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
+    private widget.Button BtnKirimGOWa;
     private widget.Button BtnPrint;
     private widget.Button BtnPrint1;
     private widget.Button BtnRefreshPhoto;

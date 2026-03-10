@@ -17,6 +17,7 @@
 	<parameter name="jam_kembali" class="java.lang.String"/>
 	<parameter name="tanggal_kembali" class="java.lang.String"/>
 	<parameter name="tanggal_surat" class="java.lang.String"/>
+	<parameter name="sipdokter" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select * from temporary_booking_registrasi order by no asc]]>
 	</queryString>
@@ -255,7 +256,7 @@
 				<textFieldExpression><![CDATA[$F{temp8}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="246" width="256" height="12" uuid="366d65de-75fb-472e-a2b8-ebc95732b915"/>
+				<reportElement x="1" y="237" width="256" height="12" uuid="366d65de-75fb-472e-a2b8-ebc95732b915"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
@@ -263,7 +264,7 @@
 				<text><![CDATA[Note :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1" y="259" width="256" height="26" uuid="b61a20f7-1a47-4556-a80a-a46e255480d2"/>
+				<reportElement x="1" y="250" width="256" height="26" uuid="b61a20f7-1a47-4556-a80a-a46e255480d2"/>
 				<textElement verticalAlignment="Top" markup="none">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -272,7 +273,7 @@
 Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="110" y="285" width="146" height="12" uuid="9a26df3b-d135-41c6-bfce-69d5ae540e07"/>
+				<reportElement x="104" y="275" width="146" height="12" uuid="9a26df3b-d135-41c6-bfce-69d5ae540e07"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -280,7 +281,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<textFieldExpression><![CDATA[$P{kotars} + ", " +$P{tanggal_surat}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="118" y="297" width="128" height="12" uuid="155cf285-becc-407c-9469-cea25b8f3b05"/>
+				<reportElement x="112" y="287" width="128" height="12" uuid="155cf285-becc-407c-9469-cea25b8f3b05"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -288,7 +289,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<text><![CDATA[Dokter yang Merawat,]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="118" y="366" width="128" height="12" uuid="fcb81fcc-229e-4ba3-889e-79876290a048"/>
+				<reportElement x="112" y="356" width="128" height="12" uuid="fcb81fcc-229e-4ba3-889e-79876290a048"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
@@ -322,7 +323,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				</graphicElement>
 			</line>
 			<componentElement>
-				<reportElement x="119" y="308" width="126" height="59" isRemoveLineWhenBlank="true" uuid="90cc79d6-50ba-4c11-ba1c-ce50ce469f87">
+				<reportElement x="113" y="298" width="126" height="59" isRemoveLineWhenBlank="true" uuid="90cc79d6-50ba-4c11-ba1c-ce50ce469f87">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
@@ -464,6 +465,13 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{temp17}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="98" y="365" width="157" height="16" uuid="9110c60d-2c23-4ceb-828b-f74a093a8b7f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Cambria" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["SIP : "+$P{sipdokter}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

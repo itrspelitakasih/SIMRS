@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import javax.swing.JOptionPane;
 
 public class GoWAService {
 
@@ -157,7 +158,9 @@ public class GoWAService {
 
         try {
 
-            URL url = new URL(koneksiDBWa.GOWA_BASE_URL() + "/app/status");
+            //URL url = new URL(koneksiDBWa.GOWA_BASE_URL() + "/app/status");
+            URL url = new URL(koneksiDBWa.GOWA_BASE_URL() + "/app/status?device_id=" + deviceId());
+            System.out.println("NAMA DEVICE : " + deviceId());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setConnectTimeout(CONNECT_TIMEOUT);
@@ -168,7 +171,7 @@ public class GoWAService {
             if (conn.getResponseCode() != 200) {
                 return false;
             }
-
+         
             String response = new String(
                     conn.getInputStream().readAllBytes(),
                     StandardCharsets.UTF_8
@@ -180,6 +183,7 @@ public class GoWAService {
         } catch (Exception e) {
             return false;
         }
+        
     }
 
     // =====================================================
@@ -260,7 +264,11 @@ public class GoWAService {
         String boundary = "----SIMRS-" + System.currentTimeMillis();
         String phone = normalizePhone(noHP) + "@s.whatsapp.net";
 
-        URL url = new URL(koneksiDBWa.GOWA_BASE_URL() + "/send/file");
+        URL url = new URL(
+                koneksiDBWa.GOWA_BASE_URL()
+                + "/send/file?device_id=" + deviceId()
+        );
+
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
         conn.setConnectTimeout(CONNECT_TIMEOUT);
@@ -275,14 +283,17 @@ public class GoWAService {
         try (OutputStream output = conn.getOutputStream(); PrintWriter writer = new PrintWriter(
                 new OutputStreamWriter(output, StandardCharsets.UTF_8), true)) {
 
+            // PHONE
             writer.append("--").append(boundary).append("\r\n");
             writer.append("Content-Disposition: form-data; name=\"phone\"\r\n\r\n");
             writer.append(phone).append("\r\n");
 
+            // CAPTION
             writer.append("--").append(boundary).append("\r\n");
             writer.append("Content-Disposition: form-data; name=\"caption\"\r\n\r\n");
             writer.append(caption).append("\r\n");
 
+            // FILE
             writer.append("--").append(boundary).append("\r\n");
             writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"")
                     .append(displayFileName).append("\"\r\n");
@@ -293,17 +304,47 @@ public class GoWAService {
             output.flush();
 
             writer.append("\r\n--").append(boundary).append("--\r\n");
+            writer.flush();
         }
 
         int code = conn.getResponseCode();
-        System.out.println("GOWA SEND RESPONSE: " + code);
+
+        if (code >= 200 && code < 300) {
+
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Pesan terkirim ke nomor : " + normalizePhone(noHP),
+                    "Informasi",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+
+        } else {
+
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Gagal mengirim pesan ke nomor : " + normalizePhone(noHP),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
 
         return code >= 200 && code < 300;
-    }
+}
 
     // =====================================================
     // ================= UTIL ==============================
     // =====================================================
+    private static String deviceId() {
+        try {
+            String id = koneksiDBWa.GOWA_DEVICE_ID();
+            if (id == null || id.trim().isEmpty()) {
+                return "default";
+            }
+            return id.trim();
+        } catch (Exception e) {
+            return "default";
+        }
+    }
     private static String basicAuth() {
         String auth = koneksiDBWa.GOWA_USERNAME() + ":"
                 + koneksiDBWa.GOWA_PASSWORD();
