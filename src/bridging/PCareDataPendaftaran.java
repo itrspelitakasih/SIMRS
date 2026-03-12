@@ -41,10 +41,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.X509TrustManager;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
@@ -93,6 +97,9 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
     private String[] arrSplit;
     private Calendar cal = Calendar.getInstance();
     private int day = cal.get(Calendar.DAY_OF_WEEK);
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
+    
     /** Creates new form DlgRujuk
      * @param parent
      * @param modal */
@@ -413,29 +420,6 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         Heartrate.setDocument(new batasInput((byte)3).getOnlyAngka(Heartrate));
         TSuhu.setDocument(new batasInput((byte)5).getFilter(TSuhu));
         
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }  
-        
         try {
             otorisasi=koneksiDB.USERPCARE()+":"+koneksiDB.PASSPCARE()+":095";
             divreg=koneksiDB.DIVREGPCARE();
@@ -704,7 +688,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         MnGelang.setForeground(new java.awt.Color(50, 50, 50));
         MnGelang.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnGelang.setText("Label & Barcode");
-        MnGelang.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnGelang.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnGelang.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         MnGelang.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         MnGelang.setName("MnGelang"); // NOI18N
@@ -712,7 +696,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         MnGelang.setRequestFocusEnabled(false);
 
         MnGelang1.setBackground(new java.awt.Color(255, 255, 254));
-        MnGelang1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnGelang1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnGelang1.setForeground(new java.awt.Color(50, 50, 50));
         MnGelang1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnGelang1.setText("Gelang Pasien 1");
@@ -728,7 +712,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         MnGelang.add(MnGelang1);
 
         MnGelang2.setBackground(new java.awt.Color(255, 255, 254));
-        MnGelang2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnGelang2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnGelang2.setForeground(new java.awt.Color(50, 50, 50));
         MnGelang2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnGelang2.setText("Gelang Pasien 2");
@@ -744,7 +728,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         MnGelang.add(MnGelang2);
 
         MnGelang3.setBackground(new java.awt.Color(255, 255, 254));
-        MnGelang3.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnGelang3.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnGelang3.setForeground(new java.awt.Color(50, 50, 50));
         MnGelang3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnGelang3.setText("Gelang Pasien 3");
@@ -760,7 +744,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         MnGelang.add(MnGelang3);
 
         MnGelang4.setBackground(new java.awt.Color(255, 255, 254));
-        MnGelang4.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnGelang4.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnGelang4.setForeground(new java.awt.Color(50, 50, 50));
         MnGelang4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnGelang4.setText("Gelang Pasien 4");
@@ -776,7 +760,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         MnGelang.add(MnGelang4);
 
         MnGelang5.setBackground(new java.awt.Color(255, 255, 254));
-        MnGelang5.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnGelang5.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnGelang5.setForeground(new java.awt.Color(50, 50, 50));
         MnGelang5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnGelang5.setText("Gelang Pasien 5");
@@ -792,7 +776,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         MnGelang.add(MnGelang5);
 
         MnGelang6.setBackground(new java.awt.Color(255, 255, 254));
-        MnGelang6.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnGelang6.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnGelang6.setForeground(new java.awt.Color(50, 50, 50));
         MnGelang6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnGelang6.setText("Gelang Pasien 6");
@@ -808,7 +792,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         MnGelang.add(MnGelang6);
 
         MnLabelTracker.setBackground(new java.awt.Color(255, 255, 254));
-        MnLabelTracker.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnLabelTracker.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnLabelTracker.setForeground(new java.awt.Color(50, 50, 50));
         MnLabelTracker.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnLabelTracker.setText("Label Tracker 1");
@@ -824,7 +808,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         MnGelang.add(MnLabelTracker);
 
         MnLabelTracker1.setBackground(new java.awt.Color(255, 255, 254));
-        MnLabelTracker1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnLabelTracker1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnLabelTracker1.setForeground(new java.awt.Color(50, 50, 50));
         MnLabelTracker1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnLabelTracker1.setText("Label Tracker 2");
@@ -840,7 +824,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         MnGelang.add(MnLabelTracker1);
 
         MnLabelTracker2.setBackground(new java.awt.Color(255, 255, 254));
-        MnLabelTracker2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnLabelTracker2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnLabelTracker2.setForeground(new java.awt.Color(50, 50, 50));
         MnLabelTracker2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnLabelTracker2.setText("Label Tracker 3");
@@ -856,7 +840,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         MnGelang.add(MnLabelTracker2);
 
         MnLabelTracker3.setBackground(new java.awt.Color(255, 255, 254));
-        MnLabelTracker3.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnLabelTracker3.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnLabelTracker3.setForeground(new java.awt.Color(50, 50, 50));
         MnLabelTracker3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnLabelTracker3.setText("Label Tracker 4");
@@ -872,7 +856,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         MnGelang.add(MnLabelTracker3);
 
         MnBarcode1.setBackground(new java.awt.Color(255, 255, 254));
-        MnBarcode1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnBarcode1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnBarcode1.setForeground(new java.awt.Color(50, 50, 50));
         MnBarcode1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnBarcode1.setText("Barcode Perawatan 1");
@@ -888,7 +872,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         MnGelang.add(MnBarcode1);
 
         MnBarcode2.setBackground(new java.awt.Color(255, 255, 254));
-        MnBarcode2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnBarcode2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnBarcode2.setForeground(new java.awt.Color(50, 50, 50));
         MnBarcode2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnBarcode2.setText("Barcode Perawatan 2");
@@ -904,7 +888,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         MnGelang.add(MnBarcode2);
 
         MnBarcodeRM9.setBackground(new java.awt.Color(255, 255, 254));
-        MnBarcodeRM9.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnBarcodeRM9.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnBarcodeRM9.setForeground(new java.awt.Color(50, 50, 50));
         MnBarcodeRM9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnBarcodeRM9.setMnemonic('L');
@@ -922,7 +906,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         jPopupMenu1.add(MnGelang);
 
         MnPemberianObat.setBackground(new java.awt.Color(255, 255, 254));
-        MnPemberianObat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnPemberianObat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnPemberianObat.setForeground(new java.awt.Color(50, 50, 50));
         MnPemberianObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnPemberianObat.setText("Pemberian Obat");
@@ -938,7 +922,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         jPopupMenu1.add(MnPemberianObat);
 
         MnPemberianObat1.setBackground(new java.awt.Color(255, 255, 254));
-        MnPemberianObat1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnPemberianObat1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnPemberianObat1.setForeground(new java.awt.Color(50, 50, 50));
         MnPemberianObat1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnPemberianObat1.setText("Data Pemberian Obat");
@@ -954,7 +938,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         jPopupMenu1.add(MnPemberianObat1);
 
         MnTIndakan.setBackground(new java.awt.Color(255, 255, 254));
-        MnTIndakan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnTIndakan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnTIndakan.setForeground(new java.awt.Color(50, 50, 50));
         MnTIndakan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnTIndakan.setText("Pemberian Tindakan");
@@ -970,7 +954,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         jPopupMenu1.add(MnTIndakan);
 
         MnTIndakan1.setBackground(new java.awt.Color(255, 255, 254));
-        MnTIndakan1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnTIndakan1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         MnTIndakan1.setForeground(new java.awt.Color(50, 50, 50));
         MnTIndakan1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnTIndakan1.setText("Data Pemberian Tindakan");
@@ -986,7 +970,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         jPopupMenu1.add(MnTIndakan1);
 
         ppRiwayat.setBackground(new java.awt.Color(255, 255, 254));
-        ppRiwayat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppRiwayat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppRiwayat.setForeground(new java.awt.Color(50, 50, 50));
         ppRiwayat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppRiwayat.setText("Riwayat Perawatan");
@@ -1002,7 +986,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         jPopupMenu1.add(ppRiwayat);
 
         ppBuktiKunjungan.setBackground(new java.awt.Color(255, 255, 254));
-        ppBuktiKunjungan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBuktiKunjungan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppBuktiKunjungan.setForeground(new java.awt.Color(50, 50, 50));
         ppBuktiKunjungan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppBuktiKunjungan.setText("Bukti Kunjungan");
@@ -1018,7 +1002,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         jPopupMenu1.add(ppBuktiKunjungan);
 
         ppKirimTindakanObat.setBackground(new java.awt.Color(255, 255, 254));
-        ppKirimTindakanObat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppKirimTindakanObat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppKirimTindakanObat.setForeground(new java.awt.Color(50, 50, 50));
         ppKirimTindakanObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppKirimTindakanObat.setText("Kirimkan Mapping Tindakan & Obat");
@@ -1044,7 +1028,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         jPopupMenu2.setName("jPopupMenu2"); // NOI18N
 
         ppFilterTerkirim.setBackground(new java.awt.Color(255, 255, 254));
-        ppFilterTerkirim.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppFilterTerkirim.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppFilterTerkirim.setForeground(new java.awt.Color(50, 50, 50));
         ppFilterTerkirim.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppFilterTerkirim.setText("Filter Data Terkirim");
@@ -1060,7 +1044,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         jPopupMenu2.add(ppFilterTerkirim);
 
         ppFilterGagal.setBackground(new java.awt.Color(255, 255, 254));
-        ppFilterGagal.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppFilterGagal.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppFilterGagal.setForeground(new java.awt.Color(50, 50, 50));
         ppFilterGagal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppFilterGagal.setText("Filter Data Gagal Kirim");
@@ -1076,7 +1060,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         jPopupMenu2.add(ppFilterGagal);
 
         ppSinkronGagal.setBackground(new java.awt.Color(255, 255, 254));
-        ppSinkronGagal.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppSinkronGagal.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppSinkronGagal.setForeground(new java.awt.Color(50, 50, 50));
         ppSinkronGagal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppSinkronGagal.setText("Sinkronisasi Gagal Kirim");
@@ -1092,7 +1076,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         jPopupMenu2.add(ppSinkronGagal);
 
         ppJadikanKunjungan.setBackground(new java.awt.Color(255, 255, 254));
-        ppJadikanKunjungan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppJadikanKunjungan.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppJadikanKunjungan.setForeground(new java.awt.Color(50, 50, 50));
         ppJadikanKunjungan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppJadikanKunjungan.setText("Jadikan Kunjungan PCare");
@@ -1110,7 +1094,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         jPopupMenu3.setName("jPopupMenu3"); // NOI18N
 
         ppRujukanPCare.setBackground(new java.awt.Color(255, 255, 254));
-        ppRujukanPCare.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppRujukanPCare.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ppRujukanPCare.setForeground(new java.awt.Color(50, 50, 50));
         ppRujukanPCare.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         ppRujukanPCare.setText("Cetak Rujukan Spesialis PCare");
@@ -1149,14 +1133,14 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Pendaftaran PCare ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Pendaftaran PCare ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
         TabRawat.setBackground(new java.awt.Color(255, 255, 254));
         TabRawat.setForeground(new java.awt.Color(50, 50, 50));
-        TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        TabRawat.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -3396,7 +3380,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        TabRawatMouseClicked(null);
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -3519,6 +3503,29 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
             } 
             TNoRw.requestFocus();
         }
+        
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        TabRawatMouseClicked(null);
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        TabRawatMouseClicked(null);
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        TabRawatMouseClicked(null);
+                    }
+                }
+            });
+        }
     }//GEN-LAST:event_formWindowOpened
 
     private void TanggalDaftarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TanggalDaftarKeyPressed
@@ -3535,11 +3542,11 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
 
     private void TabRawatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabRawatMouseClicked
         if(TabRawat.getSelectedIndex()==1){
-            tampil();
+            runBackground(() ->tampil());
         }else if(TabRawat.getSelectedIndex()==2){
-            tampil2();
+            runBackground(() ->tampil2());
         }else if(TabRawat.getSelectedIndex()==3){
-            tampil3();
+            runBackground(() ->tampil3());
         }
     }//GEN-LAST:event_TabRawatMouseClicked
 
@@ -4535,7 +4542,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
     }//GEN-LAST:event_TCari1KeyPressed
 
     private void BtnCari1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCari1ActionPerformed
-        tampil2();
+        runBackground(() ->tampil2());
     }//GEN-LAST:event_BtnCari1ActionPerformed
 
     private void BtnCari1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCari1KeyPressed
@@ -5014,12 +5021,12 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
 
     private void ppFilterTerkirimBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppFilterTerkirimBtnPrintActionPerformed
         status="Terkirim";
-        tampil();
+        runBackground(() ->tampil());
     }//GEN-LAST:event_ppFilterTerkirimBtnPrintActionPerformed
 
     private void ppFilterGagalBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppFilterGagalBtnPrintActionPerformed
         status="Gagal";
-        tampil();
+        runBackground(() ->tampil());
     }//GEN-LAST:event_ppFilterGagalBtnPrintActionPerformed
 
     private void ppSinkronGagalBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppSinkronGagalBtnPrintActionPerformed
@@ -5084,7 +5091,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
                 }
             }
         }
-        tampil();
+        runBackground(() ->tampil());
     }//GEN-LAST:event_ppSinkronGagalBtnPrintActionPerformed
 
     private void ppJadikanKunjunganBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppJadikanKunjunganBtnPrintActionPerformed
@@ -5795,7 +5802,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
     }//GEN-LAST:event_TCari2KeyPressed
 
     private void BtnCari2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCari2ActionPerformed
-        tampil3();
+        runBackground(() ->tampil3());
     }//GEN-LAST:event_BtnCari2ActionPerformed
 
     private void BtnCari2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCari2KeyPressed
@@ -8419,11 +8426,11 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
             if(nameNode.path("code").asText().equals("200")){
                 Sequel.meghapus("pcare_pendaftaran","no_rawat",tbPendaftaran.getValueAt(tbPendaftaran.getSelectedRow(),0).toString());
                 Sequel.meghapus("reg_periksa","no_rawat",tbPendaftaran.getValueAt(tbPendaftaran.getSelectedRow(),0).toString());
-                tampil();
+                runBackground(() ->tampil());
             }else if(nameNode.path("code").asText().equals("304")){
                 Sequel.meghapus("pcare_pendaftaran","no_rawat",tbPendaftaran.getValueAt(tbPendaftaran.getSelectedRow(),0).toString());
                 Sequel.meghapus("reg_periksa","no_rawat",tbPendaftaran.getValueAt(tbPendaftaran.getSelectedRow(),0).toString());
-                tampil();
+                runBackground(() ->tampil());
             }else{
                 JOptionPane.showMessageDialog(null,nameNode.path("message").asText());
             }
@@ -8559,7 +8566,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
             System.out.println("message : "+nameNode.path("message").asText());
             if(nameNode.path("code").asText().equals("200")){
                 Sequel.meghapus("pcare_kunjungan_umum","no_rawat",tbKunjungan.getValueAt(tbKunjungan.getSelectedRow(),0).toString());
-                tampil2();
+                runBackground(() ->tampil2());
             }else{
                 JOptionPane.showMessageDialog(null,nameNode.path("message").asText());
             }
@@ -8627,7 +8634,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
             System.out.println("message : "+nameNode.path("message").asText());
             if(nameNode.path("code").asText().equals("200")){
                 Sequel.meghapus("pcare_rujuk_subspesialis","no_rawat",tbSpesialis.getValueAt(tbSpesialis.getSelectedRow(),0).toString());
-                tampil2();
+                runBackground(() ->tampil2());
             }else{
                 JOptionPane.showMessageDialog(null,nameNode.path("message").asText());
             }
@@ -8694,7 +8701,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
 
                         try {
                             PesanKirim.append("MEMULAI PENGIRIMAN DATA\n");
-                            tampil();
+                            runBackground(() ->tampil());
                             PesanKirim.append("Pengiriman data pendaftaran PCare dimulai\n");
                             for(i=0;i<tbPendaftaran.getRowCount();i++){
                                 if(tbPendaftaran.getValueAt(i,20).toString().equals("Gagal")){
@@ -9798,5 +9805,37 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
             System.out.println("Notif : "+ex);
         }
         return statusantrean;
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

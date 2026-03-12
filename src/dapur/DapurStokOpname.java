@@ -28,10 +28,14 @@ import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -47,6 +51,8 @@ public final class DapurStokOpname extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private PreparedStatement pstampil;
     private ResultSet rstampil;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     /** Creates new form DlgPenyakit
      * @param parent
      * @param modal */
@@ -104,29 +110,6 @@ public final class DapurStokOpname extends javax.swing.JDialog {
         Keterangan.setDocument(new batasInput((byte)60).getKata(Keterangan));
         
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }
-        
     } 
     private DecimalFormat df2 = new DecimalFormat("###,###,###,###,###,###,###");
     double total=0,totalreal=0,totallebih=0;
@@ -189,7 +172,7 @@ public final class DapurStokOpname extends javax.swing.JDialog {
         BtnPrint = new widget.Button();
         BtnKeluar = new widget.Button();
 
-        Kd2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Kd2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Kd2.setHighlighter(null);
         Kd2.setName("Kd2"); // NOI18N
         Kd2.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -203,21 +186,21 @@ public final class DapurStokOpname extends javax.swing.JDialog {
         panelisi4.setLayout(null);
 
         label34.setText("Stok :");
-        label34.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        label34.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         label34.setName("label34"); // NOI18N
         label34.setPreferredSize(new java.awt.Dimension(35, 23));
         panelisi4.add(label34);
         label34.setBounds(0, 40, 55, 23);
 
         label32.setText("Tanggal :");
-        label32.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        label32.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         label32.setName("label32"); // NOI18N
         label32.setPreferredSize(new java.awt.Dimension(35, 23));
         panelisi4.add(label32);
         label32.setBounds(550, 10, 60, 23);
 
         Stok.setEditable(false);
-        Stok.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Stok.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Stok.setHighlighter(null);
         Stok.setName("Stok"); // NOI18N
         Stok.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -230,46 +213,46 @@ public final class DapurStokOpname extends javax.swing.JDialog {
 
         Tanggal.setEditable(false);
         Tanggal.setDisplayFormat("yyyy-MM-dd");
-        Tanggal.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Tanggal.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Tanggal.setName("Tanggal"); // NOI18N
         panelisi4.add(Tanggal);
         Tanggal.setBounds(613, 10, 95, 23);
 
         label17.setText("Barang :");
-        label17.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        label17.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         label17.setName("label17"); // NOI18N
         label17.setPreferredSize(new java.awt.Dimension(65, 23));
         panelisi4.add(label17);
         label17.setBounds(0, 10, 55, 23);
 
-        Kdbar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Kdbar.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Kdbar.setName("Kdbar"); // NOI18N
         Kdbar.setPreferredSize(new java.awt.Dimension(80, 23));
         panelisi4.add(Kdbar);
         Kdbar.setBounds(59, 10, 90, 23);
 
         Nmbar.setEditable(false);
-        Nmbar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Nmbar.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Nmbar.setName("Nmbar"); // NOI18N
         Nmbar.setPreferredSize(new java.awt.Dimension(207, 23));
         panelisi4.add(Nmbar);
         Nmbar.setBounds(151, 10, 257, 23);
 
         Harga.setEditable(false);
-        Harga.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Harga.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Harga.setHighlighter(null);
         Harga.setName("Harga"); // NOI18N
         panelisi4.add(Harga);
         Harga.setBounds(410, 10, 110, 23);
 
         label36.setText("Real :");
-        label36.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        label36.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         label36.setName("label36"); // NOI18N
         label36.setPreferredSize(new java.awt.Dimension(35, 23));
         panelisi4.add(label36);
         label36.setBounds(130, 40, 40, 23);
 
-        Real.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Real.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Real.setHighlighter(null);
         Real.setName("Real"); // NOI18N
         Real.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -281,28 +264,28 @@ public final class DapurStokOpname extends javax.swing.JDialog {
         Real.setBounds(174, 40, 55, 23);
 
         Selisih.setEditable(false);
-        Selisih.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Selisih.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Selisih.setHighlighter(null);
         Selisih.setName("Selisih"); // NOI18N
         panelisi4.add(Selisih);
         Selisih.setBounds(284, 40, 55, 23);
 
         label37.setText("Selisih :");
-        label37.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        label37.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         label37.setName("label37"); // NOI18N
         label37.setPreferredSize(new java.awt.Dimension(35, 23));
         panelisi4.add(label37);
         label37.setBounds(230, 40, 50, 23);
 
         label38.setText("Nominal Hilang :");
-        label38.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        label38.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         label38.setName("label38"); // NOI18N
         label38.setPreferredSize(new java.awt.Dimension(35, 23));
         panelisi4.add(label38);
         label38.setBounds(474, 40, 100, 23);
 
         Nominal.setEditable(false);
-        Nominal.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Nominal.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Nominal.setHighlighter(null);
         Nominal.setName("Nominal"); // NOI18N
         Nominal.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -313,7 +296,7 @@ public final class DapurStokOpname extends javax.swing.JDialog {
         panelisi4.add(Nominal);
         Nominal.setBounds(578, 40, 130, 23);
 
-        Keterangan.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        Keterangan.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         Keterangan.setHighlighter(null);
         Keterangan.setName("Keterangan"); // NOI18N
         Keterangan.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -325,14 +308,14 @@ public final class DapurStokOpname extends javax.swing.JDialog {
         Keterangan.setBounds(578, 70, 130, 23);
 
         label18.setText("Lokasi :");
-        label18.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        label18.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         label18.setName("label18"); // NOI18N
         label18.setPreferredSize(new java.awt.Dimension(65, 23));
         panelisi4.add(label18);
         label18.setBounds(0, 70, 55, 23);
 
         label39.setText("Keterangan :");
-        label39.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        label39.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         label39.setName("label39"); // NOI18N
         label39.setPreferredSize(new java.awt.Dimension(35, 23));
         panelisi4.add(label39);
@@ -350,8 +333,13 @@ public final class DapurStokOpname extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Stok Opname Barang Dapur Kering & Basah ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Stok Opname Barang Dapur Kering & Basah ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -432,7 +420,7 @@ public final class DapurStokOpname extends javax.swing.JDialog {
         BtnAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Search-16x16.png"))); // NOI18N
         BtnAll.setMnemonic('3');
         BtnAll.setToolTipText("Alt+3");
-        BtnAll.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        BtnAll.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         BtnAll.setName("BtnAll"); // NOI18N
         BtnAll.setPreferredSize(new java.awt.Dimension(28, 23));
         BtnAll.addActionListener(new java.awt.event.ActionListener() {
@@ -450,7 +438,7 @@ public final class DapurStokOpname extends javax.swing.JDialog {
         BtnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/accept.png"))); // NOI18N
         BtnCari.setMnemonic('2');
         BtnCari.setToolTipText("Alt+2");
-        BtnCari.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        BtnCari.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         BtnCari.setName("BtnCari"); // NOI18N
         BtnCari.setPreferredSize(new java.awt.Dimension(28, 23));
         BtnCari.addActionListener(new java.awt.event.ActionListener() {
@@ -647,7 +635,7 @@ public final class DapurStokOpname extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -694,7 +682,7 @@ public final class DapurStokOpname extends javax.swing.JDialog {
         TCari.setText("");
         kdjenis.setText("");
         Jenis.setSelectedIndex(0);
-        tampil();
+        runBackground(() ->tampil());
     }//GEN-LAST:event_BtnAllActionPerformed
 
 private void KeteranganKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KeteranganKeyPressed
@@ -716,6 +704,31 @@ private void StokKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Stok
     private void kdjenisKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdjenisKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_kdjenisKeyPressed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        }
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments
@@ -875,5 +888,37 @@ private void StokKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Stok
     public void isCek(){
         BtnHapus.setEnabled(akses.getdapur_opname());
         BtnPrint.setEnabled(akses.getdapur_opname()); 
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

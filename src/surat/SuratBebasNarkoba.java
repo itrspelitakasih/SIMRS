@@ -1193,26 +1193,7 @@ public final class SuratBebasNarkoba extends javax.swing.JDialog {
                     + " inner join dokter on reg_periksa.kd_dokter = dokter.kd_dokter "
                     + " where reg_periksa.no_rawat = '" + TNoRw.getText() + "' ",
                     param);
-            //GENERATE WAHA KIRIM PDF//
-//            String pesan = "Halo *" + TPasien.getText() + "* 👋\n\n"
-//                    + "Berikut SKBN Anda.\n\n"
-//                    + "🔐 Password PDF: tanggal lahir (format: ddMMyyyy)\n\n"
-//                    + "⚠️ Pesan ini merupakan notifikasi otomatis dari sistem.\n"
-//                    + "Nomor ini tidak dapat menerima atau membalas pesan.\n\n"
-//                    + "Terima kasih.\n"
-//                    + akses.getnamars() + "\n";
-//
-//            String modePassword = CbPassword.getSelectedItem().toString();
-//            boolean pakaiPassword = modePassword.equalsIgnoreCase("Password");
-//
-//            boolean sukses = GoWAService.kirimDariNoRawat(
-//                    "rptBebasNarkoba6p.pdf",
-//                    "SKBN",
-//                    TNoRw.getText(),
-//                    nohp.getText(),
-//                    pakaiPassword,
-//                    pesan
-//            );
+            
             this.setCursor(Cursor.getDefaultCursor());
         }
     }//GEN-LAST:event_MnCetakSuratSKBNActionPerformed

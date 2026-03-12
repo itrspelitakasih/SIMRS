@@ -286,75 +286,8 @@ public final class DlgPermintaanLaboratorium extends javax.swing.JDialog {
         NomorPA.setDocument(new batasInput((int)20).getKata(NomorPA));
         DiagnosaPA.setDocument(new batasInput((int)100).getKata(DiagnosaPA));
         
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            Pemeriksaan.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(Pemeriksaan.getText().length()>2){
-                        runBackground(() -> tampiltarif());
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(Pemeriksaan.getText().length()>2){
-                        runBackground(() -> tampiltarif());
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(Pemeriksaan.getText().length()>2){
-                        runBackground(() -> tampiltarif());
-                    }
-                }
-            });
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        runBackground(() -> tampil());
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        runBackground(() -> tampil());
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        runBackground(() -> tampil());
-                    }
-                }
-            });
-        } 
         ChkJln.setSelected(true);
         jam();        
-        
-        try {
-            psset_tarif=koneksi.prepareStatement("select set_tarif.cara_bayar_lab,set_tarif.kelas_lab from set_tarif");
-            try {
-                rsset_tarif=psset_tarif.executeQuery();
-                if(rsset_tarif.next()){
-                    cara_bayar_lab=rsset_tarif.getString("cara_bayar_lab");
-                    kelas_lab=rsset_tarif.getString("kelas_lab");
-                }else{
-                    cara_bayar_lab="Yes";
-                    kelas_lab="Yes";
-                } 
-            } catch (Exception e) {
-                System.out.println(e);
-            } finally{
-                if(rsset_tarif!=null){
-                    rsset_tarif.close();
-                }
-                if(psset_tarif!=null){
-                    psset_tarif.close();
-                }
-            } 
-        } catch (Exception e) {
-            System.out.println(e);
-        } 
         
         try {
             aktifkanparsial=koneksiDB.AKTIFKANBILLINGPARSIAL();
@@ -560,6 +493,11 @@ public final class DlgPermintaanLaboratorium extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Input Data Permintaan Laboratorium ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
@@ -629,7 +567,7 @@ public final class DlgPermintaanLaboratorium extends javax.swing.JDialog {
         jLabel9.setBounds(0, 40, 92, 23);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-02-2026" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-02-2026" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -978,7 +916,7 @@ public final class DlgPermintaanLaboratorium extends javax.swing.JDialog {
         jLabel17.setBounds(235, 10, 120, 23);
 
         TanggalPA.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalPA.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-02-2026" }));
+        TanggalPA.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-02-2026" }));
         TanggalPA.setDisplayFormat("dd-MM-yyyy");
         TanggalPA.setName("TanggalPA"); // NOI18N
         TanggalPA.setOpaque(false);
@@ -1021,7 +959,7 @@ public final class DlgPermintaanLaboratorium extends javax.swing.JDialog {
         DiagnosaPA.setBounds(432, 100, 340, 23);
 
         TanggalBahan.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalBahan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-02-2026" }));
+        TanggalBahan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-02-2026" }));
         TanggalBahan.setDisplayFormat("dd-MM-yyyy");
         TanggalBahan.setName("TanggalBahan"); // NOI18N
         TanggalBahan.setOpaque(false);
@@ -1629,25 +1567,19 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }//GEN-LAST:event_PenjabKeyPressed
 
     private void tbTarifPKMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbTarifPKMouseClicked
-        if (tabMode2.getRowCount() == 0) {
-            return;
-        }
-
-        try {
-            Valid.tabelKosong(tabMode);
-
-            runBackground(() -> {
-                tampil();
+        if(tabMode2.getRowCount()!=0){
+            try {
+                Valid.tabelKosong(tabMode);
+                runBackground(() -> tampil());
+                //AUTO PILIH SEMUA
                 javax.swing.SwingUtilities.invokeLater(() -> {
                     ppSemuaActionPerformed(
                             new java.awt.event.ActionEvent(this, 0, "AUTO")
                     );
                 });
-            });
-
-        } catch (Exception e) {
-            System.err.println("Error tbTarifPKMouseClicked:");
-            e.printStackTrace();
+                //AUTO PILIH SEMUA
+            } catch (java.lang.NullPointerException e) {
+            }
         }
     }//GEN-LAST:event_tbTarifPKMouseClicked
 
@@ -1738,28 +1670,40 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        if(TabRawat.getSelectedIndex()==0){
-            DlgCariPermintaanLab form=new DlgCariPermintaanLab(null,false);
-            form.isCek();
-            form.setPasien(TNoRw.getText());
-            form.setSize(this.getWidth(),this.getHeight());
-            form.setLocationRelativeTo(this);
-            form.setVisible(true);
-        }else if(TabRawat.getSelectedIndex()==1){
-            DlgCariPermintaanLabPA form=new DlgCariPermintaanLabPA(null,false);
-            form.isCek();
-            form.setPasien(TNoRw.getText());
-            form.setSize(this.getWidth(),this.getHeight());
-            form.setLocationRelativeTo(this);
-            form.setVisible(true);
-        }else if(TabRawat.getSelectedIndex()==2){
-            DlgCariPermintaanLabMB form=new DlgCariPermintaanLabMB(null,false);
-            form.isCek();
-            form.setPasien(TNoRw.getText());
-            form.setSize(this.getWidth(),this.getHeight());
-            form.setLocationRelativeTo(this);
-            form.setVisible(true);
-        }   
+        switch (TabRawat.getSelectedIndex()) {
+            case 0:
+                {
+                    DlgCariPermintaanLab form=new DlgCariPermintaanLab(null,false);
+                    form.isCek();
+                    form.setPasien(TNoRw.getText());
+                    form.setSize(this.getWidth(),this.getHeight());
+                    form.setLocationRelativeTo(this);
+                    form.setVisible(true);
+                    break;
+                }
+            case 1:
+                {
+                    DlgCariPermintaanLabPA form=new DlgCariPermintaanLabPA(null,false);
+                    form.isCek();
+                    form.setPasien(TNoRw.getText());
+                    form.setSize(this.getWidth(),this.getHeight());
+                    form.setLocationRelativeTo(this);
+                    form.setVisible(true);
+                    break;
+                }
+            case 2:   
+                {
+                    DlgCariPermintaanLabMB form=new DlgCariPermintaanLabMB(null,false);
+                    form.isCek();
+                    form.setPasien(TNoRw.getText());
+                    form.setSize(this.getWidth(),this.getHeight());
+                    form.setLocationRelativeTo(this);
+                    form.setVisible(true);
+                    break;
+                }
+            default:
+                break;
+        }
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnCariActionPerformed
 
@@ -1920,6 +1864,76 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             tbDetailMB.setValueAt(true,i,0);
         }
     }//GEN-LAST:event_ppSemua1ActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        try {
+            psset_tarif=koneksi.prepareStatement("select set_tarif.cara_bayar_lab,set_tarif.kelas_lab from set_tarif");
+            try {
+                rsset_tarif=psset_tarif.executeQuery();
+                if(rsset_tarif.next()){
+                    cara_bayar_lab=rsset_tarif.getString("cara_bayar_lab");
+                    kelas_lab=rsset_tarif.getString("kelas_lab");
+                }else{
+                    cara_bayar_lab="Yes";
+                    kelas_lab="Yes";
+                } 
+            } catch (Exception e) {
+                System.out.println(e);
+            } finally{
+                if(rsset_tarif!=null){
+                    rsset_tarif.close();
+                }
+                if(psset_tarif!=null){
+                    psset_tarif.close();
+                }
+            } 
+        } catch (Exception e) {
+            System.out.println(e);
+        } 
+        
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            Pemeriksaan.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(Pemeriksaan.getText().length()>2){
+                        runBackground(() -> tampiltarif());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(Pemeriksaan.getText().length()>2){
+                        runBackground(() -> tampiltarif());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(Pemeriksaan.getText().length()>2){
+                        runBackground(() -> tampiltarif());
+                    }
+                }
+            });
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() -> tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() -> tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() -> tampil());
+                    }
+                }
+            });
+        } 
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments

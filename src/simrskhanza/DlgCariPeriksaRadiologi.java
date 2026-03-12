@@ -18,6 +18,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,8 +31,12 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
@@ -41,6 +50,7 @@ import kepegawaian.DlgCariDokter;
 import laporan.DlgBerkasRawat;
 import rekammedis.MasterCariTemplateHasilRadiologi;
 import rekammedis.RMRiwayatPerawatan;
+import wa.GoWAService;
 
 public class DlgCariPeriksaRadiologi extends javax.swing.JDialog {
     private final DefaultTableModel tabMode,tabModeDicom;
@@ -131,31 +141,6 @@ public class DlgCariPeriksaRadiologi extends javax.swing.JDialog {
         kdmem.setDocument(new batasInput((byte)8).getKata(kdmem));
         kdptg.setDocument(new batasInput((byte)25).getKata(kdptg));
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        statushasil="";
-                        runBackground(() -> tampil());
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        statushasil="";
-                        runBackground(() -> tampil());
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        statushasil="";
-                        runBackground(() -> tampil());
-                    }
-                }
-            });
-        } 
         
         HTMLEditorKit kit = new HTMLEditorKit();
         LoadHTML.setEditable(true);
@@ -906,9 +891,8 @@ public class DlgCariPeriksaRadiologi extends javax.swing.JDialog {
 
         BtnKirimGOWa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/16whatsapp.png"))); // NOI18N
         BtnKirimGOWa.setMnemonic('K');
-        BtnKirimGOWa.setText("Kirim PDF");
+        BtnKirimGOWa.setText("Kirim WA");
         BtnKirimGOWa.setToolTipText("Alt+K");
-        BtnKirimGOWa.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         BtnKirimGOWa.setName("BtnKirimGOWa"); // NOI18N
         BtnKirimGOWa.setPreferredSize(new java.awt.Dimension(100, 30));
         BtnKirimGOWa.addActionListener(new java.awt.event.ActionListener() {
@@ -2269,10 +2253,210 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
         } catch (Exception e) {
             System.out.println(e);
         }   
+        
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        statushasil="";
+                        runBackground(() -> tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        statushasil="";
+                        runBackground(() -> tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        statushasil="";
+                        runBackground(() -> tampil());
+                    }
+                }
+            });
+        } 
     }//GEN-LAST:event_formWindowOpened
 
     private void BtnKirimGOWaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKirimGOWaActionPerformed
-        
+        if (tbDokter.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(null, "Maaf, silahkan pilih data terlebih dahulu...!!!!");
+            return;
+        }
+
+        String noRawat = NoRawatDicari.getText();
+        String tgl = TglDicari.getText();
+        String jam = JamDicari.getText();
+
+        String noRM = Sequel.cariIsi(
+            "select no_rkm_medis from reg_periksa where no_rawat=?",
+            noRawat
+        );
+
+        String noHp = Sequel.cariIsi(
+            "select no_tlp from pasien where no_rkm_medis=?",
+            noRM
+        );
+
+        String namaPasien = Sequel.cariIsi(
+            "select nm_pasien from pasien where no_rkm_medis=?",
+            noRM
+        );
+
+        JTextField fieldNoHp = new JTextField(noHp, 20);
+        JCheckBox checkUpdate = new JCheckBox("Update No. Telp di Data Pasien");
+
+        JPanel panel = new JPanel(new java.awt.GridLayout(0, 1));
+        panel.add(new JLabel("Nomor WhatsApp Pasien:"));
+        panel.add(fieldNoHp);
+        panel.add(checkUpdate);
+
+        int result = JOptionPane.showConfirmDialog(
+            null,
+            panel,
+            "Konfirmasi Pengiriman WhatsApp",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE
+        );
+
+        if (result != JOptionPane.OK_OPTION) {
+            return;
+        }
+
+        noHp = fieldNoHp.getText().trim();
+
+        if (noHp.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Nomor HP tidak boleh kosong!");
+            return;
+        }
+
+        if (checkUpdate.isSelected()) {
+            Sequel.mengedit("pasien",
+                "no_rkm_medis='" + noRM + "'",
+                "no_tlp='" + noHp + "'");
+            tampil();
+        }
+
+        String caption
+        = "*HASIL PEMERIKSAAN RADIOLOGI*\n\n"
+        + "🏥 " + akses.getnamars() + "\n\n"
+        + "Nama Pasien : " + namaPasien + "\n"
+        + "Tanggal Periksa : " + tgl + "\n\n"
+        + "Berikut hasil gambar radiologi Anda.";
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+
+            File tmpFolder = new File("tmpWA");
+            if (!tmpFolder.exists()) {
+                tmpFolder.mkdirs();
+            }
+
+            ps = koneksi.prepareStatement(
+                "select lokasi_gambar from gambar_radiologi "
+                + "where no_rawat=? and tgl_periksa=? and jam=? "
+                + "order by lokasi_gambar"
+            );
+
+            ps.setString(1, noRawat);
+            ps.setString(2, tgl);
+            ps.setString(3, jam);
+
+            rs = ps.executeQuery();
+
+            // ===============================
+            // DOWNLOAD GAMBAR KE TMP
+            // ===============================
+            int downloadCount = 0;
+
+            while (rs.next()) {
+
+                String lokasi = rs.getString("lokasi_gambar");
+
+                String urlGambar
+                = "http://" + koneksiDB.HOSTHYBRIDWEB() + ":"
+                + koneksiDB.PORTWEB() + "/"
+                + koneksiDB.HYBRIDWEB() + "/radiologi/"
+                + lokasi;
+
+                File fileTmp = new File(
+                    tmpFolder,
+                    new File(lokasi).getName()
+                );
+
+                try (InputStream in = new URL(urlGambar).openStream()) {
+                    Files.copy(
+                        in,
+                        fileTmp.toPath(),
+                        StandardCopyOption.REPLACE_EXISTING
+                    );
+                }
+
+                if (fileTmp.exists()) {
+                    downloadCount++;
+                }
+            }
+
+            File[] files = tmpFolder.listFiles();
+
+            if (files == null || files.length == 0) {
+                JOptionPane.showMessageDialog(null,
+                    "Tidak ada gambar radiologi yang ditemukan.");
+                return;
+            }
+
+            int terkirim = 0;
+            boolean firstImage = true;
+
+            for (File img : files) {
+                String pesanKirim = "";
+
+                if (firstImage) {
+                    pesanKirim = caption;
+                    firstImage = false;
+                }
+
+                boolean sukses = GoWAService.kirimGambar(noHp, img, pesanKirim);
+                if (sukses) {
+                    terkirim++;
+                    img.delete(); // hapus file setelah terkirim
+                }
+
+                Thread.sleep(1200);
+            }
+
+            JOptionPane.showMessageDialog(
+                null,
+                "Berhasil mengirim " + terkirim + " gambar radiologi ke : "+ noHp
+            );
+
+        } catch (Exception e) {
+
+            System.out.println("Error Kirim WA : " + e);
+
+            JOptionPane.showMessageDialog(
+                null,
+                "Terjadi kesalahan : " + e.getMessage()
+            );
+
+        } finally {
+
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (Exception e) {
+            }
+
+        }
     }//GEN-LAST:event_BtnKirimGOWaActionPerformed
 
     /**

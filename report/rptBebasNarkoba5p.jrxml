@@ -20,8 +20,8 @@
 	<parameter name="kontakrs" class="java.lang.String"/>
 	<parameter name="emailrs" class="java.lang.String"/>
 	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="tanggalsurat" class="java.util.Date"/>
 	<parameter name="nosurat" class="java.lang.String"/>
-	<parameter name="tanggalsurat" class="java.lang.String"/>
 	<parameter name="keperluan" class="java.lang.String"/>
 	<parameter name="dokter" class="java.lang.String"/>
 	<parameter name="opiat" class="java.lang.String"/>
@@ -72,6 +72,7 @@
 	<field name="umur" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
+	<field name="no_ijn_praktek" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -107,16 +108,6 @@
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="186" y="166" width="298" height="14" uuid="0cf46739-0d03-417f-b002-3bcf9762aa58">
-					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
-				</reportElement>
-				<textElement>
-					<font fontName="Cambria" size="11" isBold="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nm_pasien}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement x="67" y="180" width="109" height="14" uuid="60138df8-1dd2-4f7d-ae05-d21db39a5e23">
 					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
@@ -137,16 +128,6 @@
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
-			<textField pattern="dd - MM - yyyy">
-				<reportElement x="186" y="180" width="90" height="14" uuid="6330b068-a683-4fb4-8ae8-e1520038ee03">
-					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
-				</reportElement>
-				<textElement>
-					<font fontName="Cambria" size="11"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{tmp_lahir}+","]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement x="67" y="194" width="109" height="14" uuid="2b69ead5-548b-467f-8ae1-f9afc8d8c11d"/>
 				<textElement>
@@ -163,26 +144,6 @@
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="186" y="194" width="298" height="28" uuid="12a0a7dc-ae77-434e-856f-9bcbded4e34f">
-					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
-				</reportElement>
-				<textElement>
-					<font fontName="Cambria" size="11"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{alamat}]]></textFieldExpression>
-			</textField>
-			<textField pattern=" d MMMM yyyy">
-				<reportElement x="266" y="180" width="218" height="14" uuid="4faa4000-e23d-4c46-bb0e-39cac813fad2">
-					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
-				</reportElement>
-				<textElement>
-					<font fontName="Cambria" size="11"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new SimpleDateFormat("dd  MMMM  yyyy", new java.util.Locale("id")).format($F{tgl_lahir})]]></textFieldExpression>
-			</textField>
 			<textField>
 				<reportElement x="50" y="247" width="439" height="14" uuid="714d37fb-7585-4cf5-9a79-3d921aa799ba">
 					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
@@ -405,12 +366,12 @@
 				</reportElement>
 			</line>
 			<textField pattern="dd MMMM yyyy">
-				<reportElement x="50" y="486" width="190" height="15" uuid="a0637b3d-8da2-43d4-9d98-a85a34a3e17d"/>
+				<reportElement x="50" y="486" width="410" height="15" uuid="a0637b3d-8da2-43d4-9d98-a85a34a3e17d"/>
 				<textElement textAlignment="Left">
 					<font fontName="Cambria" size="11"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{kotars}+", "+$P{tanggalsurat}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{kotars} + ", " + new java.text.SimpleDateFormat("dd MMMM yyyy", new java.util.Locale("id","ID")).format($P{tanggalsurat})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="50" y="137" width="440" height="14" uuid="5c789737-bf0c-4378-b69d-55ec842ffb08">
@@ -423,9 +384,7 @@
 				<textFieldExpression><![CDATA["Dengan ini menerangkan bahwa : "]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement x="50" y="524" width="188" height="73" isRemoveLineWhenBlank="true" uuid="2a4d050c-7e43-4e77-bfaf-7c729b77f19e">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
+				<reportElement x="50" y="524" width="73" height="73" isRemoveLineWhenBlank="true" uuid="2a4d050c-7e43-4e77-bfaf-7c729b77f19e"/>
 				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
 					<jr:codeExpression><![CDATA[$P{finger}]]></jr:codeExpression>
 				</jr:QRCode>
@@ -479,6 +438,45 @@
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Demikianlah surat keterangan ini dibuat untuk dipergunakan sebagaimana mestinya."]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd - MM - yyyy">
+				<reportElement x="186" y="180" width="298" height="14" uuid="2ed707fc-bf85-403e-868d-5ae5378ddf18">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Cambria" size="11"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[org.apache.commons.lang3.text.WordUtils.capitalizeFully($F{tmp_lahir})+", " + new SimpleDateFormat("dd MMMM yyyy", new java.util.Locale("id")).format($F{tgl_lahir})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="186" y="194" width="298" height="46" uuid="6a621a75-1395-47c8-86c3-cf997056d8d0">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Cambria" size="11"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[org.apache.commons.lang3.text.WordUtils.capitalizeFully($F{alamat})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="186" y="166" width="298" height="14" uuid="8c7a5234-8c78-4f54-ad07-388fc0213c47">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Cambria" size="11" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[org.apache.commons.lang3.text.WordUtils.capitalizeFully($F{nm_pasien})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="50" y="617" width="439" height="14" uuid="01a22ec0-6738-4a53-b03c-aa8a5fe1de11">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Cambria" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{no_ijn_praktek}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

@@ -393,7 +393,7 @@
 				<textFieldExpression><![CDATA[$P{dokter}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd MMMM yyyy">
-				<reportElement x="50" y="486" width="190" height="15" uuid="a0637b3d-8da2-43d4-9d98-a85a34a3e17d"/>
+				<reportElement x="50" y="486" width="370" height="15" uuid="a0637b3d-8da2-43d4-9d98-a85a34a3e17d"/>
 				<textElement textAlignment="Left">
 					<font fontName="Cambria" size="11"/>
 					<paragraph lineSpacing="Single"/>
