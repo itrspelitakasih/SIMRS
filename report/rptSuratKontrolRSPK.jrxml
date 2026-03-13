@@ -144,7 +144,7 @@
 	<detail>
 		<band height="381" splitType="Stretch">
 			<staticText>
-				<reportElement x="1" y="110" width="76" height="12" uuid="b6d8656e-1887-4e19-8f26-77998e6285da"/>
+				<reportElement x="1" y="105" width="76" height="12" uuid="b6d8656e-1887-4e19-8f26-77998e6285da"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -152,7 +152,7 @@
 				<text><![CDATA[No. RM]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1" y="64" width="76" height="12" uuid="0511bf83-a99b-456c-915a-c86dcd5ddb46"/>
+				<reportElement x="1" y="59" width="76" height="12" uuid="0511bf83-a99b-456c-915a-c86dcd5ddb46"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -160,7 +160,7 @@
 				<text><![CDATA[Nama]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1" y="123" width="76" height="12" uuid="5ed0303c-b05c-403f-a89f-07d6fb726ec8"/>
+				<reportElement x="1" y="118" width="76" height="12" uuid="5ed0303c-b05c-403f-a89f-07d6fb726ec8"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -168,7 +168,7 @@
 				<text><![CDATA[Diagnosis]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1" y="150" width="76" height="12" uuid="59da6c4a-ec9d-49e5-bdef-927027ea0a6b"/>
+				<reportElement x="1" y="145" width="76" height="12" uuid="59da6c4a-ec9d-49e5-bdef-927027ea0a6b"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -176,7 +176,7 @@
 				<text><![CDATA[Terapi]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="68" y="110" width="18" height="12" uuid="79cc20e4-c029-4ffe-96e3-ac7ce78b4ef2"/>
+				<reportElement x="68" y="105" width="18" height="12" uuid="79cc20e4-c029-4ffe-96e3-ac7ce78b4ef2"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -184,7 +184,7 @@
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="68" y="64" width="18" height="12" uuid="65b60cfe-2bad-4fbd-8759-4aa77b900917"/>
+				<reportElement x="68" y="59" width="18" height="12" uuid="65b60cfe-2bad-4fbd-8759-4aa77b900917"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -192,7 +192,7 @@
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="68" y="123" width="18" height="12" uuid="cfd3f315-0415-4fd2-884f-2782084db9c0"/>
+				<reportElement x="68" y="118" width="18" height="12" uuid="cfd3f315-0415-4fd2-884f-2782084db9c0"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -200,7 +200,7 @@
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="68" y="150" width="18" height="12" uuid="6bdb7395-c3c5-45f1-91ee-6a2949710ff4"/>
+				<reportElement x="68" y="145" width="18" height="12" uuid="6bdb7395-c3c5-45f1-91ee-6a2949710ff4"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -208,7 +208,7 @@
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="77" y="110" width="180" height="12" uuid="87473edd-36df-42ee-a8aa-5dad346b81a6"/>
+				<reportElement x="77" y="105" width="180" height="12" uuid="87473edd-36df-42ee-a8aa-5dad346b81a6"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -216,7 +216,7 @@
 				<textFieldExpression><![CDATA[$F{temp2}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="77" y="64" width="180" height="12" uuid="dfada4d3-0fa6-499c-977a-595836ac5219"/>
+				<reportElement x="77" y="59" width="180" height="12" uuid="dfada4d3-0fa6-499c-977a-595836ac5219"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -224,7 +224,7 @@
 				<textFieldExpression><![CDATA[org.apache.commons.lang3.text.WordUtils.capitalizeFully($F{temp3})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="77" y="123" width="180" height="12" uuid="85c4c3d0-d1a8-4389-aa36-1beb3f2796f0"/>
+				<reportElement x="77" y="118" width="180" height="12" uuid="85c4c3d0-d1a8-4389-aa36-1beb3f2796f0"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -232,7 +232,7 @@
 				<textFieldExpression><![CDATA[$F{temp4}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="77" y="150" width="180" height="12" uuid="af2b5a7b-41b6-48b9-9c57-b54e6677c0c6"/>
+				<reportElement x="77" y="145" width="180" height="12" uuid="af2b5a7b-41b6-48b9-9c57-b54e6677c0c6"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -240,7 +240,7 @@
 				<textFieldExpression><![CDATA[$F{temp5}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="189" width="256" height="12" uuid="a1bb5ee7-6cff-40a9-91e7-4501f0cafa58"/>
+				<reportElement x="2" y="178" width="254" height="12" uuid="a1bb5ee7-6cff-40a9-91e7-4501f0cafa58"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -248,7 +248,7 @@
 				<text><![CDATA[Dinyatakan BOLEH PULANG dan Kontrol kembali pada :]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="77" y="136" width="178" height="12" uuid="84043590-caf8-4919-abd1-c2ea2f3dcdd4"/>
+				<reportElement x="77" y="131" width="180" height="12" uuid="84043590-caf8-4919-abd1-c2ea2f3dcdd4"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -256,7 +256,7 @@
 				<textFieldExpression><![CDATA[$F{temp8}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="237" width="256" height="12" uuid="366d65de-75fb-472e-a2b8-ebc95732b915"/>
+				<reportElement x="2" y="226" width="254" height="12" uuid="366d65de-75fb-472e-a2b8-ebc95732b915"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
@@ -264,7 +264,7 @@
 				<text><![CDATA[Note :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1" y="250" width="256" height="26" uuid="b61a20f7-1a47-4556-a80a-a46e255480d2"/>
+				<reportElement x="2" y="239" width="254" height="26" uuid="b61a20f7-1a47-4556-a80a-a46e255480d2"/>
 				<textElement verticalAlignment="Top" markup="none">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -273,7 +273,7 @@
 Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="104" y="275" width="146" height="12" uuid="9a26df3b-d135-41c6-bfce-69d5ae540e07"/>
+				<reportElement x="84" y="263" width="146" height="12" uuid="9a26df3b-d135-41c6-bfce-69d5ae540e07"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -281,7 +281,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<textFieldExpression><![CDATA[$P{kotars} + ", " +$P{tanggal_surat}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="112" y="287" width="128" height="12" uuid="155cf285-becc-407c-9469-cea25b8f3b05"/>
+				<reportElement x="93" y="275" width="128" height="12" uuid="155cf285-becc-407c-9469-cea25b8f3b05"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -289,7 +289,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<text><![CDATA[Dokter yang Merawat,]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="112" y="356" width="128" height="12" uuid="fcb81fcc-229e-4ba3-889e-79876290a048"/>
+				<reportElement x="58" y="344" width="199" height="12" uuid="fcb81fcc-229e-4ba3-889e-79876290a048"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
@@ -297,7 +297,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<textFieldExpression><![CDATA["( "+$F{temp15}+" )"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="45" width="257" height="14" uuid="dd253cf2-83d2-48b7-8df5-c93bea265c7a"/>
+				<reportElement x="0" y="40" width="257" height="14" uuid="dd253cf2-83d2-48b7-8df5-c93bea265c7a"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Cambria" size="9" isBold="true" isUnderline="true"/>
 					<paragraph lineSpacing="Single"/>
@@ -323,9 +323,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				</graphicElement>
 			</line>
 			<componentElement>
-				<reportElement x="113" y="298" width="126" height="59" isRemoveLineWhenBlank="true" uuid="90cc79d6-50ba-4c11-ba1c-ce50ce469f87">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
+				<reportElement x="129" y="287" width="57" height="57" isRemoveLineWhenBlank="true" uuid="90cc79d6-50ba-4c11-ba1c-ce50ce469f87"/>
 				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
 					<jr:codeExpression><![CDATA[$P{finger}]]></jr:codeExpression>
 				</jr:QRCode>
@@ -351,7 +349,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<text><![CDATA[Telp : 0549 - 21236, Email : pelitakasih.ma@yahoo.com]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1" y="77" width="76" height="12" uuid="0035bd90-e771-449a-9219-b2beee8b726d"/>
+				<reportElement x="1" y="72" width="76" height="12" uuid="0035bd90-e771-449a-9219-b2beee8b726d"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -359,7 +357,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<text><![CDATA[Umur]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="68" y="77" width="18" height="12" uuid="b58966b0-8bae-49f0-b81d-cd2a63441e83"/>
+				<reportElement x="68" y="72" width="18" height="12" uuid="b58966b0-8bae-49f0-b81d-cd2a63441e83"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -367,7 +365,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="77" y="77" width="180" height="12" uuid="5e3802d1-2f30-49ad-adf8-ec715b9560e1"/>
+				<reportElement x="77" y="72" width="180" height="12" uuid="5e3802d1-2f30-49ad-adf8-ec715b9560e1"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -379,7 +377,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
  $P{umur})]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="90" width="76" height="12" uuid="2ea544ea-d014-4e02-a479-4bea04522bae"/>
+				<reportElement x="1" y="85" width="76" height="12" uuid="2ea544ea-d014-4e02-a479-4bea04522bae"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -387,7 +385,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<text><![CDATA[Alamat]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="68" y="90" width="18" height="12" uuid="d927bf28-8bfd-4eed-be3d-ec7bcad91256"/>
+				<reportElement x="68" y="85" width="18" height="12" uuid="d927bf28-8bfd-4eed-be3d-ec7bcad91256"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -395,7 +393,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="77" y="90" width="180" height="20" uuid="8609d2e0-d311-4d77-a213-0f88799dbd69"/>
+				<reportElement x="77" y="85" width="180" height="20" uuid="8609d2e0-d311-4d77-a213-0f88799dbd69"/>
 				<textElement verticalAlignment="Top" markup="none">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -403,7 +401,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<textFieldExpression><![CDATA[org.apache.commons.lang3.text.WordUtils.capitalizeFully($P{alamat})]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="1" y="136" width="76" height="12" uuid="cbb3523d-857c-4571-b4ab-9e4bbb9cd766"/>
+				<reportElement x="1" y="131" width="76" height="12" uuid="cbb3523d-857c-4571-b4ab-9e4bbb9cd766"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -411,7 +409,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<text><![CDATA[Tindakan]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="68" y="136" width="18" height="12" uuid="bf305f45-c1e8-4559-85f7-4c5284ae53d6"/>
+				<reportElement x="68" y="131" width="18" height="12" uuid="bf305f45-c1e8-4559-85f7-4c5284ae53d6"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -419,7 +417,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1" y="201" width="48" height="12" uuid="1eb087d6-80ed-4daa-898d-123e1304fe94"/>
+				<reportElement x="2" y="190" width="48" height="12" uuid="1eb087d6-80ed-4daa-898d-123e1304fe94"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -427,7 +425,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<text><![CDATA[Hari/Tanggal]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="52" y="201" width="18" height="12" uuid="601f6995-a509-49cd-80a2-58594626a4f4"/>
+				<reportElement x="53" y="190" width="18" height="12" uuid="601f6995-a509-49cd-80a2-58594626a4f4"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -435,7 +433,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1" y="214" width="48" height="12" uuid="a18000a7-a6b1-4c98-9b5f-370d056d94a3"/>
+				<reportElement x="2" y="203" width="48" height="12" uuid="a18000a7-a6b1-4c98-9b5f-370d056d94a3"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -443,7 +441,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<text><![CDATA[Poliklinik]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="52" y="214" width="18" height="12" uuid="059e9138-d849-46e9-92b3-24c62a17bd12"/>
+				<reportElement x="53" y="203" width="18" height="12" uuid="059e9138-d849-46e9-92b3-24c62a17bd12"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -451,7 +449,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="57" y="201" width="199" height="12" uuid="596c4535-eee4-4586-8862-9cd5d54c5099"/>
+				<reportElement x="58" y="190" width="198" height="12" uuid="596c4535-eee4-4586-8862-9cd5d54c5099"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -459,7 +457,7 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<textFieldExpression><![CDATA[$P{tanggal_kembali}+ "        Pukul :"+ $P{jam_kembali} + " WITA"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="57" y="214" width="200" height="12" uuid="6f7112c3-7054-4f4a-9aa8-cdf20000e561"/>
+				<reportElement x="58" y="203" width="198" height="12" uuid="6f7112c3-7054-4f4a-9aa8-cdf20000e561"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font fontName="Cambria" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -467,8 +465,8 @@ Pendaftaran dibuka 1 hari sebelum tanggal kontrol]]></text>
 				<textFieldExpression><![CDATA[$F{temp17}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="98" y="365" width="157" height="16" uuid="9110c60d-2c23-4ceb-828b-f74a093a8b7f"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement x="58" y="355" width="199" height="24" uuid="9110c60d-2c23-4ceb-828b-f74a093a8b7f"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font fontName="Cambria" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA["SIP : "+$P{sipdokter}]]></textFieldExpression>

@@ -455,9 +455,9 @@
 				<textFieldExpression><![CDATA[$P{petugas}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement x="380" y="30" width="98" height="98" isRemoveLineWhenBlank="true" uuid="03619d47-c302-4373-bf67-caff9d5b336c"/>
+				<reportElement x="376" y="30" width="100" height="100" isRemoveLineWhenBlank="true" uuid="dc3c8cc1-54fa-497d-b7e5-743fc00afdea"/>
 				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
-					<jr:codeExpression><![CDATA[$P{finger2}]]></jr:codeExpression>
+					<jr:codeExpression><![CDATA[$P{finger}]]></jr:codeExpression>
 				</jr:QRCode>
 			</componentElement>
 		</band>

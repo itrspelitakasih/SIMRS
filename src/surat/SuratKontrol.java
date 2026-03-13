@@ -1997,87 +1997,122 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     // End of variables declaration//GEN-END:variables
 
     public void tampil() {
-        if (R1.isSelected() == true) {
-            status = " skdp_bpjs.status='Menunggu' ";
-        } else if (R2.isSelected() == true) {
-            status = " skdp_bpjs.tanggal_rujukan between '" + Valid.SetTgl(DTPCari1.getSelectedItem() + "") + "' and '" + Valid.SetTgl(DTPCari2.getSelectedItem() + "") + "' ";
-        } else if (R3.isSelected() == true) {
-            status = " skdp_bpjs.status<>'Menunggu' and skdp_bpjs.tanggal_rujukan between '" + Valid.SetTgl(DTPCari3.getSelectedItem() + "") + "' and '" + Valid.SetTgl(DTPCari4.getSelectedItem() + "") + "' ";
+        String cari = "%" + TCari.getText().trim() + "%";
+
+        if (R1.isSelected()) {
+            status = "skdp_bpjs.status='Menunggu'";
+        } else if (R2.isSelected()) {
+            status = "skdp_bpjs.tanggal_rujukan between '"
+                    + Valid.SetTgl(DTPCari1.getSelectedItem() + "") + "' and '"
+                    + Valid.SetTgl(DTPCari2.getSelectedItem() + "") + "'";
+        } else if (R3.isSelected()) {
+            status = "skdp_bpjs.status<>'Menunggu' and skdp_bpjs.tanggal_rujukan between '"
+                    + Valid.SetTgl(DTPCari3.getSelectedItem() + "") + "' and '"
+                    + Valid.SetTgl(DTPCari4.getSelectedItem() + "") + "'";
         }
+
         Valid.tabelKosong(tabMode);
+
+        String sql
+                = "SELECT skdp_bpjs.tahun, skdp_bpjs.no_rkm_medis, pasien.nm_pasien, "
+                + "skdp_bpjs.diagnosa, skdp_bpjs.terapi, skdp_bpjs.alasan1, skdp_bpjs.alasan2, "
+                + "skdp_bpjs.rtl1, skdp_bpjs.rtl2, skdp_bpjs.tanggal_datang, skdp_bpjs.tanggal_rujukan, "
+                + "skdp_bpjs.no_antrian, skdp_bpjs.kd_dokter, dokter.nm_dokter, skdp_bpjs.status, "
+                + "dokter.no_ijn_praktek "
+                + "FROM skdp_bpjs "
+                + "INNER JOIN pasien ON skdp_bpjs.no_rkm_medis = pasien.no_rkm_medis "
+                + "INNER JOIN dokter ON skdp_bpjs.kd_dokter = dokter.kd_dokter "
+                + "WHERE " + status + " AND ( "
+                + "skdp_bpjs.no_rkm_medis LIKE ? OR "
+                + "pasien.nm_pasien LIKE ? OR "
+                + "skdp_bpjs.diagnosa LIKE ? OR "
+                + "skdp_bpjs.terapi LIKE ? OR "
+                + "skdp_bpjs.no_antrian LIKE ? OR "
+                + "dokter.nm_dokter LIKE ? ) "
+                + "ORDER BY skdp_bpjs.tanggal_rujukan, skdp_bpjs.no_antrian";
+
         try {
-            ps = koneksi.prepareStatement(
-                    "select skdp_bpjs.tahun,skdp_bpjs.no_rkm_medis,pasien.nm_pasien,"
-                    + "skdp_bpjs.diagnosa,skdp_bpjs.terapi,skdp_bpjs.alasan1,skdp_bpjs.alasan2,"
-                    + "skdp_bpjs.rtl1,skdp_bpjs.rtl2,skdp_bpjs.tanggal_datang,skdp_bpjs.tanggal_rujukan,"
-                    + "skdp_bpjs.no_antrian,skdp_bpjs.kd_dokter,dokter.nm_dokter,skdp_bpjs.status "
-                    + "dokter.no_ijn_praktek"
-                    + "from skdp_bpjs inner join pasien inner join dokter on "
-                    + "skdp_bpjs.no_rkm_medis=pasien.no_rkm_medis and skdp_bpjs.kd_dokter=dokter.kd_dokter "
-                    + "where " + status + " and skdp_bpjs.no_rkm_medis like ? or "
-                    + status + " and pasien.nm_pasien like ? or "
-                    + status + " and skdp_bpjs.diagnosa like ? or "
-                    + status + " and skdp_bpjs.terapi like ? or "
-                    + status + " and skdp_bpjs.no_antrian like ? or "
-                    + status + " and dokter.nm_dokter like ? order by skdp_bpjs.tanggal_rujukan,skdp_bpjs.no_antrian");
-            try {
-                ps.setString(1, "%" + TCari.getText().trim() + "%");
-                ps.setString(2, "%" + TCari.getText().trim() + "%");
-                ps.setString(3, "%" + TCari.getText().trim() + "%");
-                ps.setString(4, "%" + TCari.getText().trim() + "%");
-                ps.setString(5, "%" + TCari.getText().trim() + "%");
-                ps.setString(6, "%" + TCari.getText().trim() + "%");
-                rs = ps.executeQuery();
-                while (rs.next()) {
-                    kdpoli = "";
-                    nmpoli = "";
-                    noantri = "";
-                    ps2 = koneksi.prepareStatement(
-                            "select booking_registrasi.kd_poli,poliklinik.nm_poli,booking_registrasi.no_reg "
-                            + "from booking_registrasi inner join poliklinik on booking_registrasi.kd_poli=poliklinik.kd_poli "
-                            + "where booking_registrasi.kd_dokter=? and booking_registrasi.tanggal_periksa=? and booking_registrasi.no_rkm_medis=?");
-                    try {
-                        ps2.setString(1, rs.getString("kd_dokter"));
-                        ps2.setString(2, rs.getString("tanggal_datang").substring(0, 10));
-                        ps2.setString(3, rs.getString("no_rkm_medis"));
-                        rs2 = ps2.executeQuery();
-                        if (rs2.next()) {
-                            kdpoli = rs2.getString("kd_poli");
-                            nmpoli = rs2.getString("nm_poli");
-                            noantri = rs2.getString("no_reg");
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Notif : " + e);
-                    } finally {
-                        if (rs2 != null) {
-                            rs2.close();
-                        }
-                        if (ps2 != null) {
-                            ps2.close();
-                        }
-                    }
-                    tabMode.addRow(new Object[]{
-                        rs.getInt("tahun"), rs.getString("no_rkm_medis"), rs.getString("nm_pasien"),
-                        rs.getString("diagnosa"), rs.getString("terapi"), rs.getString("alasan1"),
-                        rs.getString("alasan2"), rs.getString("rtl1"), rs.getString("rtl2"),
-                        rs.getString("tanggal_datang"), rs.getString("tanggal_rujukan"), rs.getString("no_antrian"),
-                        noantri, rs.getString("kd_dokter"), rs.getString("nm_dokter"), kdpoli,
-                        nmpoli, rs.getString("status")
-                    });
+            ps = koneksi.prepareStatement(sql);
+
+            ps.setString(1, cari);
+            ps.setString(2, cari);
+            ps.setString(3, cari);
+            ps.setString(4, cari);
+            ps.setString(5, cari);
+            ps.setString(6, cari);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                kdpoli = "";
+                nmpoli = "";
+                noantri = "";
+
+                ps2 = koneksi.prepareStatement(
+                        "SELECT booking_registrasi.kd_poli, poliklinik.nm_poli, booking_registrasi.no_reg "
+                        + "FROM booking_registrasi "
+                        + "INNER JOIN poliklinik ON booking_registrasi.kd_poli=poliklinik.kd_poli "
+                        + "WHERE booking_registrasi.kd_dokter=? "
+                        + "AND booking_registrasi.tanggal_periksa=? "
+                        + "AND booking_registrasi.no_rkm_medis=?");
+
+                ps2.setString(1, rs.getString("kd_dokter"));
+                ps2.setString(2, rs.getString("tanggal_datang").substring(0, 10));
+                ps2.setString(3, rs.getString("no_rkm_medis"));
+
+                rs2 = ps2.executeQuery();
+
+                if (rs2.next()) {
+                    kdpoli = rs2.getString("kd_poli");
+                    nmpoli = rs2.getString("nm_poli");
+                    noantri = rs2.getString("no_reg");
                 }
-            } catch (Exception e) {
-                System.out.println("Notif : " + e);
-            } finally {
+
+                if (rs2 != null) {
+                    rs2.close();
+                }
+                if (ps2 != null) {
+                    ps2.close();
+                }
+
+                tabMode.addRow(new Object[]{
+                    rs.getInt("tahun"),
+                    rs.getString("no_rkm_medis"),
+                    rs.getString("nm_pasien"),
+                    rs.getString("diagnosa"),
+                    rs.getString("terapi"),
+                    rs.getString("alasan1"),
+                    rs.getString("alasan2"),
+                    rs.getString("rtl1"),
+                    rs.getString("rtl2"),
+                    rs.getString("tanggal_datang"),
+                    rs.getString("tanggal_rujukan"),
+                    rs.getString("no_antrian"),
+                    noantri,
+                    rs.getString("kd_dokter"),
+                    rs.getString("nm_dokter"),
+                    kdpoli,
+                    nmpoli,
+                    rs.getString("status")
+                });
+            }
+
+        } catch (Exception e) {
+            System.out.println("Notif : " + e);
+        } finally {
+            try {
                 if (rs != null) {
                     rs.close();
                 }
                 if (ps != null) {
                     ps.close();
                 }
+            } catch (Exception e) {
+                System.out.println("Notif : " + e);
             }
-        } catch (Exception e) {
-            System.out.println("Notif : " + e);
         }
+
         LCount.setText("" + tabMode.getRowCount());
     }
 
