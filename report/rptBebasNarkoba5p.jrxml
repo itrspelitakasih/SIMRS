@@ -185,7 +185,7 @@
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="176" y="346" width="7" height="14" uuid="10d7cdbe-473f-4337-bcad-d89042f4d520">
+				<reportElement x="176" y="333" width="7" height="14" uuid="10d7cdbe-473f-4337-bcad-d89042f4d520">
 					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
 				</reportElement>
 				<textElement>
@@ -205,17 +205,7 @@
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="176" y="332" width="7" height="14" uuid="92b8e545-c52f-45f7-96bc-9e3b8c04a177">
-					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
-				</reportElement>
-				<textElement>
-					<font fontName="Cambria" size="11"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<text><![CDATA[:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="67" y="346" width="109" height="14" uuid="0d4bd9f7-ed06-400a-b41c-52be4de42254">
+				<reportElement x="67" y="333" width="109" height="14" uuid="0d4bd9f7-ed06-400a-b41c-52be4de42254">
 					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
 				</reportElement>
 				<textElement>
@@ -223,16 +213,6 @@
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Cocain ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="67" y="332" width="109" height="14" uuid="8511622e-8456-4f17-9e6d-cd5228fb9cbb">
-					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
-				</reportElement>
-				<textElement>
-					<font fontName="Cambria" size="11"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<text><![CDATA[Benzodiazepin]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="67" y="318" width="109" height="14" uuid="7c8455fd-47fe-4496-9162-f6757dec865f">
@@ -333,17 +313,7 @@
 				<textFieldExpression><![CDATA[$P{methamphetamin}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="183" y="332" width="111" height="14" uuid="818ea0a4-131c-44a1-a478-2e0b554a1f5d">
-					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
-				</reportElement>
-				<textElement>
-					<font fontName="Cambria" size="11"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{benzodiazepin}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="183" y="346" width="111" height="14" uuid="41f728d1-db68-4305-941a-06d71b8343a8">
+				<reportElement x="183" y="333" width="111" height="14" uuid="41f728d1-db68-4305-941a-06d71b8343a8">
 					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
 				</reportElement>
 				<textElement>

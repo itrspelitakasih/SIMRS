@@ -961,10 +961,10 @@ kfa.getTable().addKeyListener(new KeyListener() {
     private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditActionPerformed
         if (KFACode.getText().trim().equals("")) {
             Valid.textKosong(KFACode, "KFA Code");
+        } else if (KFASystem.getText().trim().equals("")) {
+            Valid.textKosong(KFASystem, "KFA System");
         } else if (NamaBarang.getText().trim().equals("")) {
-            Valid.textKosong(NamaBarang, "KFA System");
-        } else if (KodeBarang.getText().trim().equals("")) {
-            Valid.textKosong(KodeBarang, "Obat/Alkes/BHP");
+            Valid.textKosong(NamaBarang, "Obat/Alkes/BHP");
         } else if (KFADisplay.getText().trim().equals("")) {
             Valid.textKosong(KFADisplay, "KFA Display");
         } else if (FormCode.getText().trim().equals("")) {
